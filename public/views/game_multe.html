@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css" />
+    <title>ChatCord App</title>
+    <script src = "/socket.io/socket.io.js"></script>
+  </head>
+  
+  <body>
+    <div class="chat-container">
+      <header class="chat-header">
+        <h1><i class="fas fa-smile"></i> 比賽a地方</h1>
+        <a onclick="location.href='/'" class="btn">離開房間</a>
+      </header>
+      <main class="chat-main">
+        <div class="chat-sidebar">
+          <h3><i class="fas fa-comments"></i> 房間名稱:</h3>
+          <h2 id="room-name"></h2>
+          <h3><i class="fas fa-users"></i> 使用者暱稱:</h3>
+          <ul id="users"></ul>
+        </div>
+        <div class="chat-messages"></div>
+      </main>
+      <div class="chat-form-container">
+        <form id="chat-form">
+          <input
+            id="msg"
+            type="text"
+            placeholder="Enter Message"
+            required
+            autocomplete="off"
+          />
+          <button class="btn"><i class="fas fa-paper-plane"></i> 發送</button>
+        </form>
+      </div>
+    </div>
+
+    <p>多人模式目前先做兩人就好</p>
+    <p>模式應該是中間有個時間</p>
+    <p>兩邊有輸入框 兩邊搶答 需時間內達出來</p>
+    <p>輸入錯誤或者是時間內沒答出來都算錯 false</p>
+    <p>答對則是true</p>
+    <p>有人答對或者時間到 都要同時進入下一題</p>
+    <p>回傳回後端資料應該像是{data:{user:1234,orther:2222,game:{apple:true,banana:false}}}</p>
+    <p>需同時記錄下主要玩家跟其他玩家 所以一個遊戲結束 應該會回傳兩個資料 一個是user:1234 orther2222</p>
+    <p>另外一個則會是user:2222 orther:1234</p>
+
+    
+    <script src="../js/game_multe.js"></script>
+  </body>
+</html>
