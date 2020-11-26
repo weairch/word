@@ -50,6 +50,10 @@ app.get("/contest/multi",function(req,res){
     res.sendFile(__dirname+"/public/views/multi.html");
 });
 
+app.get("/contest/standby",function(req,res){
+    res.sendFile(__dirname+"/public/views/game_standby.html");
+});
+
 app.get("/function/history",function(req,res){
     res.sendFile(__dirname+"/public/views/history.html");
 });
@@ -57,8 +61,6 @@ app.get("/function/history",function(req,res){
 app.get("/function/history/detailed",function(req,res){
     res.sendFile(__dirname+"/public/views/history_detailed.html");
 });
-
-
 
 app.get("/contest/game/multe",function(req,res){
     res.sendFile(__dirname+"/public/views/game_multe.html");
