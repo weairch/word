@@ -12,7 +12,6 @@ const mysqlConfig = {
 
 const mysqlCon = mysql.createPool(mysqlConfig);
 
-
 function promiseQuery (sql,value){
     return new Promise (function(resolve,reject){
         mysqlCon.query(sql,value,function(err,result){

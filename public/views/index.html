@@ -6,8 +6,6 @@
     <link rel="stylesheet" type="text/css" href="css/index.css" >
     <title>battle</title>
 
-    <script src = "/socket.io/socket.io.js"></script>
-
 </head>
 <body>
     <div class="title">我是title</div>
@@ -24,12 +22,5 @@
     <p>串接google翻譯 每個月 翻譯50萬字免費 </p>
     <p>https://cloud.google.com/translate/docs/quickstarts?hl=zh-tw</p>
     <p>翻譯跟單字看要擺在同個頁面 還是直接放在首頁?</p>
-    <script>
-        var socket = io();
-        socket.on("connectToRoom",function(data){
-            document.body.innerHTML = "";
-            document.write(data);
-        });
-     </script>
      </body>
 </html>

@@ -4,6 +4,7 @@ const { PORT , API_VERSION} = process.env;
 const express = require("express");
 const app = express();
 
+
 const bodyparser = require("body-parser");
 const cors = require("cors");
 
@@ -19,7 +20,8 @@ app.use(cors());
 //api routs
 app.use("/api/"+API_VERSION,
     [
-        require("./server/routes/function_route")        
+        require("./server/routes/function_route"),    
+        require("./server/routes/user_route")    
     ]
 );
 
@@ -47,7 +49,7 @@ app.get("/contest/single",function(req,res){
 });
 
 app.get("/contest/multi",function(req,res){
-    res.sendFile(__dirname+"/public/views/multi.html");
+    res.sendFile(__dirname+"/public/views/game_room.html");
 });
 
 app.get("/contest/standby",function(req,res){

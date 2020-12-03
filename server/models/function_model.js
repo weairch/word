@@ -1,11 +1,7 @@
 const { query } =require("../../util/mysql");
+const { random } = require("../../util/random");
 
 
-function random(min,max){
-    let choices = max - min + 1;
-    let num = Math.floor(Math.random() * choices + min );
-    return num;
-}
 
 function sqlMaxLength(){
     return new Promise (function(resolve,reject){

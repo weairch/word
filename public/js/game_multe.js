@@ -1,28 +1,88 @@
-//前端game_multe.html的js檔案
 // eslint-disable-next-line no-undef
-let socket = io();
-
-
-
-// eslint-disable-next-line no-undef
-const { username , room } = Qs.parse(location.search,{
-    ignoreQueryPrefix:true
+const socket = io({
+    query: {
+        Authorization: localStorage.getItem("Authorization")
+    }
 });
 
-//讓使用者加入房間
-socket.emit("joinRoom",{username,room});
 
-//前端接收到一個message事件的時候 會console.log
-//並且用下面的outputMessage印在聊天室上面
+
+
+
+
+let localStorageToken = localStorage.getItem("Authorization"); 
+let config = {
+    method:"GET",
+    headers:{
+        Authorization:"Bearer "+localStorageToken,
+        "Content-Type": "application/json"
+    }
+};
+fetch("/api/1.0/needInformationStartGame",config)
+    .then(function (res){
+        return res.json();
+    })
+    .then(function(result){
+        let { id,name,player,room } = result;
+        socket.emit("gameRoom",{id,name,player,room});
+
+        addListener({id,name});
+
+        return result;
+    })
+    .catch(function(err){
+        console.log(err);
+    });
+socket.emit("addSocketIdToData",localStorageToken);
+
+
+
+socket.on("topic",function(message){
+    console.log(message);
+});
+
+
+
+
+
+
+
+
+
+const user1Messages=document.querySelector(".user1-messages");
+const user2Messages=document.querySelector(".user2-messages");
+
 socket.on("user1Message",function(message){
     user1outputMessage(message);
     //輸入畫面會跟著輸入的字跑
     user1Messages.scrollTop = user1Messages.scrollHeight;
-    
+    console.log(message);
+});
+socket.on("user2Message",function(message){
+    user2outputMessage(message);
+    user2Messages.scrollTop = user2Messages.scrollHeight;
+    console.log(message);
+});
+
+socket.on("StartMessage",function(message){
+    user2outputMessage(message);
+    user1outputMessage(message);
+});
+
+socket.on("GameTopic",function(topic){
+    let Topic = topic.data.english;
+    let topicType = topic.data.type;
+    let timeOut = topic.data.timeOut;
+    let topicNumber = topic.data.topicNumber;
+    console.log(topic);
+    innerHTMLtopic(Topic,topicType,topicNumber);
+    const deadline = new Date(Date.parse(new Date()) + timeOut * 1000); 
+    initializeClock("clockdiv", deadline);
 });
 
 
-const user1Messages=document.querySelector(".user1-messages");
+//以下都是功能function
+//<=================================================================================>
 
 //下面這個使對話框顯示出來
 function user1outputMessage(message){
@@ -33,19 +93,6 @@ function user1outputMessage(message){
     document.querySelector(".user1-messages").appendChild(div);
 
 }
-
-//<=============================================================>
-
-const user2Messages=document.querySelector(".user2-messages");
-
-socket.on("user2Message",function(message){
-    user2outputMessage(message);
-
-    //輸入畫面會跟著輸入的字跑
-    user2Messages.scrollTop = user2Messages.scrollHeight;
-    
-});
-
 function user2outputMessage(message){
     let div = document.createElement("div");
     div.classList.add("message");
@@ -55,97 +102,77 @@ function user2outputMessage(message){
 
 }
 
-window.onload=function(){
-    let list = document.querySelectorAll(".form");
+function addListener(userid,name){
+    setTimeout(function(){
+        let list = document.querySelectorAll(".form");
+    
+        for (let i=0 ; list.length>i ; i++){
+            list[i].addEventListener("submit",function(element){
+                element.preventDefault();
+                let msg  =element.target.elements.msg.value;
+                socket.emit(`user${i+1}FightMessage`,msg);
+    
+                // let user={username,msg};
+                let user={userid,name,msg};
+                //這裡傳出battleMessage
+                socket.emit("battleMessage",user);
+    
+                element.target.elements.msg.value="";
+                element.target.elements.msg.focus();
+            });
+        }
+    },1000);
 
-    for (let i=0 ; list.length>i ; i++){
-        list[i].addEventListener("submit",function(element){
-            element.preventDefault();
-            let msg  = element.target.elements.msg.value;
-            socket.emit(`user${i+1}FightMessage`,msg);
-            let user={username,msg};
-            socket.emit("battleMessage",user);
-            element.target.elements.msg.value="";
-            element.target.elements.msg.focus();
-        });
-    }
 };
 
 
 
-let url = "http://"+location.hostname+":"+location.port+"/api/1.0/function/randomWord";
-
-fetch(url).then(function(res){
-    return res.json();
-}).then(function(result){
-    return result.data;
-}).then(function(data){
-    topic(data);    
-    socket.emit("userTopic",data);
-}).catch(function(err){
-    console.log(err);
-});
-
-function topic(data){
-    let englishTopic=data.english;
-    let englishType =data.type;
-    let div = document.createElement("div");
-    div.classList.add("topic");
-    div.innerHTML=`<p>題目 : ${englishTopic} </p><p>型態 : ${englishType}</p>`;
-    document.querySelector(".topicPosition").appendChild(div);
+//把題目放到網頁裡面
+function innerHTMLtopic(topic,type,number){
+    let div = document.querySelector(".topicPosition");
+    let topicNumber = document.querySelector(".topicNumber");
+    div.innerHTML="";
+    div.innerHTML=`<p>題目 : ${topic} </p><p>型態 : ${type}</p>`;
+    topicNumber.innerHTML="";
+    topicNumber.innerHTML="題數: "+number;
 }
 
 
-//<================================================================================================
 
-//前端
-// eslint-disable-next-line no-undef
-// let socket = io();
-// let fightForm = document.querySelector(".userFight");
-// const { username , room } = Qs.parse(location.search,{
-//     ignoreQueryPrefix:true
-// });
-// socket.emit("userName",username);
-
-
-
-// fightForm.addEventListener("submit",function(element){
-//     element.preventDefault();
-//     //拿到使用者輸入的文字 事件是chatMessage 傳送到後端
-//     let msg  = element.target.elements.msg.value;
-//     socket.emit("Message",msg);
-
-//     //輸出訊息
-//     outputMessage(msg);
-
-//     //清空輸入框
-//     element.target.elements.msg.value="";
+//這裡是知道時間的range
+function getTimeRemaining(endtime) { 
+    const total = Date.parse(endtime) - Date.parse(new Date()); 
+    const seconds = Math.floor((total / 1000) % 60); 
     
-// });
+    return { 
+        total, 
+        seconds 
+    }; 
+} 
+   
+//初始化時間
+function initializeClock(id, endtime) { 
+    const clock = document.getElementById(id); 
+    const secondsSpan = clock.querySelector(".seconds"); 
+   
+    function updateClock() { 
+        const t = getTimeRemaining(endtime); 
+        secondsSpan.innerHTML = ("0" + t.seconds).slice(-2); 
+   
+        if (t.total <= 0) { 
+            clearInterval(timeinterval); 
+        } 
+    } 
+   
+    updateClock(); 
+    const timeinterval = setInterval(updateClock, 1000); 
+} 
+   
 
-// function outputMessage(message){
-//     let div = document.createElement("div");
-//     div.classList.add("message");
-//     div.innerHTML=`<p class="meta">${username}<span>time</span></p>
-//     <p class="text">說:${message}</p>`;
-//     document.querySelector(".userTalk").appendChild(div);
-// }
-// //接收somemessage
-// socket.on("somemessage",function(message){
-//     console.log(message); 
-//     //印出message
-//     joinMessage(message);
-
-//     //輸入畫面會跟著輸入的字跑
-//     // chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-// });
 
 
-
-// function joinMessage(message){
-//     let div = document.createElement("div");
-//     div.classList.add("joinLeftmessage");
-//     div.innerHTML=`<p class="meta">${username},`+message;
-//     document.querySelector(".userTalk").appendChild(div);
-// }
+function random(min,max){
+    let choices = max - min + 1;
+    let num = Math.floor(Math.random() * choices + min );
+    return num;
+}

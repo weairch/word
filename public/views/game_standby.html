@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1, initial-scale=1.0">
+    <script src = "/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" 
+    integrity="sha512-BHtomM5XDcUy7tDNcrcX1Eh0RogdWiMdXl3wJcKB3PFekXb3l5aDzymaTher61u6vEZySnoC/SAj2Y/p918Y3w==" 
+    crossorigin="anonymous"></script>
+    <title>StandBy Room</title>
+</head>
+<body>
+    <h1>正在為你配對中 請稍後~~~~~</h1> 
+    <button id="ready" class="ready" onclick="ready()"> 點擊開始準備</button>
+    <button id="unready" class="unready" onclick="unReady()">點擊取消準備</button>
+</body>
+
+<script src="../js/gameStandby.js"></script>
+</html>

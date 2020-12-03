@@ -7,5 +7,84 @@
 </head>
 <body>
     <h1>登錄頁面</h1>
+    <form name="form" id="form" method="POST">
+        <h1>登錄</h1>
+        <h4>帳號:</h4>
+        <input type="text" name="name" id="signinName" >
+        <h4>密碼:</h4>
+        <input type="password" name="password" id="signinPw" >
+        <h4>email:</h4>
+        <input type="email" name="email" id="signinEmail" >
+
+      </form>
+      <br>
+      <button onclick="signin()" >資料送出</button>
+
+      <h1>註冊頁面</h1>
+      <form name="form" id="form" method="POST">
+          <h1>登錄</h1>
+          <h4>帳號:</h4>
+          <input type="text" name="name" id="signupName" >
+          <h4>密碼:</h4>
+          <input type="password" name="password" id="signupPw" >
+          <h4>email:</h4>
+          <input type="email" name="email" id="signupEmail" >
+        </form>
+        <button onclick="signup()" >資料送出</button>
 </body>
 </html>
+
+<script>
+
+function signin(){
+    let name = document.getElementById('signinName').value
+    let password =document.getElementById('signinPw').value
+    let email = document.getElementById('signinEmail').value
+    let data={name,password,email}
+    config = {
+      method:'POST',
+      body:JSON.stringify(data),
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    }
+    fetch('/api/1.0/signin',config)
+    .then(function (res){
+      return res.json()
+    })
+    .then(function(result){
+      if (result.message == undefined){
+        localStorage.setItem("Authorization",result)
+        alert("登錄成功")
+        location.href="/"
+      }
+      else{
+        alert(result.message)
+      }
+    })
+    event.preventDefault();
+  }
+
+
+  function signup(){
+    let name = document.getElementById('signupName').value
+    let password =document.getElementById('signupPw').value
+    let email = document.getElementById('signupEmail').value
+    let data={name,password,email};
+    config = {
+      method:'POST',
+      body:JSON.stringify(data),
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    }
+    fetch('/api/1.0/signup',config)
+    .then(function(res){
+      return res.json()
+    })
+    .then(function(result){
+      alert(result.message);
+    })
+    event.preventDefault();
+  }
+</script>
