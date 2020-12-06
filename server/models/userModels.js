@@ -1,6 +1,8 @@
-const { query } = require("../../util/mysql");
+const { 
+    query
+} = require("../../util/mysqlCon");
 
-const bcrypt=require("bcryptjs");
+
 const jwt = require("jsonwebtoken");
 
 function checkUser(email){

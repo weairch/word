@@ -1,8 +1,19 @@
 require("dotenv").config();
-const { checkUser,insertUserData ,verificationToken ,userInStandbyRoom} = require("../models/userModels");
+const { 
+    checkUser,
+    insertUserData,
+    verificationToken,
+    userInStandbyRoom} 
+    = require("../models/userModels");
+
+
+const { 
+    JWT_SECRET 
+} = process.env;
+
 const bcrypt=require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = process.env;
+
 
 function signIn(req,res){
     let {name , password , email } = req.body;
@@ -137,6 +148,19 @@ function needInformationStartGame(req,res){
             res.json({id,name,room,player});
         });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports={
     signIn,

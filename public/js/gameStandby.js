@@ -1,5 +1,3 @@
-
-
 // eslint-disable-next-line no-undef
 const socket = io({
     query: {
@@ -40,9 +38,16 @@ socket.on("playerReady",function(){
 
 socket.on("timeOut",function(message){
     alert(message);
-    location.href="/contest/multi";
+    setTimeout(function(){
+        //這裡有BUG 只有一個人會alert 2個message 另外一個會直接跳回指定網頁
+        location.href="/contest/multi";
+    },3000);
 });
 
+socket.on("token",function(token){
+    console.log(token);
+    // localStorage.setItem("Authorization",token);
+});
 
 // eslint-disable-next-line no-unused-vars
 function ready(){

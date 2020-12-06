@@ -1,14 +1,7 @@
-const { query }= require("../../util/mysql");
+const {
+    query
+}= require("../../util/mysqlCon");
 
-function insertTopic(topic){
-    return new Promise(function(resolve,reject){
-        let sql =`INSERT INTO word.game_detail (topic) VALUES ('${topic}')`;
-        query(sql,function(err,result){
-            resolve (result);
-            reject (err);
-        });
-    });
-}
 
 function deleteStandbyRoom(uid){
     return new Promise(function(resolve,reject){
@@ -122,7 +115,6 @@ module.exports={
     confirmStart,
     insertSessionToHistory,
     sessionNumber,
-    insertTopic,
     deleteStandbyRoom,
     addSocketId,
     addNowRoom,
