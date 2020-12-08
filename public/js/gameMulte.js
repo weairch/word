@@ -7,6 +7,31 @@ const socket = io({
 
 
 let localStorageToken = localStorage.getItem("Authorization");
+
+
+let config2 = {
+    method:"POST",
+    headers:{
+        Authorization:"Bearer "+localStorageToken,
+        "Content-Type": "application/json"
+    }
+};
+fetch("/api/1.0/checkUserToken",config2)
+    .then(function (res){
+        return res.json();
+    })
+    .then(function(result){
+        if (result.Token == undefined){
+            alert(result.message);
+            location.href="/admin/signin";
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+    });
+
+
+
 let config = {
     method: "GET",
     headers: {

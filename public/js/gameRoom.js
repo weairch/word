@@ -1,4 +1,4 @@
-
+// eslint-disable-next-line no-unused-vars
 //check user signin or not
 let localStorageToken = localStorage.getItem("Authorization"); 
 let config = {
@@ -21,6 +21,28 @@ fetch("/api/1.0/checkUserToken",config)
     .catch(function(err){
         console.log(err);
     });
+
+
+fetch("/api/1.0/function/serchRoom")
+    .then(function(res){
+        return res.json();
+    })
+    .then(function(result){
+
+        //=======這裡可以放個定時讓他跑 並顯示在前端頁面上======
+        alert("現在有的房間是"+Object.values(result));
+        //====================================================
+
+    });
+
+
+
+
+
+document.querySelector(".title").addEventListener("click",function(){
+    window.location.href="/";
+});
+
 
 
 

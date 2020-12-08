@@ -83,8 +83,9 @@ function checkUserToken (req,res){
     let bearerToken = bearerHeader.split(" ")[1];
     if (bearerToken !== "null"){
         verificationToken(bearerToken,JWT_SECRET)
-            .then(function(){
-                res.send({Token:"user is OK , aleard signin"});
+            .then(function(result){
+                let {id,name}=result;
+                res.send({Token:"user is OK , aleard signin",id,name});
             })
             .catch(function(){
                 res.status(403).json({message:"Pleast signin first"});

@@ -45,6 +45,10 @@ app.get("/admin/signin",function(req,res){
     res.sendFile(__dirname+"/public/views/signin.html");
 });
 
+app.get("/admin/signup",function(req,res){
+    res.sendFile(__dirname+"/public/views/signup.html");
+});
+
 app.get("/contest/single",function(req,res){
     res.sendFile(__dirname+"/public/views/gameSingle.html"); 
 });

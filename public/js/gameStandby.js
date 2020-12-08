@@ -6,6 +6,8 @@ const socket = io({
 });
 
 
+
+
 let localStorageToken = localStorage.getItem("Authorization"); 
 let config = {
     method:"POST",
@@ -44,10 +46,18 @@ socket.on("timeOut",function(message){
     },3000);
 });
 
+
 socket.on("token",function(token){
     console.log(token);
     // localStorage.setItem("Authorization",token);
 });
+
+
+socket.on("toMany",function(message){
+    alert(message);
+    location.href="/contest/multi";
+});
+
 
 // eslint-disable-next-line no-unused-vars
 function ready(){
@@ -58,3 +68,9 @@ function ready(){
 function unReady(){
     socket.emit("unReady","unready");
 }
+
+
+
+document.querySelector(".title").addEventListener("click",function(){
+    window.location.href="/";
+});

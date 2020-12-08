@@ -6,7 +6,11 @@ const {
     insertCorrect,
     insertError,
     selectSessionPlayer,
-    correctAnsrs
+    correctAnsrs,
+    addSingleModeAndSessions,
+    confirmedWinRate,
+    checkCorrectAnswer,
+    serchStandbyRoom,
 } = require("../models/gameModel");
 
 
@@ -14,6 +18,8 @@ const {
     random
 } = require("../../util/random"); 
 
+
+const moment = require("moment");
 
 function randomNumber(req,res){
     selectFourRandomWord()
@@ -65,11 +71,11 @@ async function confirmAnswer(req,res){
     let check =await checkAnswer(english);
     let answer = check[0].chinese;
     if (answer == option){
-        await insertCorrect(id,sessionNumber);
+        await insertCorrect(id,sessionNumber,english);
         res.json({message:"correct"});
     }
     else {
-        await insertError(id,sessionNumber);
+        await insertError(id,sessionNumber,english);
         res.json({message:"error"});
     }
 }
@@ -113,8 +119,52 @@ async function lostOrWin(req,res){
     }
 }
 
+async function randomSession(req,res){
+    let randomSession=random(1,2147483647);
+    res.json({randomSession});
+}
+
+
+
+async function addSingleModeAndSession(req,res){
+    let { id } = req.body;
+    let sessions=req.body.sessionNumber;
+    let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
+    let mode="single";
+    await addSingleModeAndSessions(id,sessions,moments,mode);
+    res.json({message:"遊戲資料已記錄"});
+}
+
+async function checkAll (req,res){
+    let { uid,Session } = req.body;
+    let result=await confirmedWinRate(uid,Session);
+    
+    let answer=await checkCorrectAnswer(uid,Session);
+    res.json({message:"總共答題了: "+result.length+" 答對了: "+answer[0]["count(*)"]+"題"});
+}
+
+
+async function serchRoom(req,res){
+    let room =await serchStandbyRoom();
+    let roomALL={};
+    if (room == ""){
+        res.json({message:"目前沒有人開啟房間"});
+    }
+    else if (room.length){
+        for (let i=0 ; room.length>i ;i++ ){
+            console.log(room[i].room);
+            roomALL["room"+i]=room[i].room;
+        }
+        res.json(roomALL);
+    }
+   
+}
 
 module.exports ={
+    serchRoom,
+    checkAll,
+    randomSession,
+    addSingleModeAndSession,
     lostOrWin,
     confirmAnswer,
     randomNumber,

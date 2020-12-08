@@ -32,7 +32,7 @@ const moment = require("moment");
 
 
 const socketCon=function(io){
-    //缺乏驗證方式
+    //缺乏判斷驗證方式
     io.use(function (socket ,next){
         let token=socket.handshake.query.Authorization;
         verificationToken(token,JWT_SECRET)
@@ -55,8 +55,16 @@ const socketCon=function(io){
                 next();
             });
     });
+    let Online=0;
     io.on("connection",function(socket){
+        Online++;
+        
         let { user_id ,room , socketId ,name }=socket.handshake.query;
+        
+        //限制房間人數
+        if (io.sockets.adapter.rooms.get(room).size >2){
+            io.sockets.in(socketId).emit("toMany","人數已滿 請換間房間");
+        } 
         
         //跟他們說場次編號跟可以開始了
         socket.on("readyStart",function(message){
@@ -76,7 +84,7 @@ const socketCon=function(io){
         sessionNumber(room)
             .then(function(result){
                 if (result[0]["count(*)"] == 2){
-                    let randomNumber=random(1,999999999);
+                    let randomNumber=random(1,2147483647);
                     console.log(randomNumber);
                     io.sockets.in(room).emit("sessionNumber",randomNumber);
                 }
@@ -120,9 +128,9 @@ const socketCon=function(io){
 
 
 
-
-
         socket.on("disconnect",function(){
+            Online--;
+            console.log(Online);
             console.log(`user: ${name} is left room:${room} `);
             deleteStandbyRoom(user_id);
             leaveRoom(user_id);
@@ -131,147 +139,6 @@ const socketCon=function(io){
     });
 
 };
-
-
-// function socketCon(io){
-//     io.on("connection",function(socket){
-//         let token=socket.handshake.query.Authorization;
-//         //綁定socketId跟nowRoom到DB user 
-//         verificationToken(token,JWT_SECRET)
-//             .then(function(result){
-//                 addNowRoom(result.id,result.room);
-//                 addSocketId(result.id,socket.id);
-//                 standbyRoom
-
-
-
-
-//                 socket.on("disconnect",function(){
-//                     console.log("some one out")
-//                     deleteStandbyRoom(result.id);
-//                     leaveRoom(result.id);
-//                     console.log("這裡是在房間內離開");
-//                 });
-//             });
-
-//         //準備房間
-//         socket.on("joinRoom",function({id,room}){
-//             // console.log("編號",id,"玩家",name,"進入",room);
-//             //讓玩家加入房間
-//             socket.join(room);
-
-//             //知道房間的玩家人數
-//             let roomPeopleCount = io.sockets.adapter.rooms.get(room).size;
-
-//             //讓玩家知道哪一個是player_1 哪一個是 player_2
-//             io.sockets.in(room).emit("roomPeopleCount",roomPeopleCount);
-//             if (roomPeopleCount == 1){
-//                 io.sockets.in(room).emit("roomPeopleCount","player_1");
-//             }
-//             socket.on("disconnect",function(){
-//                 // console.log("編號",id,"名字",name,"離開房間"+room);
-//                 //離開準備房間的時候 要刪除standbyRoom的名單
-//                 deleteStandbyRoom(id);
-//             });
-//         });
-//         //遊戲房間
-//         socket.on("gameRoom",function({id,name,player,room}){
-//             let token = socket.handshake;
-//             console.log(token);
-//             console.log(socket.id);
-//             console.log("遊戲房間內編號",id,"玩家",name,"進入",room);
-//             socket.join(room);
-//             console.log("玩家",name,"在",room,"房間擔任",player,"準備開始遊戲!!");
-//             //偵測房間人數
-//             let gameRoomCountPlayer = io.sockets.adapter.rooms.get(room).size;
-//             //人數2雙方都會收到 可是人數1只有1個人會收到
-//             io.sockets.in(room).emit("gameRoomCountPlayer",gameRoomCountPlayer);
-
-
-
-//             socket.on("gameStart",function(randomSesson){
-//                 if (randomSesson){
-//                     console.log(randomSesson);
-
-
-//                     //這裡可以開始廣播題目到前端
-//                     //延遲一秒傳送
-//                     setTimeout(function(){
-//                         io.sockets.in(room).emit("StartMessage",formatMessage("人數到齊!! 手指放在鍵盤上~~~ 準備開始!!"));
-//                     },1000);
-
-
-   
-//                     //==========================
-//                     //遊戲開始的題目
-//                     //==========================
-
-//                     let topicNumber = 0;
-//                     const topicLoop=setInterval(function(){
-//                         //=============
-//                         //這裡可以改if跟else互相調換
-//                         //===========
-//                         if (topicNumber == topicMaxNumber){
-//                             clearInterval(topicLoop);
-//                             let final ={data:{english:"遊戲結束"}};
-//                             io.sockets.in(room).emit("GameTopic",final);
-//                         }
-//                         else{
-//                             topicNumber++;
-//                             console.log(topicNumber);
-//                             let random=selectRandomWord();
-//                             random.then(function(result){
-//                                 let {english , chinese , type} =result[0];
-//                                 let data = {english,chinese,type,timeOut,topicNumber};
-//                                 let final ={data:data};
-//                                 io.sockets.in(room).emit("GameTopic",final);
-//                                 //場次編號應該為唯一性 況且兩人要相同
-//                                 //這裡還要存進DB 場次編號 第幾題 題目是什麼 答對者為null
-//                             });
-//                         }
-//                     },topicTime);
-
-
-//                     socket.on("battleMessage",function(message){
-//                         console.log(message);
-//                     });
-
-//                     //遊戲中有人離開就停止
-//                     socket.on("disconnect",function(){
-//                         clearInterval(topicLoop);
-//                         console.log("這裡是在房間內離開");
-//                     });
-//                 }
-//             });
-
-
-
-
-
-
-
-
-
-
-//             socket.on("user1FightMessage",function(msg){
-//                 io.sockets.in(room).emit("user1Message",formatMessage(msg));
-//                 console.log("user1 Message is "+msg);
-//             });
-//             socket.on("user2FightMessage",function(msg){
-//                 io.sockets.in(room).emit("user2Message",formatMessage(msg));
-//                 console.log("user2 Message is "+msg);
-//             });
-//             //我是玩家的訊息
-//             //=====================================================================
-
-            
-//         });
-
-
-//     });
-// }
-
-
 
 module.exports= {
     socketCon

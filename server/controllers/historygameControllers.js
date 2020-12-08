@@ -1,5 +1,6 @@
 const {
-    findHistoryAll,
+    findHistorysingle,
+    findHistorymulti,
     findHistorydetail,
 }=require("../models/historyModel");
 
@@ -12,13 +13,11 @@ const {
 } = process.env;
 
 
-
-async function historyAll(req,res){
+async function historySingle(req,res){
     let token = req.headers.authorization.split(" ")[1];
     let userInformation = await verificationToken(token,JWT_SECRET);
     let { id,name } = userInformation;
-    let history =await findHistoryAll(id);
-
+    let history =await findHistorysingle(id);
     let sessionAll={};
     for (let i =0;history.length>i;i++){
         let session = history[i].SessionNumber;
@@ -29,7 +28,44 @@ async function historyAll(req,res){
     }
     let data = {id,name,session:sessionAll};
     res.json(data);
+
 }
+
+async function historyMulti(req,res){
+    let token = req.headers.authorization.split(" ")[1];
+    let userInformation = await verificationToken(token,JWT_SECRET);
+    let { id,name } = userInformation;
+    let history =await findHistorymulti(id);
+    let sessionAll={};
+    for (let i =0;history.length>i;i++){
+        let session = history[i].SessionNumber;
+        let result=await findHistorydetail(id,session);
+        if (result.length){
+            sessionAll[history[i].SessionNumber]=history[i].startTime;
+        }
+    }
+    let data = {id,name,session:sessionAll};
+    res.json(data);
+
+}
+
+// async function historyAll(req,res){
+//     let token = req.headers.authorization.split(" ")[1];
+//     let userInformation = await verificationToken(token,JWT_SECRET);
+//     let { id,name } = userInformation;
+//     let history =await findHistoryAll(id);
+
+//     let sessionAll={};
+//     for (let i =0;history.length>i;i++){
+//         let session = history[i].SessionNumber;
+//         let result=await findHistorydetail(id,session);
+//         if (result.length){
+//             sessionAll[history[i].SessionNumber]=history[i].startTime;
+//         }
+//     }
+//     let data = {id,name,session:sessionAll};
+//     res.json(data);
+// }
 
 async function historyDetaile(req,res){
     let { userid,session }=req.body;
@@ -45,5 +81,7 @@ async function historyDetaile(req,res){
 
 module.exports={
     historyDetaile,
-    historyAll
+    historySingle,
+    historyMulti
+    
 };

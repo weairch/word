@@ -5,6 +5,10 @@ const {
     sessionNumber,
     confirmAnswer,
     lostOrWin,
+    addSingleModeAndSession,
+    randomSession,
+    checkAll,
+    serchRoom,
 } = require("../controllers/gameControllers");
 
 // /api/1.0
@@ -20,6 +24,16 @@ router.route("/function/confirmAnswer")
 router.route("/function/lostOrWin")
     .post(lostOrWin);
 
+router.route("/function/addSingleModeAndSession")
+    .post(addSingleModeAndSession);
 
+router.route("/function/randomSession")
+    .get(randomSession);
+
+router.route("/function/checkAll")
+    .post(checkAll);
+
+router.route("/function/serchRoom")
+    .get(serchRoom);
 
 module.exports = router;

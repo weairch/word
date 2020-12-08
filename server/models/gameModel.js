@@ -27,7 +27,6 @@ function selectFourRandomWord(){
         sqlMaxLength()
             .then(function(number){
                 let randomNumber = random(1,number);
-                // let sql="select * from word.English3000 where id =?";
                 let sql = "SELECT * FROM word.English3000 ORDER BY RAND() LIMIT 4";
                 query(sql,randomNumber)
                     .then(function(result){
@@ -72,12 +71,12 @@ const insertTopic = async function(uid,gid,topic){
     return await query("INSERT INTO word.game_detail (`uid`,`gid`,`topic`) VALUES (?,?,?)",[uid,gid,topic]);
 };
 
-const insertCorrect = async function (uid,session){
-    return await query("update word.game_detail set correct = 'correct' where uid = ? and gid=?",[uid,session]);
+const insertCorrect = async function (uid,session,topic){
+    return await query("update word.game_detail set correct = 'correct' where uid = ? and gid=? and topic=?",[uid,session,topic]);
 };
 
-const insertError = async function (uid,session){
-    return await query("update word.game_detail set correct = 'error' where uid = ? and gid=?",[uid,session]);
+const insertError = async function (uid,session,topic){
+    return await query("update word.game_detail set correct = 'error' where uid = ? and gid=? and topic=?",[uid,session,topic]);
 };
 
 const selectSessionPlayer = async function(session){
@@ -88,8 +87,29 @@ const correctAnsrs = async function(id,session){
     return await query("select count(*) from word.game_detail where uid=? and gid=?",[id,session]);
 };
 
+const addSingleModeAndSessions = async function(id,number,startTime,mode){
+    return await query("INSERT INTO word.game_history (`uid`,`SessionNumber`,`mode`,`startTime`) VALUES (?,?,?,?)",[id,number,mode,startTime]);
+};
+
+
+const confirmedWinRate = async function(id,session){
+    return await query("SELECT * FROM word.game_detail where uid = ? and gid =?",[id,session]);
+};
+
+const checkCorrectAnswer = async function(id,session){
+    return await query("select count(*) from word.game_detail where  uid=? and gid=? and correct='correct'",[id,session]);
+};
+
+const serchStandbyRoom = async function(){
+    return await query ("select * from word.standbyRoom");
+};
+
 
 module.exports ={
+    serchStandbyRoom,
+    checkCorrectAnswer,
+    confirmedWinRate,
+    addSingleModeAndSessions,
     correctAnsrs,
     selectSessionPlayer,
     insertCorrect,
