@@ -4,6 +4,7 @@ const { PORT , API_VERSION} = process.env;
 const express = require("express");
 const app = express();
 
+
 const bodyparser = require("body-parser");
 const cors = require("cors");
 
@@ -19,7 +20,9 @@ app.use(cors());
 //api routs
 app.use("/api/"+API_VERSION,
     [
-        require("./server/routes/function_route")        
+        require("./server/routes/historyRoute"),
+        require("./server/routes/gameRoute"),    
+        require("./server/routes/userRoute")    
     ]
 );
 
@@ -42,26 +45,29 @@ app.get("/admin/signin",function(req,res){
     res.sendFile(__dirname+"/public/views/signin.html");
 });
 
+app.get("/admin/signup",function(req,res){
+    res.sendFile(__dirname+"/public/views/signup.html");
+});
+
 app.get("/contest/single",function(req,res){
-    res.sendFile(__dirname+"/public/views/single.html"); 
+    res.sendFile(__dirname+"/public/views/gameSingle.html"); 
 });
 
 app.get("/contest/multi",function(req,res){
-    res.sendFile(__dirname+"/public/views/multi.html");
+    res.sendFile(__dirname+"/public/views/gameRoom.html");
+});
+
+app.get("/contest/standby",function(req,res){
+    res.sendFile(__dirname+"/public/views/gameStandby.html");
 });
 
 app.get("/function/history",function(req,res){
-    res.sendFile(__dirname+"/public/views/history.html");
+    res.sendFile(__dirname+"/public/views/historyAll.html");
 });
-
-app.get("/function/history/detailed",function(req,res){
-    res.sendFile(__dirname+"/public/views/history_detailed.html");
-});
-
 
 
 app.get("/contest/game/multe",function(req,res){
-    res.sendFile(__dirname+"/public/views/game_multe.html");
+    res.sendFile(__dirname+"/public/views/gameMulte.html");
 });
 
 
