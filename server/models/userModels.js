@@ -45,9 +45,9 @@ function verificationToken(token,secret){
     });
 }
 
-function userInStandbyRoom(userId,room){
+function userInStandbyRoom(userId,room,mode){
     return new Promise (function(resolve,reject){
-        let sql = `INSERT INTO word.standbyRoom (uid, room) VALUES ("${userId}", "${room}")`;
+        let sql = `INSERT INTO word.standbyRoom (uid, room,mode) VALUES ("${userId}", "${room}","${mode}")`;
         query(sql)
             .then(function(result){
                 resolve (result);
@@ -84,10 +84,13 @@ function userUnReady(id){
     });
 }
 
-
+async function CheckForDuplicate(room){
+    return await query("SELECT * FROM word.standbyRoom where Room=?",room);
+}
 
 
 module.exports ={
+    CheckForDuplicate,
     userUnReady,
     userReady,
     verificationToken,

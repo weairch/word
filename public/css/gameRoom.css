@@ -129,6 +129,41 @@ form button:hover {
     font-size: 60px;
 }
 
+/* ======================================= */
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px; /* demo only */
+  z-index: 3;
+  position: relative;
+}
+
+.custom-dropdown select {
+  width: 250px;
+  background-color: white;
+  color:#53e3a6;
+  font-size: inherit;
+  padding: .5em;
+  padding-right: 2.5em; 
+  border: 0;
+  margin: 0;
+  border-radius: 3px;
+  text-indent: 0.01px;
+  text-overflow: '';
+  -webkit-appearance: button; /* hide default arrow in chrome OSX */
+  background-color:#f5f7f9;
+}
+
+.custom-dropdown::before,
+.custom-dropdown::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+/* ======================================= */
+
 
 .joinroom {
     margin-bottom: 15px;

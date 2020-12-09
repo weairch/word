@@ -6,9 +6,8 @@ const {
     checkUserToken,
     sqlAddStandbyRoom,
     userIdAndNowRoom,
-    addTokenPlayer_2,
-    changeTokenToPlayer_1,
     needInformationStartGame,
+    checkStandbyRoomModeAndRoom,
 }=require("../controllers/userController");
 
 //url = /api/1.0/xxxx
@@ -27,13 +26,10 @@ router.route("/sqlAddStandbyRoom")
 router.route("/userIdAndNowRoom")
     .post(userIdAndNowRoom);
 
-router.route("/addTokenPlayer_2")
-    .post(addTokenPlayer_2);
-
-router.route("/changeTokenToPlayer_1")
-    .post(changeTokenToPlayer_1);
-
 router.route("/needInformationStartGame")
     .get(needInformationStartGame);
 
+router.route("/checkStandbyRoomModeAndRoom")
+    .post(checkStandbyRoomModeAndRoom);
+    
 module.exports = router;

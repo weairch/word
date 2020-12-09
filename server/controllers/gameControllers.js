@@ -143,7 +143,6 @@ async function checkAll (req,res){
     res.json({message:"總共答題了: "+result.length+" 答對了: "+answer[0]["count(*)"]+"題"});
 }
 
-
 async function serchRoom(req,res){
     let room =await serchStandbyRoom();
     let roomALL={};
@@ -152,8 +151,7 @@ async function serchRoom(req,res){
     }
     else if (room.length){
         for (let i=0 ; room.length>i ;i++ ){
-            console.log(room[i].room);
-            roomALL["room"+i]=room[i].room;
+            roomALL["room"+i]=room[i].Room;
         }
         res.json(roomALL);
     }

@@ -47,11 +47,35 @@ document.querySelector(".title").addEventListener("click",function(){
 
 
 // eslint-disable-next-line no-unused-vars
-function room(){
+async function room(){
+    let mode=document.querySelector(".mode").value;
     let roomNum=document.getElementById("room").value;
+    let data = {mode:mode};
+    if (mode == "null"){
+        return alert("Please select mode!");
+    }
+    if (mode){
+        let data = {mode,roomNum};
+        let config = {
+            method:"POST",
+            body:JSON.stringify(data),
+            headers:{
+                room:roomNum,
+                Authorization:"Bearer "+localStorageToken,
+                "Content-Type": "application/json"
+            }
+        };
+        let res=await fetch("/api/1.0/checkStandbyRoomModeAndRoom",config);
+        let result=await res.json();
+        if (result.message == "This room is a different model"){
+            alert(result.message);
+            return location.href="/contest/multi";
+        }
+    }
     if (roomNum){
         let config = {
             method:"POST",
+            body:JSON.stringify(data),
             headers:{
                 room:roomNum,
                 Authorization:"Bearer "+localStorageToken,

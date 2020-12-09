@@ -3,7 +3,9 @@ const {
     checkUser,
     insertUserData,
     verificationToken,
-    userInStandbyRoom} 
+    userInStandbyRoom,
+    CheckForDuplicate
+}     
     = require("../models/userModels");
 
 
@@ -97,11 +99,12 @@ function checkUserToken (req,res){
 }
 
 function sqlAddStandbyRoom(req,res){
+    let {mode} = req.body;
     let roomNum=req.headers.room;
     let token = req.get("Authorization").split(" ")[1];
     verificationToken(token,JWT_SECRET)
         .then(function(payload){
-            userInStandbyRoom(payload.id,roomNum);
+            userInStandbyRoom(payload.id,roomNum,mode);
             return payload;
         })
         .then(function(payload){
@@ -117,29 +120,9 @@ function userIdAndNowRoom(req,res){
         .then(function(payload){
             let { id ,name, room } = payload;
             res.json({id,name,room});
-            // res.json({payload});
         });
 }
 
-function addTokenPlayer_2(req,res){
-    let token = req.get("Authorization").split(" ")[1]; 
-    verificationToken(token,JWT_SECRET)
-        .then(function(payload){
-            payload.player="player2";
-            let newJWT=jwt.sign(payload,JWT_SECRET);
-            res.json(newJWT);
-        });
-}
-
-function changeTokenToPlayer_1(req,res){
-    let token = req.get("Authorization").split(" ")[1]; 
-    verificationToken(token,JWT_SECRET)
-        .then(function(payload){
-            payload.player="player1";
-            let newJWT=jwt.sign(payload,JWT_SECRET);
-            res.json(newJWT);
-        });
-}
 
 function needInformationStartGame(req,res){
     let token = req.get("Authorization").split(" ")[1]; 
@@ -150,7 +133,19 @@ function needInformationStartGame(req,res){
         });
 }
 
-
+async function checkStandbyRoomModeAndRoom(req,res){
+    let {mode,roomNum} =req.body;
+    let check=await CheckForDuplicate(roomNum);
+    if (check == ""){
+        res.json({message:"Confirm entry"});
+    }
+    else if (check[0].mode == mode){
+        res.json({message:"Confirm entry"});
+    }
+    else{
+        res.json({message:"This room is a different model"});
+    }
+}
 
 
 
@@ -169,9 +164,8 @@ module.exports={
     checkUserToken,
     sqlAddStandbyRoom,
     userIdAndNowRoom,
-    addTokenPlayer_2,
-    changeTokenToPlayer_1,
-    needInformationStartGame
+    needInformationStartGame,
+    checkStandbyRoomModeAndRoom
 };
 
 
