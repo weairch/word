@@ -65,12 +65,13 @@ app.get("/function/history",function(req,res){
     res.sendFile(__dirname+"/public/views/historyAll.html");
 });
 
-
 app.get("/contest/game/multe",function(req,res){
     res.sendFile(__dirname+"/public/views/gameMulte.html");
 });
 
-
+app.get("/contest/game/Buzz",function(req,res){
+    res.sendFile(__dirname+"/public/views/gameBuzz.html");
+});
 
 
 // Error handling

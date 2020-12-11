@@ -11,6 +11,9 @@ const {
     confirmedWinRate,
     checkCorrectAnswer,
     serchStandbyRoom,
+    insertBuzzGame,
+    // randomThirtyWord,
+    buzzTopic,
 } = require("../models/gameModel");
 
 
@@ -158,7 +161,33 @@ async function serchRoom(req,res){
    
 }
 
+async function insertBuzzGameInfomation(req,res){
+    let id=req.body.user.id;
+    let room=req.body.user.room;
+    await insertBuzzGame(id,room);
+
+    res.json({message:"inser success"});
+}
+
+
+async function gameBuzzTopic(req,res){
+    // console.log(req.headers);
+    let session= req.headers.session;
+    let topicnumber=req.headers.topicnumber;
+    let result=await buzzTopic(session,topicnumber);
+    
+    let { topicEnglish ,topicNumber} = result[0];
+    let string = result[0].topicChinese;
+    let topicChinese =JSON.parse(string);
+    let topic={topicEnglish,topicChinese,topicNumber};
+    
+    res.json(topic);
+}
+
+
+
 module.exports ={
+    gameBuzzTopic,
     serchRoom,
     checkAll,
     randomSession,
@@ -166,5 +195,6 @@ module.exports ={
     lostOrWin,
     confirmAnswer,
     randomNumber,
-    sessionNumber
+    sessionNumber,
+    insertBuzzGameInfomation,
 };

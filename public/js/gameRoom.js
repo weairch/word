@@ -50,7 +50,7 @@ document.querySelector(".title").addEventListener("click",function(){
 async function room(){
     let mode=document.querySelector(".mode").value;
     let roomNum=document.getElementById("room").value;
-    let data = {mode:mode};
+
     if (mode == "null"){
         return alert("Please select mode!");
     }
@@ -73,6 +73,7 @@ async function room(){
         }
     }
     if (roomNum){
+        let data = {mode:mode};
         let config = {
             method:"POST",
             body:JSON.stringify(data),

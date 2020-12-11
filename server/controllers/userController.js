@@ -104,7 +104,7 @@ function sqlAddStandbyRoom(req,res){
     let token = req.get("Authorization").split(" ")[1];
     verificationToken(token,JWT_SECRET)
         .then(function(payload){
-            userInStandbyRoom(payload.id,roomNum,mode);
+            userInStandbyRoom(payload.id,roomNum,mode,token);
             return payload;
         })
         .then(function(payload){

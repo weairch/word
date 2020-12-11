@@ -41,13 +41,13 @@ function selectFourRandomWord(){
 
 function findSessionNumber(uid){
     return new Promise(function(resolve,reject){
-        let sql = `select max(startTime) from word.game_history where uid="${uid}"`;
+        let sql = `select max(id) from word.game_history where uid="${uid}"`;
         query(sql)
             .then(function(result){
-                return (result[0]["max(startTime)"]);
+                return (result[0]["max(id)"]);
             })
-            .then(function(time){
-                let sql = `select * from word.game_history where uid="${uid}" and startTime="${time}"`; 
+            .then(function(id){
+                let sql = `select * from word.game_history where uid="${uid}" and id="${id}"`; 
                 query(sql)
                     .then(function(result){
                         resolve(result[0].SessionNumber);
@@ -104,8 +104,42 @@ const serchStandbyRoom = async function(){
     return await query ("select * from word.standbyRoom");
 };
 
+const insertBuzzGame=async function (uid,room){
+    return await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`) VALUES (?,?,0);",[uid,room]);
+};
+
+const deleteBuzzGame= async function(uid){
+    return await query("DELETE FROM `word`.`buzzGameRoom` WHERE (`uid` = ?);",uid);
+};
+
+
+const insertToBuzzGameTopic=async function(session,topicEnglish,topicNumber, topicChinese){
+    return await query("INSERT INTO `word`.`buzzGameTopic` (`session`, `topicEnglish`, `topicNumber`, `topicChinese`) VALUES (?, ?, ?, ?);",[session,topicEnglish,topicNumber,topicChinese]);
+};
+
+
+const deleteBuzzGameTopic=async function(room){
+    return await query("DELETE FROM `word`.`buzzGameTopic` WHERE (`Room` = ?);",room);
+};
+
+
+const randomThirtyWord= async function (){
+    return await query("SELECT * FROM word.English3000 ORDER BY RAND() LIMIT 30;");
+};
+
+const buzzTopic = async function(session,topicNumber){
+    return await query(`select * from word.buzzGameTopic where session=${session} and topicNumber="${topicNumber}";`);
+};
+
+
 
 module.exports ={
+    buzzTopic,
+    randomThirtyWord,
+    insertToBuzzGameTopic,
+    deleteBuzzGameTopic,
+    deleteBuzzGame,
+    insertBuzzGame,
     serchStandbyRoom,
     checkCorrectAnswer,
     confirmedWinRate,

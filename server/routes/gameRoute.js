@@ -1,6 +1,8 @@
 const router = require("express").Router();
 
 const {
+    // ThirtyWord,
+    gameBuzzTopic,
     randomNumber,
     sessionNumber,
     confirmAnswer,
@@ -9,6 +11,7 @@ const {
     randomSession,
     checkAll,
     serchRoom,
+    insertBuzzGameInfomation,
 } = require("../controllers/gameControllers");
 
 // /api/1.0
@@ -36,4 +39,12 @@ router.route("/function/checkAll")
 router.route("/function/serchRoom")
     .get(serchRoom);
 
+router.route("/function/insertBuzzGameInfomation")
+    .post(insertBuzzGameInfomation);
+
+router.route("/function/gameBuzzTopic")
+    .post(gameBuzzTopic);
+
+// router.route("/function/ThirtyWord")
+//     .get(ThirtyWord);
 module.exports = router;

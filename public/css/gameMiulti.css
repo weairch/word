@@ -154,11 +154,33 @@ form button:hover {
     z-index: 3;
 }
 
-/* ===================================卡關 */
+
 .option {
     width: 500px;
 }
-/* ======================================== */
+
+.clockdiv{
+  display: inline;
+  margin-bottom: 15px;
+  margin-top: 20px;
+  margin-left: 13px ;
+  margin-right: 50px;
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 15px;
+  color: #53e3a6;
+  border-radius: 3px;
+  width: 200px;
+  cursor: pointer;
+  font-size: 20px;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  background-color: #f5f7f9;
+  position: relative;
+  z-index: 3;
+}
+
 .btn1 ,.btn3 {
     display: inline;
     margin-bottom: 15px;
