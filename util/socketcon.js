@@ -1,12 +1,13 @@
 const { 
     deleteStandbyRoom,
     addSocketId,
-    addNowRoom,
-    leaveRoom,
+    // addNowRoom,
+    // leaveRoom,
     sessionNumber,
     insertSessionToHistory,
-    confirmStart,
-    checkReady
+    // confirmStart,
+    checkScoreModeAndReady,
+    checkBuzzModeAndReady,
 } = require("../server/models/socket");
 
 
@@ -21,6 +22,13 @@ const {
     random
 } = require("../util/random");
 
+const {
+    deleteBuzzGame, 
+    selectFourRandomWord,
+    insertToBuzzGameTopic,
+    deleteBuzzGameTopic,
+    randomThirtyWord,
+} = require("../server/models/gameModel");
 
 const { 
     JWT_SECRET
@@ -28,6 +36,10 @@ const {
 
 
 const moment = require("moment");
+const crypto=require("crypto");
+const { now } = require("moment");
+
+
 
 
 
@@ -39,7 +51,7 @@ const socketCon=function(io){
             .then(function(user){
                 let { id , room ,name ,player} = user;
                 //放SQL
-                addNowRoom(id,room);
+                // addNowRoom(id,room);
                 addSocketId(id,socket.id);
 
                 //放handshake
@@ -55,9 +67,10 @@ const socketCon=function(io){
                 next();
             });
     });
-    let Online=0;
-    io.on("connection",function(socket){
-        Online++;
+    // let Online=0;
+    io.on("connection",async function(socket){
+        // Online++;
+        
         
         let { user_id ,room , socketId ,name }=socket.handshake.query;
         
@@ -66,32 +79,52 @@ const socketCon=function(io){
             io.sockets.in(socketId).emit("toMany","人數已滿 請換間房間");
         } 
         
-        //跟他們說場次編號跟可以開始了
-        socket.on("readyStart",function(message){
-            let token = message.Authorization;
-            let number = message.number;
-            verificationToken(token,JWT_SECRET)
-                .then(function(result){
-                    let { id, room } =result;
-                    let mode = "Multiplayer";
-                    let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
-                    insertSessionToHistory(id,number,mode,moments,room);
-                });
-        });
 
-
-        //待機室只要房間人數是2個人就給他們個數字 不管有沒有用沒差=>(有沒有進行遊戲)
-        sessionNumber(room)
-            .then(function(result){
-                if (result[0]["count(*)"] == 2){
-                    let randomNumber=random(1,2147483647);
-                    console.log(randomNumber);
-                    io.sockets.in(room).emit("sessionNumber",randomNumber);
+        socket.on("ready",async function(){
+            console.log("點擊次數呢");
+            await userReady(user_id);
+            let score = await checkScoreModeAndReady(room);
+            let buzz = await checkBuzzModeAndReady(room);
+            if (score.length == 2 ){
+                let Number=random(1,2147483647);
+                let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
+                let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
+                for (let i=0;score.length>i;i++){
+                    let { uid ,Room,mode}=score[i];
+                    await insertSessionToHistory(uid,sessionNumber,mode,moments,Room);
                 }
-            });
-    
-        socket.on("ready",function(){
-            userReady(user_id);
+                io.sockets.in(room).emit("scorePlayerReady","ready");
+            }
+            else if (buzz.length ==2){
+                
+                let Number=random(1,2147483647);
+                let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
+                let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
+                for (let i=0;buzz.length>i;i++){
+                    let { uid ,Room,mode}=buzz[i];
+                    await insertSessionToHistory(uid,sessionNumber,mode,moments,Room);
+                }
+                let word=await randomThirtyWord();
+                let final={};
+                for (let i=0 ;30>=i;i++){
+                    let english=[];
+                    let chinese=[];
+                    for (let i=1;4>=i;i++){
+                        //
+                        let randomNumber= random(0,30);
+                        chinese.push(word[randomNumber].chinese);
+                        english.push(word[randomNumber].english);
+                    }
+                    let randomToFour=random(0,4);
+                    let English=english[randomToFour];
+                    let data={English,chinese};
+                    final[i]=data;
+                    await insertToBuzzGameTopic(sessionNumber,English,i,JSON.stringify(chinese));
+                }
+
+                io.sockets.in(room).emit("buzzPlayerReady",sessionNumber);
+            }
+
         });
         socket.on("unReady",function(){
             userUnReady(user_id);
@@ -99,41 +132,48 @@ const socketCon=function(io){
 
         //這邊每5-10秒打一次  Standby Room
         let timeOut = 0;
-        const ready=setInterval(function(){
+        const ready=setInterval(async function(){
             timeOut+=1;
             if (timeOut == 11){
-
                 clearInterval(ready);
                 io.sockets.in(socketId).emit("timeOut","連線逾時 請重新進入");
-                // io.sockets.in(room).emit("timeOut","連線逾時 請重新進入");
-            }
-            else{
-                checkReady(room)
-                    .then(function(result){
-                        if (result.length == 2){ 
-                            io.sockets.in(room).emit("playerReady","ready");   
-                            clearInterval(ready);
-                        }
-                    });
             }
         },5000);
 
-
-
-
-
         socket.on("otherSessionCorrect",function(message){
+            console.log(message);
             socket.broadcast.to(room).emit("event", message);
         });
 
+        socket.on("otherSessionWrong",function(message){
+            socket.broadcast.to(room).emit("event2", message);
+        });
+        //目前一進到頁面 就直接打 API 並且回應題目跟答案給他 前端則要記錄他們現在題數 每次來都要帶著題數跟場次編號
 
+
+        //當有玩家答對 就clearInterval 並且通知對方換題 這裡應該要有一個數字 在設一個setInterval讓他倒數五秒就廣播 換題
+        //當有玩家答錯 就把table後面的status更改成false 當另外一個人也答錯 看到false 也換下一題
+
+
+
+        
 
         socket.on("disconnect",function(){
-            Online--;
-            console.log(Online);
+            // Online--;
+            // console.log(Online);
+
+            //這裡是刪除物件
+            // delete topic[room];
+
+            //這裡是刪除sql
+            // deleteBuzzGameTopic(room);
+
+
+
+            deleteBuzzGame(user_id);
             console.log(`user: ${name} is left room:${room} `);
             deleteStandbyRoom(user_id);
-            leaveRoom(user_id);
+            // leaveRoom(user_id);
             clearInterval(ready);
         });
     });

@@ -45,9 +45,9 @@ function verificationToken(token,secret){
     });
 }
 
-function userInStandbyRoom(userId,room,mode){
+function userInStandbyRoom(userId,room,mode,JWT){
     return new Promise (function(resolve,reject){
-        let sql = `INSERT INTO word.standbyRoom (uid, room,mode) VALUES ("${userId}", "${room}","${mode}")`;
+        let sql = `INSERT INTO word.standbyRoom (uid, room,mode,JWT) VALUES ("${userId}", "${room}","${mode}","${JWT}")`;
         query(sql)
             .then(function(result){
                 resolve (result);

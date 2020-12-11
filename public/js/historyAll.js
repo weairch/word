@@ -47,7 +47,7 @@ document.getElementById("single").addEventListener("click",function(){
         return userHistoryAll;
     };
     Information().then(function(result){
-        console.log(result);
+        // console.log(result);
         //create session and time
         let session = document.getElementById("session");
         let sessionAll=result.session;
@@ -85,7 +85,7 @@ document.getElementById("multi").addEventListener("click",function(){
         return userHistoryAll;
     };
     Information().then(function(result){
-        console.log(result);
+        // console.log(result);
         let session = document.getElementById("session");
         let sessionAll=result.session;
         for (let i=0; Object.keys(sessionAll).length>i ;i++){

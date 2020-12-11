@@ -5,6 +5,9 @@ const socket = io({
     }
 });
 
+document.querySelector(".title").addEventListener("click",function(){
+    window.location.href="/";
+});
 
 let localStorageToken = localStorage.getItem("Authorization");
 
@@ -60,6 +63,7 @@ const Information= async function () {
     };
     let res3 = await fetch("/api/1.0/function/sessionNumber",session);
     let sessionNumber = await res3.json();
+    console.log(sessionNumber);
     return {user, topic, sessionNumber};
 };
 
@@ -80,7 +84,7 @@ Information().then(function(res){
 
     //countdown timer 下面設定秒數
     const currentTime = Date.parse(new Date());
-    const deadline=new Date(currentTime +   30  *1000);
+    const deadline=new Date(currentTime +   20  *1000);
     initializeClock("clockdiv", deadline,sessionNumber,id);
 
 
@@ -130,6 +134,7 @@ Information().then(function(res){
 
 //click function
 async function answer(i,sessionNumber,english,id,name,room){
+    console.log(sessionNumber);
     let option=document.querySelector(".btn"+i).textContent;
     let data={sessionNumber,english,id,name,option,room};
     let config={
