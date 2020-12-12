@@ -2,6 +2,8 @@ const router = require("express").Router();
 
 const {
     // ThirtyWord,
+    gameStatus,
+    nowGameTopicNnumber,
     gameBuzzTopic,
     randomNumber,
     sessionNumber,
@@ -12,6 +14,8 @@ const {
     checkAll,
     serchRoom,
     insertBuzzGameInfomation,
+    confirmStatus,
+    updataStatusAndNumber,
 } = require("../controllers/gameControllers");
 
 // /api/1.0
@@ -44,6 +48,18 @@ router.route("/function/insertBuzzGameInfomation")
 
 router.route("/function/gameBuzzTopic")
     .post(gameBuzzTopic);
+
+router.route("/function/nowGameTopicNnumber")
+    .post(nowGameTopicNnumber);
+
+router.route("/function/updataTopicError")
+    .post(gameStatus);
+
+router.route("/function/confirmStatus")
+    .post(confirmStatus);
+
+router.route("/function/updataStatusAndNumber")
+    .post(updataStatusAndNumber);
 
 // router.route("/function/ThirtyWord")
 //     .get(ThirtyWord);

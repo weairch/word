@@ -28,6 +28,7 @@ const {
     insertToBuzzGameTopic,
     deleteBuzzGameTopic,
     randomThirtyWord,
+    insertBuzzGame,
 } = require("../server/models/gameModel");
 
 const { 
@@ -83,6 +84,7 @@ const socketCon=function(io){
         socket.on("ready",async function(){
             console.log("點擊次數呢");
             await userReady(user_id);
+
             let score = await checkScoreModeAndReady(room);
             let buzz = await checkBuzzModeAndReady(room);
             if (score.length == 2 ){
@@ -103,6 +105,7 @@ const socketCon=function(io){
                 for (let i=0;buzz.length>i;i++){
                     let { uid ,Room,mode}=buzz[i];
                     await insertSessionToHistory(uid,sessionNumber,mode,moments,Room);
+                    await insertBuzzGame(uid,room)
                 }
                 let word=await randomThirtyWord();
                 let final={};
@@ -140,13 +143,20 @@ const socketCon=function(io){
             }
         },5000);
 
+        //答對
         socket.on("otherSessionCorrect",function(message){
             console.log(message);
             socket.broadcast.to(room).emit("event", message);
         });
 
+        //一個人答錯 給另外一個人反應畫面
         socket.on("otherSessionWrong",function(message){
             socket.broadcast.to(room).emit("event2", message);
+        });
+
+        //兩個人都錯了 該換題了
+        socket.on("BothError",function(message){
+            socket.broadcast.to(room).emit("event3",message);
         });
         //目前一進到頁面 就直接打 API 並且回應題目跟答案給他 前端則要記錄他們現在題數 每次來都要帶著題數跟場次編號
 
