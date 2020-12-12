@@ -14,6 +14,10 @@ const {
     insertBuzzGame,
     // randomThirtyWord,
     buzzTopic,
+    updateTopicNnumber,
+    updataTopicError,
+    confirmBuzzGameRoomStatus,
+    updataStatusAndNumberIfError,
 } = require("../models/gameModel");
 
 
@@ -185,8 +189,42 @@ async function gameBuzzTopic(req,res){
 }
 
 
+async function nowGameTopicNnumber(req,res){
+    let id = req.body.id;
+    let number = req.body.countTopicNumber;
+    await updateTopicNnumber(id,number);
+    res.json({message:"success"});
+}
+
+async function gameStatus(req,res){
+    let id=req.body.id;
+    let status=req.body.status;
+    await updataTopicError(id,status);
+    res.json({mesage:"success"});
+
+}
+
+async function confirmStatus(req,res){
+    let { room , countTopicNumber } = req.body;
+    let result = await confirmBuzzGameRoomStatus(room,countTopicNumber);
+    if (result[0]["count(status)"] == 0){
+        res.json({message:"true"});
+    }
+    else {
+        res.json({message:"false"});
+    }
+}
+
+async function updataStatusAndNumber(req,res){
+    let {room}=req.body;
+    await updataStatusAndNumberIfError(room);
+    res.json({message:"success"});
+}
 
 module.exports ={
+    updataStatusAndNumber,
+    confirmStatus,
+    nowGameTopicNnumber,
     gameBuzzTopic,
     serchRoom,
     checkAll,
@@ -197,4 +235,5 @@ module.exports ={
     randomNumber,
     sessionNumber,
     insertBuzzGameInfomation,
+    gameStatus,
 };

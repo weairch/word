@@ -132,8 +132,27 @@ const buzzTopic = async function(session,topicNumber){
 };
 
 
+const updateTopicNnumber = async function(uid,questionNumber){
+    return await query("UPDATE `word`.`buzzGameRoom` SET `questionNumber` =? , `status`='null' WHERE (`uid` =?);",[questionNumber,uid]); 
+};
+
+const updataTopicError = async function (uid,status){
+    return await query ("UPDATE `word`.`buzzGameRoom` SET `status` = ? WHERE (`uid` = ?)",[status,uid]);
+};
+
+const confirmBuzzGameRoomStatus = async function (room,questionNumber){
+    return await query("select count(status) from word.buzzGameRoom where Room=? and questionNumber=? and `status`='false';",[room,questionNumber]);
+};
+
+const updataStatusAndNumberIfError = async function (room){
+    return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='null' where Room = ?;",room);
+};
 
 module.exports ={
+    updataStatusAndNumberIfError,
+    confirmBuzzGameRoomStatus,
+    updataTopicError,
+    updateTopicNnumber,
     buzzTopic,
     randomThirtyWord,
     insertToBuzzGameTopic,
