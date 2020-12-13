@@ -192,7 +192,12 @@ async function gameBuzzTopic(req,res){
 async function nowGameTopicNnumber(req,res){
     let id = req.body.id;
     let number = req.body.countTopicNumber;
-    await updateTopicNnumber(id,number);
+    try {    
+        await updateTopicNnumber(id,number);
+    }
+    catch (err){
+        console.log(err);
+    }
     res.json({message:"success"});
 }
 
@@ -205,7 +210,9 @@ async function gameStatus(req,res){
 }
 
 async function confirmStatus(req,res){
-    let { room , countTopicNumber } = req.body;
+    let { room } = req.body;
+    let Number = req.body.countTopicNumber;
+    let countTopicNumber=Number;
     let result = await confirmBuzzGameRoomStatus(room,countTopicNumber);
     if (result[0]["count(status)"] == 0){
         res.json({message:"true"});
