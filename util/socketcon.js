@@ -156,13 +156,9 @@ const socketCon=function(io){
 
         //兩個人都錯了 該換題了
         socket.on("BothError",function(message){
+            console.log("傳到了後端的socket on");
             socket.broadcast.to(room).emit("event3",message);
         });
-        //目前一進到頁面 就直接打 API 並且回應題目跟答案給他 前端則要記錄他們現在題數 每次來都要帶著題數跟場次編號
-
-
-        //當有玩家答對 就clearInterval 並且通知對方換題 這裡應該要有一個數字 在設一個setInterval讓他倒數五秒就廣播 換題
-        //當有玩家答錯 就把table後面的status更改成false 當另外一個人也答錯 看到false 也換下一題
 
 
 

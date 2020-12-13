@@ -129,116 +129,7 @@ Information().then(async function(res){
     englishTopicOutput.appendChild(englishDiv);
 
 
-    //Create option
-    for (let i=0;topicChinese.length>i;i++){
-        let  div =document.getElementById("option");
-        let  btn =document.createElement("button");
-        btn.setAttribute("id","btn"+i);
-        btn.classList.add("btn"+i);    
-        btn.innerHTML =topicChinese[i];
-        div.appendChild(btn);
-        
-        document.querySelector(".btn"+i).addEventListener("click",async function(){  
-            
-            
-            let english = topicEnglish;
-            let option=document.querySelector(".btn"+i).textContent;
-            let data={sessionNumber,english,id,name,option,room};
-            let config={
-                method:"POST",
-                headers:{
-                    Authorization:"Bearer "+localStorageToken,
-                    "Content-Type": "application/json",
-                },
-                body:JSON.stringify(data)
-            };
-            let res = await fetch("/api/1.0/function/confirmAnswer",config);
-            let check = await res.json();
-
-
-
-            if (check.message == "correct"){
-                alert("恭喜答對");
-                //自己的分數++
-                document.querySelector(".scoreNumber").innerHTML++;
-                
-                //通知房間其他人
-                let click=document.querySelector(".btn"+i).className;
-                socket.emit("otherSessionCorrect",click);
-                
-                //自己的頁面更新
-                createDisabled(click);
-
-                //讓後端新增目前題數
-                //數自己下一題要達打什麼
-                countTopicNumber++;
-                await updataTopicNumber(id,countTopicNumber);
-
-                //過兩秒後做這件事情
-
-                setTimeout(async function(){
-                    killChild();
-                    let config = {
-                        method:"POST",
-                        headers:{
-                            session:localStorageSession,
-                            topicNumber:countTopicNumber,
-                            Authorization:"Bearer "+localStorageToken,
-                            "Content-Type": "application/json"
-                        }
-                    };
-                    let res = await fetch("/api/1.0/function/gameBuzzTopic",config);
-                    let topic =await res.json();
-                    let {topicEnglish,topicChinese} = topic;
-                    console.log(topic);
-                    createEnglishTopic(topicEnglish);
-                    createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
-                },2000);
-
-            }
-
-
-            else if (check.message == "error"){
-                countTopicNumber++;
-                alert("答錯囉");
-                let click=document.querySelector(".btn"+i).className;
-                socket.emit("otherSessionWrong",click);
-                document.getElementById(click).style.backgroundColor="#FFC0C0";
-                wrongDisabled(click);
-                
-
-                //這裡為判斷什麼時候可以換題目
-                let data={room,countTopicNumber};
-                let config = {
-                    method:"POST",
-                    headers:{"Content-Type": "application/json"},
-                    body:JSON.stringify(data)
-                };
-                let res= await fetch("/api/1.0/function/confirmStatus",config);
-                let result =await res.json();
-                if (result.message == "true"){
-                    let status="false";
-                    await updateGameStatus(id,status);
-                }
-                else{
-                    let data={room};
-                    let config = {
-                        method:"POST",
-                        headers:{"Content-Type": "application/json"},
-                        body:JSON.stringify(data)
-                    };
-                    await fetch("/api/1.0/function/updataStatusAndNumber",config);
-                    socket.emit("BothError","change Topic");
-
-                    //換題了
-                }
-
-
-            }
-        });
-
-        
-    }
+    createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
 
 
 
@@ -280,6 +171,7 @@ Information().then(async function(res){
 
     socket.on("event3",async function(){ 
         //兩者都答錯了 就換題
+        countTopicNumber++;
         console.log("Event3");
         setTimeout(async function(){
             killChild();
@@ -332,7 +224,7 @@ function createEnglishTopic(topicEnglish){
 
 
 
-//create chinese option and add lisner
+// create chinese option and add lisner
 function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room){
     for (let i=0;topicChinese.length>i;i++){
         let  div =document.getElementById("option");
@@ -358,8 +250,10 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
             };
             let res = await fetch("/api/1.0/function/confirmAnswer",config);
             let check = await res.json();
+            console.log("1");
             if (check.message == "correct"){
-                alert("恭喜答對");
+                // alert("恭喜答對");
+                console.log("2");
                 
                 document.querySelector(".scoreNumber").innerHTML++;  //自己的分數++
                 
@@ -384,6 +278,7 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                     };
                     let res = await fetch("/api/1.0/function/gameBuzzTopic",config5);
                     let topic =await res.json();
+                    console.log("3");
                     let {topicEnglish,topicChinese} = topic;
                     createEnglishTopic(topicEnglish);
                     createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
@@ -392,38 +287,56 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
 
 
             else if (check.message == "error"){
-                countTopicNumber++;
-                alert("答錯囉");
+                console.log("2");
+                // alert("答錯囉");
                 let click=document.querySelector(".btn"+i).className;
                 socket.emit("otherSessionWrong",click);
                 document.getElementById(click).style.backgroundColor="#FFC0C0";
                 wrongDisabled(click);
                 
 
-                //這裡為判斷什麼時候可以換題目
+                // 這裡為判斷什麼時候可以換題目 //這裡下面怪怪的
                 let data={room,countTopicNumber};
                 let config = {
                     method:"POST",
                     headers:{"Content-Type": "application/json"},
                     body:JSON.stringify(data)
                 };
+                //這裡下面=============可能兩個人同時點擊 兩個人同時都在寫入false 
+                //之後
                 let res= await fetch("/api/1.0/function/confirmStatus",config);
                 let result =await res.json();
+                console.log("3");
+                //會斷在這上面 為什麼??
+                
                 if (result.message == "true"){
+                    console.log("4");
                     let status="false";
-                    await updateGameStatus(id,status);
+                    let res= await updateGameStatus(id,status);
+                    console.log("這裡是錯誤之後更新false",res);
                 }
                 else{
+                    countTopicNumber++;
+                    console.log("4");
                     let data={room};
                     let config = {
                         method:"POST",
                         headers:{"Content-Type": "application/json"},
                         body:JSON.stringify(data)
                     };
-                    await fetch("/api/1.0/function/updataStatusAndNumber",config);
+                    let res=await fetch("/api/1.0/function/updataStatusAndNumber",config);
+                    console.log("這裡是錯誤之後要更新狀態到null跟Number+1",res);
                     socket.emit("BothError","change Topic");
-
                     //換題了
+                    setTimeout(async function(){
+                        killChild();
+                        let topic=await newTopic(localStorageSession,countTopicNumber);
+                        console.log(topic);
+                        let {topicEnglish,topicChinese} = topic;
+                        createEnglishTopic(topicEnglish);
+                        createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+            
+                    },2000);
                 }
 
 
@@ -453,6 +366,7 @@ async function updateGameStatus(id,status){
         body:JSON.stringify(data)
     };
     await fetch("/api/1.0/function/updataTopicError",config);
+
 }
 
 
@@ -561,14 +475,5 @@ function wrongDisabled(element){
 //         }
 //     },1000);
 // }
-
-
-
-
-
-
-
-
-
 
 
