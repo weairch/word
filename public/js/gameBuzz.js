@@ -86,7 +86,6 @@ const Information= async function () {
     };
     await fetch("/api/1.0/function/insertBuzzGameInfomation",config2);
 
-    // return {user, sessionNumber};
     return {user, topic, sessionNumber};
 };
 
@@ -95,14 +94,23 @@ const Information= async function () {
 Information().then(async function(res){
 
     let { sessionNumber } = res;
-    // let { english,chinese } = res.topic;
     let {topicEnglish,topicChinese} = res.topic;
     let { id,name,room  } = res.user;
 
     // const currentTime = Date.parse(new Date());
-    // const deadline=new Date(currentTime +   100  *1000);
-    // initializeClock("clockdiv", deadline,sessionNumber,id);
+    // const deadline=new Date(currentTime +   10  *1000);
+    // let firstTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber);
 
+    //====================================這裡奇怪=====
+    // let thirdTimer;
+    // let secondTimer=setInterval(async function(){
+    //     countTopicNumber++;
+    //     const currentTime = Date.parse(new Date());
+    //     const deadline=new Date(currentTime +   10  *1000);
+    //     thirdTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber,secondTimer,thirdTimer);
+    // },10000) ;
+
+    //========================================
 
     //Create self score 
     let score = document.getElementById("score");
@@ -128,34 +136,69 @@ Information().then(async function(res){
     englishDiv.innerHTML=topicEnglish;
     englishTopicOutput.appendChild(englishDiv);
 
+    
 
+
+    //add listiner
     createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+    // createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room,firstTimer);
 
 
+    socket.on("killer",function(){
+        console.log("killer");
+        //   clearInterval(firstTimer);
+        clearInterval(secondTimer);
+        clearInterval(thirdTimer);
+    });
 
     socket.on("event",async function(message){
         countTopicNumber++;
+        // clearInterval(firstTimer);
+        clearInterval(secondTimer);
+        clearInterval(thirdTimer);
         let number = document.querySelector(".otherScoreNumber");
         number.innerHTML++;
         let element=message;
 
         //updata now topic number
         await updataTopicNumber(id,countTopicNumber);
-
-
         document.getElementById(element).style.backgroundColor="#FFC0C0";
-        document.getElementById(element).setAttribute("disabled","disabled");
-        document.getElementById(element).style.cursor="default";
+        document.getElementById("btn0").setAttribute("disabled","disabled");
+        document.getElementById("btn1").setAttribute("disabled","disabled");
+        document.getElementById("btn2").setAttribute("disabled","disabled");
+        document.getElementById("btn3").setAttribute("disabled","disabled");
+        document.getElementById("btn0").style.cursor="default";
+        document.getElementById("btn1").style.cursor="default";
+        document.getElementById("btn2").style.cursor="default";
+        document.getElementById("btn3").style.cursor="default";
         document.getElementById(element).style.color="#f5f7f9";
         setTimeout(async function(){
             killChild();
             let topic=await newTopic(localStorageSession,countTopicNumber);
-            console.log(topic);
             let {topicEnglish,topicChinese} = topic;
             createEnglishTopic(topicEnglish);
+            //timer
+            
+            // const currentTime = Date.parse(new Date());
+            // const deadline=new Date(currentTime +   10  *1000);
+            // firstTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber);
+            
+            
+            
+            let thirdTimer;
+            let secondTimer=setInterval(function(){
+                countTopicNumber++;
+                const currentTime = Date.parse(new Date());
+                const deadline=new Date(currentTime +   10  *1000);
+                thirdTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber,secondTimer,thirdTimer);
+            },10000) ;
+            
             createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
 
+
         },2000);
+
+
 
 
     });
@@ -166,23 +209,45 @@ Information().then(async function(res){
         document.getElementById(element).setAttribute("disabled","disabled");
         document.getElementById(element).style.cursor="default";
         document.getElementById(element).style.color="#f5f7f9"; 
-        // await updateGameErrorStatus(id);
     });
 
-    socket.on("event3",async function(){ 
+    socket.on("event3",async function(){
+        document.getElementById("btn0").setAttribute("disabled","disabled");
+        document.getElementById("btn1").setAttribute("disabled","disabled");
+        document.getElementById("btn2").setAttribute("disabled","disabled");
+        document.getElementById("btn3").setAttribute("disabled","disabled");
+
+        // clearInterval(firstTimer);
+        clearInterval(secondTimer);
+        clearInterval(thirdTimer);
         //兩者都答錯了 就換題
         countTopicNumber++;
-        console.log("Event3");
         setTimeout(async function(){
             killChild();
             let topic=await newTopic(localStorageSession,countTopicNumber);
             console.log(topic);
             let {topicEnglish,topicChinese} = topic;
             createEnglishTopic(topicEnglish);
+            // const currentTime = Date.parse(new Date());
+            // const deadline=new Date(currentTime +   10  *1000);
+            // firstTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber);
+            // let thirdTimer;
+            // secondTimer=setInterval(function(){
+            //     countTopicNumber++;
+            //     const currentTime = Date.parse(new Date());
+            //     const deadline=new Date(currentTime +   10  *1000);
+            //     thirdTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber);
+            // },10000) ;
+            
             createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
-
+            // createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room,firstTimer);
+            
         },2000);
+
     });
+
+
+
 
 });
 
@@ -190,7 +255,13 @@ Information().then(async function(res){
 
 
 
-//=====以下是function========
+//================================以下是function================================================
+
+
+
+
+
+
 
 
 //get new topic
@@ -225,7 +296,8 @@ function createEnglishTopic(topicEnglish){
 
 
 // create chinese option and add lisner
-function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room){
+function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room,secondTimer,thirdTimer){
+// function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room,firstTimer,secondTimer){
     for (let i=0;topicChinese.length>i;i++){
         let  div =document.getElementById("option");
         let  btn =document.createElement("button");
@@ -233,7 +305,6 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
         btn.classList.add("btn"+i);    
         btn.innerHTML =topicChinese[i];
         div.appendChild(btn);
-
 
         document.querySelector(".btn"+i).addEventListener("click",async function(){
 
@@ -250,11 +321,12 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
             };
             let res = await fetch("/api/1.0/function/confirmAnswer",config);
             let check = await res.json();
-            console.log("1");
             if (check.message == "correct"){
-                // alert("恭喜答對");
-                console.log("2");
-                
+                socket.emit("test","test");
+                alert("恭喜答對");
+                // clearInterval(firstTimer);
+                clearInterval(secondTimer);
+                clearInterval(thirdTimer);
                 document.querySelector(".scoreNumber").innerHTML++;  //自己的分數++
                 
                 let click=document.querySelector(".btn"+i).className;  //通知房間其他人
@@ -278,76 +350,103 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                     };
                     let res = await fetch("/api/1.0/function/gameBuzzTopic",config5);
                     let topic =await res.json();
-                    console.log("3");
                     let {topicEnglish,topicChinese} = topic;
                     createEnglishTopic(topicEnglish);
+                    //timer
+                    // const currentTime = Date.parse(new Date());
+                    // const deadline=new Date(currentTime +   10  *1000);
+                    // firstTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber);
+                    
+                    // let thirdTimer;
+                    // let secondTimer=setInterval(function(){
+                    //     countTopicNumber++;
+                    //     const currentTime = Date.parse(new Date());
+                    //     const deadline=new Date(currentTime +   10  *1000);
+                    //     thirdTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber,secondTimer,thirdTimer);
+                    // },10000) ;
+
                     createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+                    // createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room,firstTimer,secondTimer);
+                
+
                 },2000);
             }
 
 
             else if (check.message == "error"){
-                console.log("2");
-                // alert("答錯囉");
+                alert("答錯囉");
                 let click=document.querySelector(".btn"+i).className;
                 socket.emit("otherSessionWrong",click);
                 document.getElementById(click).style.backgroundColor="#FFC0C0";
                 wrongDisabled(click);
                 
 
-                // 這裡為判斷什麼時候可以換題目 //這裡下面怪怪的
                 let data={room,countTopicNumber};
                 let config = {
                     method:"POST",
                     headers:{"Content-Type": "application/json"},
                     body:JSON.stringify(data)
                 };
-                //這裡下面=============可能兩個人同時點擊 兩個人同時都在寫入false 
-                //之後
                 let res= await fetch("/api/1.0/function/confirmStatus",config);
                 let result =await res.json();
-                console.log("3");
-                //會斷在這上面 為什麼??
-                
                 if (result.message == "true"){
-                    console.log("4");
                     let status="false";
-                    let res= await updateGameStatus(id,status);
-                    console.log("這裡是錯誤之後更新false",res);
+                    await updateGameStatus(id,status);
                 }
                 else{
+                    console.log("我有到else這裡");
+                    // clearInterval(firstTimer);
+                    clearInterval(secondTimer);
+                    clearInterval(thirdTimer);
                     countTopicNumber++;
-                    console.log("4");
                     let data={room};
                     let config = {
                         method:"POST",
                         headers:{"Content-Type": "application/json"},
                         body:JSON.stringify(data)
                     };
-                    let res=await fetch("/api/1.0/function/updataStatusAndNumber",config);
-                    console.log("這裡是錯誤之後要更新狀態到null跟Number+1",res);
+                    await fetch("/api/1.0/function/updataStatusAndNumber",config);
                     socket.emit("BothError","change Topic");
                     //換題了
                     setTimeout(async function(){
                         killChild();
                         let topic=await newTopic(localStorageSession,countTopicNumber);
-                        console.log(topic);
                         let {topicEnglish,topicChinese} = topic;
                         createEnglishTopic(topicEnglish);
+
+
+                        // const currentTime = Date.parse(new Date());
+                        // const deadline=new Date(currentTime +   10  *1000);
+                        // firstTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber);
+                        
+                        // let thirdTimer;
+                        // secondTimer=setInterval(function(){
+                        //     countTopicNumber++;
+                        //     const currentTime = Date.parse(new Date());
+                        //     const deadline=new Date(currentTime +   10  *1000);
+                        //     thirdTimer=initializeClock("clockdiv", deadline,id,sessionNumber,name,room,countTopicNumber);
+                        // },10000) ;
+                        
                         createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
-            
+                        // createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room,firstTimer);
+                        //timer
+                    
                     },2000);
+
                 }
-
-
             }
         });
     }
 }
 
+//set timeIntervel
+
+
+
 
 //updata topic number
 async function updataTopicNumber(id,countTopicNumber){
+    console.log("在上面的function");
     //updata now topic number
     let data={id,countTopicNumber};
     let config = {
@@ -438,42 +537,76 @@ function wrongDisabled(element){
 
 
 
-//=============   clock function   ==============
-// function getTimeRemaining(endtime){
-//     const total = Date.parse(endtime) - Date.parse(new Date());
-//     const seconds = Math.floor( (total/1000) % 60 );
-//     return {
-//         total,
-//         seconds
+// =============   clock function   ==============
+function getTimeRemaining(endtime){
+    const total = Date.parse(endtime) - Date.parse(new Date());
+    const seconds = Math.floor( (total/1000) % 60 );
+    return {
+        total,
+        seconds
+    };
+}
+
+function initializeClock(id, endtime,uid,sessionNumber,name,room,countTopicNumber,secondTimer,thirdTimer) {
+// function initializeClock(id, endtime,uid,sessionNumber,name,room,countTopicNumber,firstTimer,secondTimer) {
+    const clock = document.getElementById(id);
+    const timeinterval = setInterval(async () => {
+        const t = getTimeRemaining(endtime);
+        clock.innerHTML = "seconds:" + t.seconds;
+        if (t.total <= 0) {
+            countTopicNumber++;
+            clearInterval(timeinterval);
+            clearInterval(secondTimer);
+            clearInterval(thirdTimer);
+            await updataTopicNumber(uid,countTopicNumber);
+            let data={id};
+            let config = {
+                method:"POST",
+                headers:{"Content-Type": "application/json"},
+                body:JSON.stringify(data)
+            };
+            await fetch("/api/1.0/function/updataTimeOutTopicNumber",config);
+            killChild();
+            let topic=await newTopic(localStorageSession,countTopicNumber);
+            let {topicEnglish,topicChinese} = topic;
+            createEnglishTopic(topicEnglish);
+            createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+        }
+    },1000);
+    return timeinterval;
+}
+
+
+
+
+// const timer = setInterval(async function(){
+//     let data={room,countTopicNumber};
+//     let config = {
+//         method:"POST",
+//         headers:{"Content-Type": "application/json"},
+//         body:JSON.stringify(data)
 //     };
-// }
-
-// function initializeClock(id, endtime,Session,uid) {
-//     const clock = document.getElementById(id);
-//     const timeinterval = setInterval(() => {
-//         const t = getTimeRemaining(endtime);
-//         clock.innerHTML = "seconds:" + t.seconds;
-//         if (t.total <= 0) {
-//             clearInterval(timeinterval);
-
-//             let data = {Session,uid};
-//             let config ={
-//                 method:"POST",
-//                 headers:{
-//                     "Content-Type": "application/json",
-//                 },
-//                 body:JSON.stringify(data)
-//             };
-//             fetch("/api/1.0/function/lostOrWin",config)
-//                 .then(function(res){
-//                     return res.json();
-//                 })
-//                 .then(function(result){
-//                     alert(result.message);
-//                     location.href="/contest/multi";
-//                 });
-//         }
-//     },1000);
-// }
-
-
+//     let res=await fetch("/api/1.0/function/countBuzzGameRoomStatusIsNull",config);
+//     let result=await res.json();
+//     //result 有東西 就要跳進下一題
+//     if (result){
+//         //更新sql裡面的下一題
+//         let data={id};
+//         let config = {
+//             method:"POST",
+//             headers:{"Content-Type": "application/json"},
+//             body:JSON.stringify(data)
+//         };
+//         await fetch("/api/1.0/function/updataTimeOutTopicNumber",config);
+//         countTopicNumber++;
+//         killChild();
+//         let topic=await newTopic(localStorageSession,countTopicNumber);
+//         let {topicEnglish,topicChinese} = topic;
+//         createEnglishTopic(topicEnglish);
+//         createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room,timer);
+//         console.log(countTopicNumber);
+//     }
+//     else if (countTopicNumber ==30){
+//         clearInterval(timer);
+//     }
+// },5000);

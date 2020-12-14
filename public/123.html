@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <div id="clockdiv" class="clockdiv"></div>
+    <button type="button" id="123">btn</button>
+</head>
+<body>
+    
+</body>
+</html>
+
+<script>
+    document.getElementById("123").addEventListener("click",function(){
+
+        clearInterval(cc);
+        clearInterval(aa);
+        clearInterval(bb);
+        // console.log("我這裡是CC~~  "+cc);
+        console.log("我這裡是BB~~  "+bb);
+        console.log("我這裡是AA~~  "+aa);
+    })
+
+
+    // initializeClock("clockdiv", deadline,sessionNumber,name,room);
+    const currentTime = Date.parse(new Date());
+    const deadline=new Date(currentTime +   10  *1000);
+    const bb= initializeClock("clockdiv", deadline,);
+    
+    let cc;
+    let aa=setInterval(function(){
+        const currentTime = Date.parse(new Date());
+        const deadline=new Date(currentTime +   10  *1000);
+        cc=initializeClock("clockdiv", deadline,);
+    },10000) 
+
+
+ 
+
+function getTimeRemaining(endtime){
+    const total = Date.parse(endtime) - Date.parse(new Date());
+    const seconds = Math.floor( (total/1000) % 60 );
+    return {
+        total,
+        seconds
+    };
+}
+
+function initializeClock(id, endtime,sessionNumber,name,room) {
+    const clock = document.getElementById(id);
+    const timeinterval = setInterval(async () => {
+        const t = getTimeRemaining(endtime);
+        clock.innerHTML = "seconds:" + t.seconds;
+        if (t.total <= 0) {
+            clearInterval(timeinterval);
+            console.log("時間到")
+        }
+    },1000);
+    return timeinterval;
+}
+</script>

@@ -18,6 +18,8 @@ const {
     updataTopicError,
     confirmBuzzGameRoomStatus,
     updataStatusAndNumberIfError,
+    confirmBuzzGameRoomStatusIsNull,
+    updataNoResponseTopicNumber,
 } = require("../models/gameModel");
 
 
@@ -228,7 +230,26 @@ async function updataStatusAndNumber(req,res){
     res.json({message:"success"});
 }
 
+async function countBuzzGameRoomStatusIsNull(req,res){
+    let { room ,countTopicNumber} = req.body;
+    console.log(countTopicNumber);
+    let status = await confirmBuzzGameRoomStatusIsNull(room,countTopicNumber);
+    //代表只要這個題數 有人還在null 代表還有人沒答題
+    if (status[0]["count(status)"]){
+        res.json({message:"true"});
+    }
+}
+
+async function updataTimeOutTopicNumber(req,res){
+    let {id}=req.body;
+    await updataNoResponseTopicNumber(id);
+    res.json({message:"success"});
+}
+
+
 module.exports ={
+    updataTimeOutTopicNumber,
+    countBuzzGameRoomStatusIsNull,
     updataStatusAndNumber,
     confirmStatus,
     nowGameTopicNnumber,

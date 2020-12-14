@@ -105,7 +105,7 @@ const serchStandbyRoom = async function(){
 };
 
 const insertBuzzGame=async function (uid,room){
-    return await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`) VALUES (?,?,0);",[uid,room]);
+    return await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`,`status`) VALUES (?,?,0,'null');",[uid,room]);
 };
 
 const deleteBuzzGame= async function(uid){
@@ -148,7 +148,17 @@ const updataStatusAndNumberIfError = async function (room){
     return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='null' where Room = ?;",room);
 };
 
+const confirmBuzzGameRoomStatusIsNull = async function (room,questionNumber){
+    return await query(`select count(status) from word.buzzGameRoom where Room=${room} and questionNumber=${questionNumber} and status= 'null' ;`);
+};
+
+const updataNoResponseTopicNumber=async function(uid){
+    return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='null' where uid = ?;",uid);
+};
+
 module.exports ={
+    updataNoResponseTopicNumber,
+    confirmBuzzGameRoomStatusIsNull,
     updataStatusAndNumberIfError,
     confirmBuzzGameRoomStatus,
     updataTopicError,
