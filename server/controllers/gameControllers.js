@@ -18,6 +18,8 @@ const {
     updataTopicError,
     confirmBuzzGameRoomStatus,
     updataStatusAndNumberIfError,
+    confirmBuzzGameRoomStatusIsNull,
+    updataNoResponseTopicNumber,
 } = require("../models/gameModel");
 
 
@@ -192,6 +194,8 @@ async function gameBuzzTopic(req,res){
 async function nowGameTopicNnumber(req,res){
     let id = req.body.id;
     let number = req.body.countTopicNumber;
+    console.log("我這裡是ID: "+id);
+    console.log("我這裡是NUMBER: "+number);
     try {    
         await updateTopicNnumber(id,number);
     }
@@ -213,7 +217,10 @@ async function confirmStatus(req,res){
     let { room } = req.body;
     let Number = req.body.countTopicNumber;
     let countTopicNumber=Number;
+    console.log(countTopicNumber);
+    console.log(room);
     let result = await confirmBuzzGameRoomStatus(room,countTopicNumber);
+    console.log(result);
     if (result[0]["count(status)"] == 0){
         res.json({message:"true"});
     }
@@ -228,7 +235,26 @@ async function updataStatusAndNumber(req,res){
     res.json({message:"success"});
 }
 
+async function countBuzzGameRoomStatusIsNull(req,res){
+    let { room ,countTopicNumber} = req.body;
+    console.log(countTopicNumber);
+    let status = await confirmBuzzGameRoomStatusIsNull(room,countTopicNumber);
+    //代表只要這個題數 有人還在null 代表還有人沒答題
+    if (status[0]["count(status)"]){
+        res.json({message:"true"});
+    }
+}
+
+async function updataTimeOutTopicNumber(req,res){
+    let {id}=req.body;
+    await updataNoResponseTopicNumber(id);
+    res.json({message:"success"});
+}
+
+
 module.exports ={
+    updataTimeOutTopicNumber,
+    countBuzzGameRoomStatusIsNull,
     updataStatusAndNumber,
     confirmStatus,
     nowGameTopicNnumber,

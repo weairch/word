@@ -16,6 +16,8 @@ const {
     insertBuzzGameInfomation,
     confirmStatus,
     updataStatusAndNumber,
+    countBuzzGameRoomStatusIsNull,
+    updataTimeOutTopicNumber,
 } = require("../controllers/gameControllers");
 
 // /api/1.0
@@ -60,6 +62,12 @@ router.route("/function/confirmStatus")
 
 router.route("/function/updataStatusAndNumber")
     .post(updataStatusAndNumber);
+
+router.route("/function/countBuzzGameRoomStatusIsNull")
+    .post(countBuzzGameRoomStatusIsNull);
+
+router.route("/function/updataTimeOutTopicNumber")
+    .post(updataTimeOutTopicNumber);
 
 // router.route("/function/ThirtyWord")
 //     .get(ThirtyWord);

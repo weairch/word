@@ -1,11 +1,10 @@
 const { 
     deleteStandbyRoom,
     addSocketId,
-    // addNowRoom,
-    // leaveRoom,
+
     sessionNumber,
     insertSessionToHistory,
-    // confirmStart,
+
     checkScoreModeAndReady,
     checkBuzzModeAndReady,
 } = require("../server/models/socket");
@@ -39,6 +38,7 @@ const {
 const moment = require("moment");
 const crypto=require("crypto");
 const { now } = require("moment");
+const { time } = require("console");
 
 
 
@@ -63,7 +63,6 @@ const socketCon=function(io){
                 socket.handshake.query.player=player;
                 
                 socket.join(room);
-                
                 
                 next();
             });
@@ -160,9 +159,11 @@ const socketCon=function(io){
             socket.broadcast.to(room).emit("event3",message);
         });
 
+        socket.on("test",function(){
+            console.log("收到了");
+            io.sockets.in(socketId).emit("killer","kill");
+        });
 
-
-        
 
         socket.on("disconnect",function(){
             // Online--;
