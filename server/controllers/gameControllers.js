@@ -194,6 +194,8 @@ async function gameBuzzTopic(req,res){
 async function nowGameTopicNnumber(req,res){
     let id = req.body.id;
     let number = req.body.countTopicNumber;
+    console.log("我這裡是ID: "+id);
+    console.log("我這裡是NUMBER: "+number);
     try {    
         await updateTopicNnumber(id,number);
     }
@@ -215,7 +217,10 @@ async function confirmStatus(req,res){
     let { room } = req.body;
     let Number = req.body.countTopicNumber;
     let countTopicNumber=Number;
+    console.log(countTopicNumber);
+    console.log(room);
     let result = await confirmBuzzGameRoomStatus(room,countTopicNumber);
+    console.log(result);
     if (result[0]["count(status)"] == 0){
         res.json({message:"true"});
     }
