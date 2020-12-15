@@ -135,8 +135,6 @@ Information().then(async function(res){
     socket.on("killer",function(){
         console.log("killer");
         clearInterval(timer);
-        // clearInterval(secondTimer);
-        // clearInterval(thirdTimer);
     });
 
     socket.on("event",async function(message){
@@ -285,7 +283,7 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
             if (check.message == "correct"){
                 clearInterval(timer);
                 socket.emit("test","test");
-                alert("恭喜答對");
+                // alert("恭喜答對");
                 document.querySelector(".scoreNumber").innerHTML++;  //自己的分數++
                 
                 let click=document.querySelector(".btn"+i).className;  //通知房間其他人
@@ -322,7 +320,7 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
 
             
             else if (check.message == "error"){
-                alert("答錯囉");
+                // alert("答錯囉");
                 console.log("我到了error裡面");
                 let click=document.querySelector(".btn"+i).className;
                 socket.emit("otherSessionWrong",click);
@@ -375,11 +373,6 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
         });
     }
 }
-
-//set timeIntervel
-
-
-
 
 //updata topic number
 async function updataTopicNumber(id,countTopicNumber){

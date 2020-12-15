@@ -38,8 +38,6 @@ const {
 const moment = require("moment");
 const crypto=require("crypto");
 const { now } = require("moment");
-const { time } = require("console");
-
 
 
 
@@ -104,7 +102,7 @@ const socketCon=function(io){
                 for (let i=0;buzz.length>i;i++){
                     let { uid ,Room,mode}=buzz[i];
                     await insertSessionToHistory(uid,sessionNumber,mode,moments,Room);
-                    await insertBuzzGame(uid,room)
+                    await insertBuzzGame(uid,room);
                 }
                 let word=await randomThirtyWord();
                 let final={};
