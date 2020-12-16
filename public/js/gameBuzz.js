@@ -1,4 +1,6 @@
 // eslint-disable-next-line no-undef
+/* eslint-disable no-undef */
+/* eslint-disable indent */
 const socket = io({
     query: {
         Authorization: localStorage.getItem("Authorization")
@@ -117,7 +119,6 @@ Information().then(async function(res){
     ortherScore.appendChild(ortherScoreDiv);
 
 
-
     // Create english topic
     let englishTopicOutput = document.getElementById("topicEnglisg");
     let englishDiv = document.createElement("div");
@@ -133,7 +134,6 @@ Information().then(async function(res){
 
 
     socket.on("killer",function(){
-        console.log("killer");
         clearInterval(timer);
     });
 
@@ -164,13 +164,10 @@ Information().then(async function(res){
             createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
 
             const currentTime = Date.parse(new Date());
-            const deadline=new Date(currentTime +   10  *1000);
+            const deadline=new Date(currentTime +   11  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
 
         },2000);
-
-
-
 
     });
 
@@ -203,10 +200,30 @@ Information().then(async function(res){
             const deadline=new Date(currentTime +   10  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
         },2000);
+
     });
 
+    socket.on("WinMessage",function(){
+        swal("Congratulations ,you win",{
+            buttons:{
+                OK:true,
+            },
+        })
+        .then(()=>{
+            location.href="/contest/multi";
+        });
+    });
 
-
+    socket.on("LostMessage",function(){
+        swal("you lose",{
+            buttons:{
+                OK:true,
+            },
+        })
+        .then(()=>{
+            location.href="/contest/multi";
+        });
+    });
 
 });
 
@@ -215,11 +232,6 @@ Information().then(async function(res){
 
 
 //================================以下是function================================================
-
-
-
-
-
 
 
 
@@ -239,8 +251,6 @@ async function newTopic(localStorageSession,countTopicNumber){
     return topic;
 } 
 
-
-
 //create english topic
 function createEnglishTopic(topicEnglish){
     let englishTopicOutput = document.getElementById("topicEnglisg");
@@ -251,16 +261,11 @@ function createEnglishTopic(topicEnglish){
 }
 
 
-
-
-
 // create chinese option and add lisner
 function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room){
-// function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room,firstTimer,secondTimer){
     for (let i=0;topicChinese.length>i;i++){
         let  div =document.getElementById("option");
         let  btn =document.createElement("button");
-        console.log(timer);
         btn.setAttribute("id","btn"+i);
         btn.classList.add("btn"+i);    
         btn.innerHTML =topicChinese[i];
@@ -281,47 +286,47 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
             let res = await fetch("/api/1.0/function/confirmAnswer",config);
             let check = await res.json();
             if (check.message == "correct"){
-                clearInterval(timer);
-                socket.emit("test","test");
-                // alert("恭喜答對");
-                document.querySelector(".scoreNumber").innerHTML++;  //自己的分數++
-                
-                let click=document.querySelector(".btn"+i).className;  //通知房間其他人
-                socket.emit("otherSessionCorrect",click);
-                
-                createDisabled(click);                //自己的頁面更新
-                
-                countTopicNumber++;                    //數自己下一題要達打什麼 更新自己答到哪一題
-                await updataTopicNumber(id,countTopicNumber);
-               
-                setTimeout(async function(){            //過兩秒後做這件事情
-                    killChild();
-                    let config5 = {
-                        method:"POST",
-                        headers:{
-                            session:localStorageSession,
-                            topicNumber:countTopicNumber,
-                            Authorization:"Bearer "+localStorageToken,
-                            "Content-Type": "application/json"
-                        }
-                    };
-                    let res = await fetch("/api/1.0/function/gameBuzzTopic",config5);
-                    let topic =await res.json();
-                    let {topicEnglish,topicChinese} = topic;
-                    createEnglishTopic(topicEnglish);
-                    createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+                let data={sessionNumber,countTopicNumber};
+                socket.emit("raceCondition",data);
+                socket.on("checkOk",async function(){
+                    clearInterval(timer);
+                    document.querySelector(".scoreNumber").innerHTML++;  //自己的分數++
+                    let click=document.querySelector(".btn"+i).className;  //通知房間其他人
+                    socket.emit("otherSessionCorrect",click);
+                    createDisabled(click);                //自己的頁面更新
+                    countTopicNumber++;                    //數自己下一題要達打什麼 更新自己答到哪一題
+                    await updataTopicNumber(id,countTopicNumber);
+                    socket.emit("updataCurrectNumberToSQL",{id});
                     
-                    const currentTime = Date.parse(new Date());
-                    const deadline=new Date(currentTime +   10  *1000);
-                    initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
+                    
+                   
+                    setTimeout(async function(){            //過兩秒後做這件事情
+                        killChild();
+                        let config5 = {
+                            method:"POST",
+                            headers:{
+                                session:localStorageSession,
+                                topicNumber:countTopicNumber,
+                                Authorization:"Bearer "+localStorageToken,
+                                "Content-Type": "application/json"
+                            }
+                        };
+                        let res = await fetch("/api/1.0/function/gameBuzzTopic",config5);
+                        let topic =await res.json();
+                        let {topicEnglish,topicChinese} = topic;
+                        createEnglishTopic(topicEnglish);
+                        createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+                        
+                        const currentTime = Date.parse(new Date());
+                        const deadline=new Date(currentTime +   10  *1000);
+                        initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
+                    },2000);
+                }) ;
 
-                },2000);
             }
 
             
             else if (check.message == "error"){
-                // alert("答錯囉");
-                console.log("我到了error裡面");
                 let click=document.querySelector(".btn"+i).className;
                 socket.emit("otherSessionWrong",click);
                 document.getElementById(click).style.backgroundColor="#FFC0C0";
@@ -336,7 +341,6 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                 };
                 let res= await fetch("/api/1.0/function/confirmStatus",config);
                 let result =await res.json();
-                console.log(result);
                 if (result.message == "true"){
                     let status="false";
                     console.log(id,status);
@@ -344,7 +348,6 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                 }
                 else{
                     clearInterval(timer);
-                    console.log("我有到else這裡");
                     countTopicNumber++;
                     let data={room};
                     let config = {
@@ -367,7 +370,6 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                         initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
                     
                     },2000);
-
                 }
             }
         });
@@ -376,7 +378,6 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
 
 //updata topic number
 async function updataTopicNumber(id,countTopicNumber){
-    console.log("在上面的function");
     //updata now topic number
     let data={id,countTopicNumber};
     let config = {
@@ -469,11 +470,10 @@ function getTimeRemaining(endtime){
 }
 
 function initializeClock(id, endtime,uid,sessionNumber,name,room) {
-// function initializeClock(id, endtime,uid,sessionNumber,name,room,countTopicNumber,firstTimer,secondTimer) {
     const clock = document.getElementById(id);
     timer = setInterval(async () => {
         const t = getTimeRemaining(endtime);
-        clock.innerHTML = "seconds:" + t.seconds;
+        clock.innerHTML = t.seconds;
         if (t.total <= 0) {
             countTopicNumber++;
             clearInterval(timer);

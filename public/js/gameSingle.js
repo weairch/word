@@ -1,3 +1,7 @@
+/* eslint-disable indent */
+/* eslint-disable no-undef */
+
+
 let localStorageToken = localStorage.getItem("Authorization");
 
 
@@ -76,9 +80,9 @@ async function Ready(){
         await fetch("/api/1.0/function/addSingleModeAndSession",config);
   
         //countdown timer 下面設定秒數
-        // const currentTime = Date.parse(new Date());
-        // const deadline=new Date(currentTime +   20  *1000);
-        // initializeClock("clockdiv", deadline,sessionNumber,id);
+        const currentTime = Date.parse(new Date());
+        const deadline=new Date(currentTime +   30  *1000);
+        initializeClock("clockdiv", deadline,sessionNumber,id);
 
 
 
@@ -106,7 +110,8 @@ async function Ready(){
         for (let i=0;chinese.length>i;i++){
             let  div =document.getElementById("option");
             let  btn =document.createElement("button");
-            btn.classList.add("btn"+i);          
+            btn.classList.add("btn"+i);    
+            btn.setAttribute("id","btn"+i);      
             btn.innerHTML =chinese[i];
             div.appendChild(btn);
             document.querySelector(".btn"+i).addEventListener("click",function(){ 
@@ -120,6 +125,14 @@ async function Ready(){
 
 
 async function answer(i,sessionNumber,english,id,name){
+    document.getElementById("btn0").disabled=true;
+    document.getElementById("btn1").disabled=true;
+    document.getElementById("btn2").disabled=true;
+    document.getElementById("btn3").disabled=true;
+    document.getElementById("btn0").style.cursor="default";
+    document.getElementById("btn1").style.cursor="default";
+    document.getElementById("btn2").style.cursor="default";
+    document.getElementById("btn3").style.cursor="default";
     let option=document.querySelector(".btn"+i).textContent;
     let data={sessionNumber,english,id,name,option};
     let config={
@@ -135,51 +148,58 @@ async function answer(i,sessionNumber,english,id,name){
 
 
     if (check.message == "correct"){
-        alert("恭喜答對");
-        
+        document.getElementById("btn"+i).style.color="#f5f7f9";
+        document.getElementById("btn"+i).style.backgroundColor="#00FA9A";
+
         document.querySelector(".scoreNumber").innerHTML++;
 
         let res = await fetch("/api/1.0/function/randomWord");
         let topic = await res.json();
         let { english,chinese } = topic;
         console.log(english,chinese);
-        document.querySelector(".topic").innerHTML=english;
-        let  div =document.getElementById("option");
-        div.innerHTML="";
-        for (let i=0;chinese.length>i;i++){
+        setTimeout(function(){
+            document.querySelector(".topic").innerHTML=english;
             let  div =document.getElementById("option");
-            let  btn =document.createElement("button");
-            btn.classList.add("btn"+i);          
-            btn.innerHTML =chinese[i];
-            div.appendChild(btn);
-            document.querySelector(".btn"+i).addEventListener("click",function(){
-                answer(i,sessionNumber,english,id,name);    
-            });
-        }
+            div.innerHTML="";
+            for (let i=0;chinese.length>i;i++){
+                let  div =document.getElementById("option");
+                let  btn =document.createElement("button");
+                btn.classList.add("btn"+i); 
+                btn.setAttribute("id","btn"+i);         
+                btn.innerHTML =chinese[i];
+                div.appendChild(btn);
+                document.querySelector(".btn"+i).addEventListener("click",function(){
+                    answer(i,sessionNumber,english,id,name);    
+                });
+            }
+        },500);
 
     }
     else if (check.message == "error"){
-
-        alert("答錯囉");
+        document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
+        document.getElementById("btn"+i).style.color="#f5f7f9";
         let res = await fetch("/api/1.0/function/randomWord");
         let topic = await res.json();
         let { english,chinese } = topic;
-        console.log(english,chinese);
-        document.querySelector(".topic").innerHTML=english;
-        let  div =document.getElementById("option");
-        div.innerHTML="";
-        for (let i=0;chinese.length>i;i++){
-            let  div =document.getElementById("option");
-            let  btn =document.createElement("button");
-            btn.classList.add("btn"+i);          
-            btn.innerHTML =chinese[i];
-            div.appendChild(btn);
-            document.querySelector(".btn"+i).addEventListener("click",function(){
-                answer(i,sessionNumber,english,id,name);    
-            });
-        }
-    }
 
+
+        setTimeout(function(){
+            document.querySelector(".topic").innerHTML=english;
+            let  div =document.getElementById("option");
+            div.innerHTML="";
+            for (let i=0;chinese.length>i;i++){
+                let  div =document.getElementById("option");
+                let  btn =document.createElement("button");
+                btn.classList.add("btn"+i);  
+                btn.setAttribute("id","btn"+i);        
+                btn.innerHTML =chinese[i];
+                div.appendChild(btn);
+                document.querySelector(".btn"+i).addEventListener("click",function(){
+                    answer(i,sessionNumber,english,id,name);    
+                });
+            }
+        },500);
+    }
 }
 
 
@@ -189,46 +209,54 @@ async function answer(i,sessionNumber,english,id,name){
 
 
 //=============   clock function   ==============
-// function getTimeRemaining(endtime){
-//     const total = Date.parse(endtime) - Date.parse(new Date());
-//     const seconds = Math.floor( (total/1000) % 60 );
-//     return {
-//         total,
-//         seconds
-//     };
-// }
+function getTimeRemaining(endtime){
+    const total = Date.parse(endtime) - Date.parse(new Date());
+    const seconds = Math.floor( (total/1000) % 60 );
+    return {
+        total,
+        seconds
+    };
+}
 
-// function initializeClock(id, endtime,Session,uid) {
-//     const clock = document.getElementById(id);
-//     const timeinterval = setInterval(() => {
-//         const t = getTimeRemaining(endtime);
-//         clock.innerHTML = "seconds:" + t.seconds;
-//         if (t.total <= 0) {
-//             clearInterval(timeinterval);
+function initializeClock(id, endtime,Session,uid) {
+    const clock = document.getElementById(id);
+    const timeinterval = setInterval(() => {
+        const t = getTimeRemaining(endtime);
+        clock.innerHTML =t.seconds;
+        if (t.total <= 0) {
+            clearInterval(timeinterval);
 
-//             //===============================
-//             console.log(uid,Session);
-//             let data = {uid,Session};
-//             let config={
-//                 method:"POST",
-//                 headers:{
-//                     Authorization:"Bearer "+localStorageToken,
-//                     "Content-Type": "application/json",
-//                 },
-//                 body:JSON.stringify(data)
-//             };
+            //===============================
+            console.log(uid,Session);
+            let data = {uid,Session};
+            let config={
+                method:"POST",
+                headers:{
+                    Authorization:"Bearer "+localStorageToken,
+                    "Content-Type": "application/json",
+                },
+                body:JSON.stringify(data)
+            };
 
-//             fetch("/api/1.0/function/checkAll",config)
-//                 .then(function(res){
-//                     return res.json();
-//                 })
-//                 .then(function(result){
-//                     alert(result.message);
-//                     location.href="/";
+            fetch("/api/1.0/function/checkAll",config)
+                .then(function(res){
+                    return res.json();
+                })
+                .then(function(result){
 
 
-//                 });
+                    swal(result.message,{
+                        buttons:{
+                            OK:true,
+                        },
+                    })
+                    .then(()=>{
+                        location.href="/";
+                    });
+                    
+
+                });
             
-//         }
-//     },1000);
-// }
+        }
+    },1000);
+}

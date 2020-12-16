@@ -54,8 +54,9 @@ body :-ms-input-placeholder {
           transform: translateY(85px);
 }
 .container {
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 1000px;
+  margin: -100px auto;
+  /* margin: 0 auto; */
   /* padding: 50px 0; */
   /* padding: 100px 0; */
   padding: 140px;
@@ -154,23 +155,51 @@ form button:hover {
     z-index: 3;
 }
 
-/* ===================================卡關 */
+.score{
+  margin-right: 200px;
+  font-size: x-large;
+}
+
+.otherScore{
+  margin-left: 200px;
+  font-size: x-large;
+}
+.timer{
+  font-size: 30px;
+}
+
+.topicEnglish{
+  margin-top: 10% ;
+  margin-bottom: 10% ;
+  font-size: 30px ;
+}
+
+.topic{
+  font-size: 50px;
+}
+
+.box1{
+  display: inline-flex;
+}
+
+
 .option {
     width: 500px;
+    margin-left: 135px;
 }
-/* ======================================== */
+
 .btn1 ,.btn3 {
     display: inline;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     margin-top: 20px;
     margin-left: 13px ;
     margin-right: 50px;
     outline: 0;
     background-color: white;
     border: 0;
-    padding: 10px 15px;
+    padding: 15px 15px;
     color: #53e3a6;
-    border-radius: 3px;
+    border-radius: 10px;
     width: 200px;
     cursor: pointer;
     font-size: 20px;
@@ -183,15 +212,15 @@ form button:hover {
 
 .btn0 , .btn2{
     display: inline;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     margin-top: 20px;
     margin-right: 12px;
     outline: 0;
     background-color: white;
     border: 0;
-    padding: 10px 15px;
+    padding: 15px 15px;
     color: #53e3a6;
-    border-radius: 3px;
+    border-radius: 10px;
     width: 200px;
     cursor: pointer;
     font-size: 20px;
@@ -201,6 +230,8 @@ form button:hover {
     position: relative;
     z-index: 3;
 }
+
+
 
 .bg-bubbles {
   position: absolute;

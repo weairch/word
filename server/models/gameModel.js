@@ -105,7 +105,7 @@ const serchStandbyRoom = async function(){
 };
 
 const insertBuzzGame=async function (uid,room){
-    return await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`,`status`) VALUES (?,?,0,'null');",[uid,room]);
+    return await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`,`status`,`currect`) VALUES (?,?,0,'null','0');",[uid,room]);
 };
 
 const deleteBuzzGame= async function(uid){

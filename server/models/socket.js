@@ -99,25 +99,33 @@ function confirmStart(room){
 
 async function checkScoreModeAndReady(room){
     return await query("select * from word.standbyRoom where ready='ready' and mode='Score' and room=?",room);
-    // return new Promise(function(resolve,reject){
-    //     let sql = `select * from word.standbyRoom where room ="${room}" and ready="ready";`;
-    //     query(sql)
-    //         .then(function(result){
-    //             resolve (result);
-    //         })
-    //         .catch(function(err){
-    //             reject (err);
-    //         });
-    // });
 }
 
 async function checkBuzzModeAndReady(room){
     return await query("select * from word.standbyRoom where ready='ready' and mode='Buzz' and room=?",room);
 }
 
+async function updataCurrectNumber(id){
+    return await query("update word.buzzGameRoom set currect=currect+1 where uid = ?",id);
+}
 
+async function checkScore(id){
+    return await query("select currect from word.buzzGameRoom where uid=?;",id);
+}
+
+async function checkGameTopicStatus(session,topicNumber){
+    return await query("select status from word.buzzGameTopic where session=? and topicNumber=?;",[session,topicNumber]);
+}
+
+async function updateGameTopicStatus(session,topicNumber){
+    return await query("update word.buzzGameTopic set `status`='true' where `session`=? and `topicNumber`=?;",[session,topicNumber]);
+}
 
 module.exports={
+    checkGameTopicStatus,
+    updateGameTopicStatus,
+    checkScore,
+    updataCurrectNumber,
     checkScoreModeAndReady,
     checkBuzzModeAndReady,
     confirmStart,
@@ -125,6 +133,5 @@ module.exports={
     sessionNumber,
     deleteStandbyRoom,
     addSocketId,
-    // addNowRoom,
-    // leaveRoom,
+
 };

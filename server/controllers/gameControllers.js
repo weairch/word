@@ -194,8 +194,6 @@ async function gameBuzzTopic(req,res){
 async function nowGameTopicNnumber(req,res){
     let id = req.body.id;
     let number = req.body.countTopicNumber;
-    console.log("我這裡是ID: "+id);
-    console.log("我這裡是NUMBER: "+number);
     try {    
         await updateTopicNnumber(id,number);
     }
