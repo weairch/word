@@ -14,17 +14,22 @@
     <style class="cp-pen-styles"></style>
   </head>
   <body>
-      <div class="wrapper">
-        <h1 class="title" id="title">Score Mode</h1>
-          <div class="container">
-            <div id="otherScore" class="otherScore">他人分數</div>
-            <div id="score" class="score">自己分數</div>
-            <div id="clockdiv" class="clockdiv"> </div>
-            <div id="topicEnglisg" class="topicEnglish">題目:</div>
-            <div id="option" class="option">選項:</div>
-            <div class="topicPosition"></div>
-            <div class="topicNumber"></div>
-	    </div>
+    <div class="wrapper">
+      <h1 class="title" id="title">Score mode</h1>
+        <div class="container">
+          <div class="box1">
+            <div id="score" class="score">Your Score</div>
+            <div class="timer"> Timer
+              <div id="clockdiv">30</div>
+            </div>
+            <div id="otherScore" class="otherScore">Opponent</div>
+          </div>
+
+          <div id="topicEnglisg" class="topicEnglish"></div>
+          <div id="option" class="option"></div>
+          <div class="topicPosition"></div>
+          <div class="topicNumber"></div>
+    </div>
 
 	<ul class="bg-bubbles">
 		<li></li>
@@ -40,47 +45,8 @@
 	</ul>
 </div>
 <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script><script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="../js/gameMulte.js"></script>
 </body>
 </html>
 
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../css/game_miulte.css">
-  <script src = "/socket.io/socket.io.js"></script>
-  <title>ChatCord App</title>
-</head>
-
-<body>
-  <div class="outerContainer"></div>
-  <div class="user1-container">
-    <header class="user1-header">
-      <h1><i class="fas fa-smile"></i> Player1</h1>
-      <a href="http://127.0.0.1:3000/" class="Leave">Leave Room</a>
-    </header> 
-    <main class="user1-main"></main>
-  </div>
-
-  <div id="otherScore" class="otherScore">他人分數</div>
-  <div id="score" class="score">自己分數</div>
-
-  <div id="topicEnglisg" class="topicEnglish">題目:</div>
-  <div id="option" class="option">選項:</div>
-
-  <div class="topicPosition"></div>
-  <div id="clockdiv"> </div>
-  <div class="topicNumber"></div>
-  <div> 
-    <span class="seconds"></span> 
-    <div class="smalltext">Seconds</div> 
-  </div> 
-
-
-
-    <script src="../js/gameMulte.js"></script>
-  </body>
-</html> -->

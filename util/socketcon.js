@@ -1,12 +1,14 @@
 const { 
     deleteStandbyRoom,
     addSocketId,
-
     sessionNumber,
     insertSessionToHistory,
-
     checkScoreModeAndReady,
     checkBuzzModeAndReady,
+    updataCurrectNumber,
+    checkScore,
+    checkGameTopicStatus,
+    updateGameTopicStatus,
 } = require("../server/models/socket");
 
 
@@ -69,7 +71,6 @@ const socketCon=function(io){
     io.on("connection",async function(socket){
         // Online++;
         
-        
         let { user_id ,room , socketId ,name }=socket.handshake.query;
         
         //限制房間人數
@@ -79,7 +80,12 @@ const socketCon=function(io){
         
 
         socket.on("ready",async function(){
-            console.log("點擊次數呢");
+            console.log("點擊準備");
+
+            let time=moment().format("HH:mm:ss");
+            let data={name,time};
+            io.sockets.in(room).emit("userReadyMessage",data);
+            
             await userReady(user_id);
 
             let score = await checkScoreModeAndReady(room);
@@ -95,7 +101,6 @@ const socketCon=function(io){
                 io.sockets.in(room).emit("scorePlayerReady","ready");
             }
             else if (buzz.length ==2){
-                
                 let Number=random(1,2147483647);
                 let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
                 let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
@@ -126,19 +131,16 @@ const socketCon=function(io){
             }
 
         });
+
         socket.on("unReady",function(){
+            let time=moment().format("HH:mm:ss");
+            let data={name,time};
+            io.sockets.in(room).emit("userUnreadyMessage",data);
+
             userUnReady(user_id);
+            console.log("取消準備");
         });
 
-        //這邊每5-10秒打一次  Standby Room
-        let timeOut = 0;
-        const ready=setInterval(async function(){
-            timeOut+=1;
-            if (timeOut == 11){
-                clearInterval(ready);
-                io.sockets.in(socketId).emit("timeOut","連線逾時 請重新進入");
-            }
-        },5000);
 
         //答對
         socket.on("otherSessionCorrect",function(message){
@@ -153,7 +155,6 @@ const socketCon=function(io){
 
         //兩個人都錯了 該換題了
         socket.on("BothError",function(message){
-            console.log("傳到了後端的socket on");
             socket.broadcast.to(room).emit("event3",message);
         });
 
@@ -162,24 +163,54 @@ const socketCon=function(io){
             io.sockets.in(socketId).emit("killer","kill");
         });
 
+        //chat bar
+        socket.on("sendMessage",function(res){
+            let time=moment().format("HH:mm:ss");
+            let {name,room,message}=res;
+            let data = {name,room,time,message};
+            io.sockets.in(socketId).emit("selfInput",data);
+            socket.broadcast.to(room).emit("ortherMessage",data);
+        });
+
+
+        socket.on("joinRoomMessage",function(){
+            let time=moment().format("HH:mm:ss");
+            let data={name,time};
+            io.sockets.in(room).emit("joinRoomWelcomeMessage",data);
+        });
+
+
+        socket.on("updataCurrectNumberToSQL",async function(res){
+            let { id }=res;
+            await updataCurrectNumber(id);
+            let result=await checkScore(id);
+            let score=result[0]["currect"];
+            if (score ==10){ //這裡傳送出贏的訊息 10分者贏
+                io.sockets.in(socketId).emit("WinMessage","Win");
+                socket.broadcast.to(room).emit("LostMessage","Lost");
+            }
+        });
+
+        socket.on("raceCondition",async function(res){
+            let { sessionNumber,countTopicNumber }=res;
+
+            let result=await checkGameTopicStatus(sessionNumber,countTopicNumber);
+            if (result[0]["status"] == null){
+                await updateGameTopicStatus(sessionNumber,countTopicNumber);
+                io.sockets.in(socketId).emit("checkOk","Success");
+            }
+        });
+
+
 
         socket.on("disconnect",function(){
-            // Online--;
-            // console.log(Online);
-
-            //這裡是刪除物件
-            // delete topic[room];
-
-            //這裡是刪除sql
-            // deleteBuzzGameTopic(room);
-
-
-
+            let time=moment().format("HH:mm:ss");
+            let data = {name,time};
+            io.sockets.in(room).emit("leaveRoomMessage",data);
             deleteBuzzGame(user_id);
             console.log(`user: ${name} is left room:${room} `);
             deleteStandbyRoom(user_id);
             // leaveRoom(user_id);
-            clearInterval(ready);
         });
     });
 

@@ -6,27 +6,24 @@ const socket = io({
 });
 
 
-
-
 let localStorageToken = localStorage.getItem("Authorization"); 
-// let config = {
-//     method:"POST",
-//     headers:{
-//         Authorization:"Bearer "+localStorageToken,
-//         "Content-Type": "application/json"
-//     }
-// };
 
-//fetch api => 得到現在房間跟使用者名稱跟ID
-// fetch("/api/1.0/userIdAndNowRoom",config)
-//     .then(function(res){
-//         return res.json();
-//     })
-//     .then(function(user){
-//         console.log(user);
-//         let {id , name , room}=user;
-//         socket.emit("joinRoom",{id,name,room});
-//     });
+const userInformation=async function (){
+    let config = {
+        method:"POST",
+        headers:{
+            Authorization:"Bearer "+localStorageToken,
+            "Content-Type": "application/json"
+        }
+    };
+    // fetch api => 得到現在房間跟使用者名稱跟ID
+    let res=await fetch("/api/1.0/userIdAndNowRoom",config);
+    let user=await res.json();
+    let {id , name , room}=user;
+    socket.emit("joinRoom",{id,name,room});
+    return user;
+};
+
 
 socket.on("sessionNumber",function(number){
     let { mode ,randomNumber }=number;
@@ -43,18 +40,6 @@ socket.on("buzzPlayerReady",function(session){
     location.href="/contest/game/Buzz";
 });
 
-socket.on("timeOut",function(message){
-    alert(message);
-    setTimeout(function(){
-        location.href="/contest/multi";
-    },3000);
-});
-
-
-socket.on("token",function(token){
-    console.log(token);
-    // localStorage.setItem("Authorization",token);
-});
 
 
 socket.on("toMany",function(message){
@@ -62,21 +47,211 @@ socket.on("toMany",function(message){
     location.href="/contest/multi";
 });
 
+
+
+userInformation().then(async function (user){
+    let { name,room }=user;
+    socket.emit("joinRoomMessage","welcome");
+
+
+    document.getElementById("btn").addEventListener("click",function(){
+        let message=document.getElementById("input").value;
+        document.getElementById("input").value="";
+        let data={name,room,message};
+        socket.emit("sendMessage",data);
+    });
+});
+
+
+
+const topBox=document.getElementById("topBox");
+socket.on("selfInput",function(res){
+    console.log("這裡是我拿到我自己的"+res);
+    let {name,time,message}=res;
+
+    //最上層容器
+    let father=document.getElementById("father");
+
+    //第二層(都要綁在它上面)
+    let nodeDiv=document.createElement("div");
+    nodeDiv.classList.add("d-flex");
+    nodeDiv.classList.add("justify-content-start");
+    nodeDiv.classList.add("mb-4");
+    
+    //名字
+    let imagDiv=document.createElement("div");
+    imagDiv.classList.add("img_cont_msg");
+
+    let imagName=document.createElement("div");
+    imagName.classList.add("rounded-circle");
+    imagName.innerHTML=name;
+    imagDiv.appendChild(imagName);
+    
+    //訊息
+    let msgDiv=document.createElement("div");
+    msgDiv.classList.add("msg_cotainer");
+    msgDiv.innerHTML=message;
+    
+    //時間
+    let timeSpan=document.createElement("span");
+    timeSpan.classList.add("msg_time");
+    timeSpan.innerHTML=time;
+    msgDiv.appendChild(timeSpan);
+
+    //最後appendChild
+    nodeDiv.appendChild(imagDiv);
+    nodeDiv.appendChild(msgDiv);
+    father.appendChild(nodeDiv);
+
+    topBox.scrollTop=topBox.scrollHeight;
+});
+
+
+socket.on("ortherMessage",function(res){
+    console.log("這裡是別人傳給我的"+res);
+
+    let {name,time,message}=res;
+
+    //最上層容器
+    let father=document.getElementById("father");
+
+    //第二層容器 都綁在它上面
+    let nodeDiv=document.createElement("div");
+    nodeDiv.classList.add("d-flex");
+    nodeDiv.classList.add("justify-content-end");
+    nodeDiv.classList.add("mb-4");
+
+    //訊息
+    let otherMessage=document.createElement("div");
+    otherMessage.classList.add("msg_cotainer_send");
+    otherMessage.innerHTML=message;
+    
+    //時間
+    let timeSpan=document.createElement("span");
+    timeSpan.classList.add("msg_time_send");
+    timeSpan.innerHTML=time;
+    otherMessage.appendChild(timeSpan);
+    
+    let div=document.createElement("div");
+    div.classList.add("img_cont_msg");
+    let nameDiv=document.createElement("div");
+    nameDiv.innerHTML=name;
+    nameDiv.classList.add("rounded-circle");
+    div.appendChild(nameDiv);
+    
+    nodeDiv.appendChild(otherMessage);
+    nodeDiv.appendChild(div);
+    father.appendChild(nodeDiv);
+
+
+    topBox.scrollTop=topBox.scrollHeight;
+});
+
+
+
+socket.on("joinRoomWelcomeMessage",function(res){
+    let { name,time }=res;
+    console.log(name,time);
+    let message ="歡迎玩家: "+name+" 進入房間";
+    let father=document.getElementById("father");
+
+    let nodeDiv=document.createElement("div");
+    nodeDiv.classList.add("d-flex");
+    nodeDiv.classList.add("justify-content-center");
+    nodeDiv.classList.add("mb-4");
+
+    let otherMessage=document.createElement("div");
+    otherMessage.classList.add("msg_cotainer_send");
+    otherMessage.innerHTML=message;
+    
+    nodeDiv.appendChild(otherMessage);
+    father.appendChild(nodeDiv);
+
+    topBox.scrollTop=topBox.scrollHeight;
+});
+
+
+socket.on("leaveRoomMessage",function(res){
+    let { name,time }=res;
+    console.log(name,time);
+    let message ="玩家: "+name+" 離開房間";
+    let father=document.getElementById("father");
+
+    let nodeDiv=document.createElement("div");
+    nodeDiv.classList.add("d-flex");
+    nodeDiv.classList.add("justify-content-center");
+    nodeDiv.classList.add("mb-4");
+
+    let otherMessage=document.createElement("div");
+    otherMessage.classList.add("msg_cotainer_send");
+    otherMessage.innerHTML=message;
+    
+    nodeDiv.appendChild(otherMessage);
+    father.appendChild(nodeDiv);
+
+    topBox.scrollTop=topBox.scrollHeight;
+});
+
+socket.on("userReadyMessage",function(res){
+    let { name,time }=res;
+    console.log(name,time);
+    let message ="玩家: "+name+" 已準備";
+    let father=document.getElementById("father");
+
+    let nodeDiv=document.createElement("div");
+    nodeDiv.classList.add("d-flex");
+    nodeDiv.classList.add("justify-content-center");
+    nodeDiv.classList.add("mb-4");
+
+    let otherMessage=document.createElement("div");
+    otherMessage.classList.add("msg_cotainer_send");
+    otherMessage.innerHTML=message;
+    
+    nodeDiv.appendChild(otherMessage);
+    father.appendChild(nodeDiv);
+
+    topBox.scrollTop=topBox.scrollHeight;
+});
+
+socket.on("userUnreadyMessage",function(res){
+    let { name,time }=res;
+    console.log(name,time);
+    let message ="玩家: "+name+" 已取消準備";
+    let father=document.getElementById("father");
+
+    let nodeDiv=document.createElement("div");
+    nodeDiv.classList.add("d-flex");
+    nodeDiv.classList.add("justify-content-center");
+    nodeDiv.classList.add("mb-4");
+
+    let otherMessage=document.createElement("div");
+    otherMessage.classList.add("msg_cotainer_send");
+    otherMessage.innerHTML=message;
+    
+    nodeDiv.appendChild(otherMessage);
+    father.appendChild(nodeDiv);
+
+    topBox.scrollTop=topBox.scrollHeight;
+});
+
+
+
 //限制只能點擊一次
-let count=0;
+let count=true;
 // eslint-disable-next-line no-unused-vars
 function ready(){
-    if (count<1){
-        count++;
-        console.log(count);
+    if (count){
+        count=false;
         socket.emit("ready","ready");
     }
-
 }
-
 // eslint-disable-next-line no-unused-vars
 function unReady(){
-    socket.emit("unReady","unready");
+    if (!count){
+        count=true;
+        socket.emit("unReady","unready");
+    }
+
 }
 
 
@@ -85,6 +260,3 @@ document.querySelector(".title").addEventListener("click",function(){
     window.location.href="/";
 });
 
-// socket.on("randomTopic",function(message){
-//     console.log(message);
-// })
