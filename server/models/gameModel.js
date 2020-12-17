@@ -170,11 +170,12 @@ const updateGameTopicStatus= async function (session,topicNumber){
 const raceCondition= async function(session,topicNumber){
     try{
         await transaction();
-        let result=await query("select id from word.buzzGameTopic where session=? and topicNumber=?;",[session,topicNumber]);
+        let result=await query("select id from word.buzzGameTopic where session=? and topicNumber=? ;",[session,topicNumber]);
         let id=result[0]["id"];
         console.log(id);
         let result2=await query("select * from word.buzzGameTopic where `status` is null and id=? FOR UPDATE;",id);
-        console.log(result2);
+        // console.log(result2);
+
         if (result2 == ""){
             await commit();
             return {message:"false"};

@@ -30,6 +30,7 @@ const {
     // deleteBuzzGameTopic,
     randomThirtyWord,
     insertBuzzGame,
+    raceCondition,
 } = require("../server/models/gameModel");
 
 const { 
@@ -204,6 +205,13 @@ const socketCon=function(io){
         // });
 
 
+        // socket.on("confirmWhoWillArriveFirst",async function(res){
+        //     let { sessionNumber,countTopicNumber }=res;
+        //     console.log(sessionNumber);
+        //     console.log(countTopicNumber);
+        //     let result=await raceCondition(sessionNumber,countTopicNumber);
+        //     console.log(result);
+        // });
 
         socket.on("disconnect",function(){
             let time=moment().format("HH:mm:ss");
