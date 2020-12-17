@@ -270,7 +270,9 @@ const updateBuzzGameTopicStatus=async function (req,res){
 };
 
 const confirmWhoWillArriveFirst=async function(req,res){
-    let { sessionNumber,countTopicNumber }=req.body;
+    let { sessionNumber,countTopicNumber,id}=req.body;
+    console.log("我是玩家: "+id);
+    console.log("我送出的場次數字是"+countTopicNumber);
     let result=await raceCondition(sessionNumber,countTopicNumber);
     let {message}=result;
     if (message == "success"){
