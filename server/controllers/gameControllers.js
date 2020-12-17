@@ -20,6 +20,9 @@ const {
     updataStatusAndNumberIfError,
     confirmBuzzGameRoomStatusIsNull,
     updataNoResponseTopicNumber,
+    checkGameTopicStatus,
+    updateGameTopicStatus,
+    raceCondition,
 } = require("../models/gameModel");
 
 
@@ -30,7 +33,7 @@ const {
 
 const moment = require("moment");
 
-function randomNumber(req,res){
+const randomNumber = function (req,res){
     selectFourRandomWord()
         .then(function(result){
             let English=[];
@@ -57,10 +60,10 @@ function randomNumber(req,res){
             console.log(err);
             res.send({message:"Server some thing wrong"});
         });
-}
+};
 
 
-function sessionNumber(req,res){
+const sessionNumber= function (req,res){
     let uid=req.headers.uid;
 
     findSessionNumber(uid)
@@ -71,10 +74,10 @@ function sessionNumber(req,res){
             res.json({message:"Some wrong"});
         });
 
-}
+};
 
 
-async function confirmAnswer(req,res){
+const confirmAnswer =async function (req,res){
     let { sessionNumber,english,id,option } = req.body;
     await insertTopic(id,sessionNumber,english);
     let check =await checkAnswer(english);
@@ -87,9 +90,9 @@ async function confirmAnswer(req,res){
         await insertError(id,sessionNumber,english);
         res.json({message:"error"});
     }
-}
+};
 
-async function lostOrWin(req,res){
+const lostOrWin= async function (req,res){
     let { uid, Session } = req.body;
 
     //找出這場所有的玩家
@@ -126,33 +129,33 @@ async function lostOrWin(req,res){
     else {
         res.json({message:"Something went wrong, please try again"});
     }
-}
+};
 
-async function randomSession(req,res){
+const randomSession =async function (req,res){
     let randomSession=random(1,2147483647);
     res.json({randomSession});
-}
+};
 
 
 
-async function addSingleModeAndSession(req,res){
+const addSingleModeAndSession= async function (req,res){
     let { id } = req.body;
     let sessions=req.body.sessionNumber;
     let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
     let mode="single";
     await addSingleModeAndSessions(id,sessions,moments,mode);
     res.json({message:"遊戲資料已記錄"});
-}
+};
 
-async function checkAll (req,res){
+const checkAll=async function (req,res){
     let { uid,Session } = req.body;
     let result=await confirmedWinRate(uid,Session);
     
     let answer=await checkCorrectAnswer(uid,Session);
     res.json({message:"總共答題了: "+result.length+" 答對了: "+answer[0]["count(*)"]+"題"});
-}
+};
 
-async function serchRoom(req,res){
+const serchRoom = async function (req,res){
     let room =await serchStandbyRoom();
     let roomALL={};
     if (room == ""){
@@ -164,19 +167,18 @@ async function serchRoom(req,res){
         }
         res.json(roomALL);
     }
-   
-}
+};
 
-async function insertBuzzGameInfomation(req,res){
+const insertBuzzGameInfomation= async function (req,res){
     let id=req.body.user.id;
     let room=req.body.user.room;
     await insertBuzzGame(id,room);
 
     res.json({message:"inser success"});
-}
+};
 
 
-async function gameBuzzTopic(req,res){
+const gameBuzzTopic= async function (req,res){
     // console.log(req.headers);
     let session= req.headers.session;
     let topicnumber=req.headers.topicnumber;
@@ -188,10 +190,10 @@ async function gameBuzzTopic(req,res){
     let topic={topicEnglish,topicChinese,topicNumber};
     
     res.json(topic);
-}
+};
 
 
-async function nowGameTopicNnumber(req,res){
+const nowGameTopicNnumber= async function (req,res){
     let id = req.body.id;
     let number = req.body.countTopicNumber;
     try {    
@@ -201,17 +203,17 @@ async function nowGameTopicNnumber(req,res){
         console.log(err);
     }
     res.json({message:"success"});
-}
+};
 
-async function gameStatus(req,res){
+const gameStatus =async function (req,res){
     let id=req.body.id;
     let status=req.body.status;
     await updataTopicError(id,status);
     res.json({mesage:"success"});
 
-}
+};
 
-async function confirmStatus(req,res){
+const confirmStatus= async function (req,res){
     let { room } = req.body;
     let Number = req.body.countTopicNumber;
     let countTopicNumber=Number;
@@ -225,15 +227,15 @@ async function confirmStatus(req,res){
     else {
         res.json({message:"false"});
     }
-}
+};
 
-async function updataStatusAndNumber(req,res){
+const updataStatusAndNumber =async function (req,res){
     let {room}=req.body;
     await updataStatusAndNumberIfError(room);
     res.json({message:"success"});
-}
+};
 
-async function countBuzzGameRoomStatusIsNull(req,res){
+const countBuzzGameRoomStatusIsNull=async function (req,res){
     let { room ,countTopicNumber} = req.body;
     console.log(countTopicNumber);
     let status = await confirmBuzzGameRoomStatusIsNull(room,countTopicNumber);
@@ -241,16 +243,50 @@ async function countBuzzGameRoomStatusIsNull(req,res){
     if (status[0]["count(status)"]){
         res.json({message:"true"});
     }
-}
+};
 
-async function updataTimeOutTopicNumber(req,res){
+const updataTimeOutTopicNumber=async function (req,res){
     let {id}=req.body;
     await updataNoResponseTopicNumber(id);
     res.json({message:"success"});
-}
+};
+
+const checkBuzzGameTopicStatus =async function (req,res){
+    let { sessionNumber,countTopicNumber } =req.body;
+    let result= await checkGameTopicStatus(sessionNumber,countTopicNumber);
+    //null代表還沒有更新過 可以去更新並執行下一個動作
+    if (result[0]["status"] == null){
+        res.json({message:true});
+    }
+    else{
+        res.json({message:false});
+    }
+};
+
+const updateBuzzGameTopicStatus=async function (req,res){
+    let { sessionNumber,countTopicNumber } =req.body;   
+    await updateGameTopicStatus(sessionNumber,countTopicNumber);
+    res.json({message:"success"});
+};
+
+const confirmWhoWillArriveFirst=async function(req,res){
+    let { sessionNumber,countTopicNumber }=req.body;
+    let result=await raceCondition(sessionNumber,countTopicNumber);
+    let {message}=result;
+    if (message == "success"){
+        res.json({message:true});
+    }
+    else if(message == "false"){   
+        res.json({message:"false"});
+    }
+};
+
 
 
 module.exports ={
+    confirmWhoWillArriveFirst,
+    checkBuzzGameTopicStatus,
+    updateBuzzGameTopicStatus,
     updataTimeOutTopicNumber,
     countBuzzGameRoomStatusIsNull,
     updataStatusAndNumber,

@@ -203,8 +203,8 @@ form button:hover {
     width: 200px;
     cursor: pointer;
     font-size: 20px;
-    -webkit-transition-duration: 0.25s;
-            transition-duration: 0.25s;
+    /* -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s; */
     background-color: #f5f7f9;
     position: relative;
     z-index: 3;
@@ -224,8 +224,8 @@ form button:hover {
     width: 200px;
     cursor: pointer;
     font-size: 20px;
-    -webkit-transition-duration: 0.25s;
-            transition-duration: 0.25s;
+    /* -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s; */
     background-color: #f5f7f9;
     position: relative;
     z-index: 3;

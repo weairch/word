@@ -1,14 +1,14 @@
 const { 
     deleteStandbyRoom,
     addSocketId,
-    sessionNumber,
+    // sessionNumber,
     insertSessionToHistory,
     checkScoreModeAndReady,
     checkBuzzModeAndReady,
     updataCurrectNumber,
     checkScore,
-    checkGameTopicStatus,
-    updateGameTopicStatus,
+    // checkGameTopicStatus,
+    // updateGameTopicStatus,
 } = require("../server/models/socket");
 
 
@@ -25,9 +25,9 @@ const {
 
 const {
     deleteBuzzGame, 
-    selectFourRandomWord,
+    // selectFourRandomWord,
     insertToBuzzGameTopic,
-    deleteBuzzGameTopic,
+    // deleteBuzzGameTopic,
     randomThirtyWord,
     insertBuzzGame,
 } = require("../server/models/gameModel");
@@ -191,15 +191,17 @@ const socketCon=function(io){
             }
         });
 
-        socket.on("raceCondition",async function(res){
-            let { sessionNumber,countTopicNumber }=res;
+        // socket.on("raceCondition",async function(res){
+        //     let { sessionNumber,countTopicNumber }=res;
 
-            let result=await checkGameTopicStatus(sessionNumber,countTopicNumber);
-            if (result[0]["status"] == null){
-                await updateGameTopicStatus(sessionNumber,countTopicNumber);
-                io.sockets.in(socketId).emit("checkOk","Success");
-            }
-        });
+        //     let result=await checkGameTopicStatus(sessionNumber,countTopicNumber);
+        //     if (result[0]["status"] == null){
+
+        //         await updateGameTopicStatus(sessionNumber,countTopicNumber);
+        //         console.log("OKOK");
+        //         io.sockets.in(socketId).emit("checkOk","Success");
+        //     }
+        // });
 
 
 
