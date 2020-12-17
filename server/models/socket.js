@@ -113,17 +113,9 @@ async function checkScore(id){
     return await query("select currect from word.buzzGameRoom where uid=?;",id);
 }
 
-async function checkGameTopicStatus(session,topicNumber){
-    return await query("select status from word.buzzGameTopic where session=? and topicNumber=?;",[session,topicNumber]);
-}
 
-async function updateGameTopicStatus(session,topicNumber){
-    return await query("update word.buzzGameTopic set `status`='true' where `session`=? and `topicNumber`=?;",[session,topicNumber]);
-}
 
 module.exports={
-    checkGameTopicStatus,
-    updateGameTopicStatus,
     checkScore,
     updataCurrectNumber,
     checkScoreModeAndReady,

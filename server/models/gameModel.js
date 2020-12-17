@@ -1,5 +1,8 @@
 const { 
-    query
+    query, 
+    transaction, 
+    commit, 
+    rollback
 } =require("../../util/mysqlCon");
 
 
@@ -156,7 +159,44 @@ const updataNoResponseTopicNumber=async function(uid){
     return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='null' where uid = ?;",uid);
 };
 
+const checkGameTopicStatus= async function (session,topicNumber){
+    return await query("select status from word.buzzGameTopic where session=? and topicNumber=?;",[session,topicNumber]);
+};
+
+const updateGameTopicStatus= async function (session,topicNumber){
+    return await query("update word.buzzGameTopic set `status`='true' where `session`=? and `topicNumber`=?;",[session,topicNumber]);
+};
+
+const raceCondition= async function(session,topicNumber){
+    try{
+        await transaction();
+        let result=await query("select id from word.buzzGameTopic where session=? and topicNumber=?;",[session,topicNumber]);
+        let id=result[0]["id"];
+        console.log(id);
+        let result2=await query("select * from word.buzzGameTopic where `status` is null and id=? FOR UPDATE;",id);
+        console.log(result2);
+        if (result2 == ""){
+            await commit();
+            return {message:"false"};
+        }
+        else if (result2){
+            await query("update word.buzzGameTopic set `status`='true' where id=? ;",id);
+            await commit();
+            return {message:"success"};
+        }
+    }
+    catch(error){
+        await rollback();
+        return {error};
+    }
+
+};
+
+
 module.exports ={
+    raceCondition,
+    checkGameTopicStatus,
+    updateGameTopicStatus,
     updataNoResponseTopicNumber,
     confirmBuzzGameRoomStatusIsNull,
     updataStatusAndNumberIfError,

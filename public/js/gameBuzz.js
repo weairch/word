@@ -270,8 +270,9 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
         btn.classList.add("btn"+i);    
         btn.innerHTML =topicChinese[i];
         div.appendChild(btn);
-
+        
         document.querySelector(".btn"+i).addEventListener("click",async function(){
+            console.time("2");
             let english = topicEnglish;
             let option=document.querySelector(".btn"+i).textContent;
             let data={sessionNumber,english,id,name,option,room};
@@ -283,49 +284,68 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                 },
                 body:JSON.stringify(data)
             };
+            console.time("1");
             let res = await fetch("/api/1.0/function/confirmAnswer",config);
             let check = await res.json();
             if (check.message == "correct"){
+                
                 let data={sessionNumber,countTopicNumber};
-                socket.emit("raceCondition",data);
-                socket.on("checkOk",async function(){
-                    clearInterval(timer);
-                    document.querySelector(".scoreNumber").innerHTML++;  //自己的分數++
-                    let click=document.querySelector(".btn"+i).className;  //通知房間其他人
-                    socket.emit("otherSessionCorrect",click);
-                    createDisabled(click);                //自己的頁面更新
-                    countTopicNumber++;                    //數自己下一題要達打什麼 更新自己答到哪一題
-                    await updataTopicNumber(id,countTopicNumber);
-                    socket.emit("updataCurrectNumberToSQL",{id});
+                let config={
+                    method:"POST",
+                    headers:{
+                        Authorization:"Bearer "+localStorageToken,
+                        "Content-Type": "application/json",
+                    },
+                    body:JSON.stringify(data)
+                };
+
+                let res=await fetch("/api/1.0/function/confirmWhoWillArriveFirst",config);
+                let result=await res.json();
+                console.log(result);
+                if(result.message  == true){
                     
+                }
+
+
+                clearInterval(timer);
+                document.querySelector(".scoreNumber").innerHTML++;  //自己的分數++
+                let click=document.querySelector(".btn"+i).className;  //通知房間其他人
+                socket.emit("otherSessionCorrect",click);
+                createDisabled(click);                //自己的頁面更新
+                countTopicNumber++;                    //數自己下一題要達打什麼 更新自己答到哪一題
+                await updataTopicNumber(id,countTopicNumber);
+                socket.emit("updataCurrectNumberToSQL",{id});
+                
+               
+                setTimeout(async function(){            //過兩秒後做這件事情
+                    killChild();
+                    let config5 = {
+                        method:"POST",
+                        headers:{
+                            session:localStorageSession,
+                            topicNumber:countTopicNumber,
+                            Authorization:"Bearer "+localStorageToken,
+                            "Content-Type": "application/json"
+                        }
+                    };
+                    let res = await fetch("/api/1.0/function/gameBuzzTopic",config5);
+                    let topic =await res.json();
+                    let {topicEnglish,topicChinese} = topic;
+                    createEnglishTopic(topicEnglish);
+                    createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
                     
-                   
-                    setTimeout(async function(){            //過兩秒後做這件事情
-                        killChild();
-                        let config5 = {
-                            method:"POST",
-                            headers:{
-                                session:localStorageSession,
-                                topicNumber:countTopicNumber,
-                                Authorization:"Bearer "+localStorageToken,
-                                "Content-Type": "application/json"
-                            }
-                        };
-                        let res = await fetch("/api/1.0/function/gameBuzzTopic",config5);
-                        let topic =await res.json();
-                        let {topicEnglish,topicChinese} = topic;
-                        createEnglishTopic(topicEnglish);
-                        createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
-                        
-                        const currentTime = Date.parse(new Date());
-                        const deadline=new Date(currentTime +   10  *1000);
-                        initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-                    },2000);
-                }) ;
+                    const currentTime = Date.parse(new Date());
+                    const deadline=new Date(currentTime +   10  *1000);
+                    initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
+                },2000);
+
+
+
+                
 
             }
 
-            
+
             else if (check.message == "error"){
                 let click=document.querySelector(".btn"+i).className;
                 socket.emit("otherSessionWrong",click);

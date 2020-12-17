@@ -16,30 +16,37 @@ const mysqlConfig = {
     database : DB_DATABASE, 
 };
 
-const mysqlCon = mysql.createPool(mysqlConfig);
-// const mysqlCon = mysql.createConnection(mysqlConfig);
+// const mysqlCon = mysql.createPool(mysqlConfig);
+const mysqlCon = mysql.createConnection(mysqlConfig);
+
+// function promiseQuery (sql,value){
+//     return new Promise (function(resolve,reject){
+//         mysqlCon.query(sql,value,function(err,result){
+//             if (err){
+//                 reject (err);
+//             }
+//             else{
+//                 resolve (result);
+//             }
+//         });
+//     });
+// }
 
 
+const {promisify} = require("util");
 
-function promiseQuery (sql,value){
-    return new Promise (function(resolve,reject){
-        mysqlCon.query(sql,value,function(err,result){
-            if (err){
-                reject (err);
-            }
-            else{
-                resolve (result);
-            }
-        });
-    });
-}
+const promiseQuery = promisify(mysqlCon.query).bind(mysqlCon);
+const promiseTransaction = promisify(mysqlCon.beginTransaction).bind(mysqlCon);
+const promiseCommit = promisify(mysqlCon.commit).bind(mysqlCon);
+const promiseRollback = promisify(mysqlCon.rollback).bind(mysqlCon);
+const promiseEnd = promisify(mysqlCon.end).bind(mysqlCon);
 
 
 module.exports={
     core: mysql,
     query: promiseQuery,
-    // transaction: promiseTransaction,
-    // commit: promiseCommit,
-    // rollback: promiseRollback,
-    // end: promiseEnd,
+    transaction: promiseTransaction,
+    commit: promiseCommit,
+    rollback: promiseRollback,
+    end: promiseEnd,
 };

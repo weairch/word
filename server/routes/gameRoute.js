@@ -18,6 +18,9 @@ const {
     updataStatusAndNumber,
     countBuzzGameRoomStatusIsNull,
     updataTimeOutTopicNumber,
+    checkBuzzGameTopicStatus,
+    updateBuzzGameTopicStatus,
+    confirmWhoWillArriveFirst,
 } = require("../controllers/gameControllers");
 
 // /api/1.0
@@ -68,6 +71,15 @@ router.route("/function/countBuzzGameRoomStatusIsNull")
 
 router.route("/function/updataTimeOutTopicNumber")
     .post(updataTimeOutTopicNumber);
+
+router.route("/function/checkBuzzGameTopicStatus")
+    .post(checkBuzzGameTopicStatus);
+
+router.route("/function/updateBuzzGameTopicStatus")
+    .post(updateBuzzGameTopicStatus);
+
+router.route("/function/confirmWhoWillArriveFirst")
+    .post(confirmWhoWillArriveFirst);
 
 // router.route("/function/ThirtyWord")
 //     .get(ThirtyWord);
