@@ -141,8 +141,7 @@ Information().then(async function(res){
 
         let element=message;
 
-        //updata now topic number
-        await updataTopicNumber(id,countTopicNumber);
+
         document.getElementById(element).style.backgroundColor="#FFC0C0";
         document.getElementById("btn0").setAttribute("disabled","disabled");
         document.getElementById("btn1").setAttribute("disabled","disabled");
@@ -154,8 +153,9 @@ Information().then(async function(res){
         document.getElementById("btn3").style.cursor="default";
         document.getElementById(element).style.color="#f5f7f9";
         setTimeout(async function(){
+            //updata now topic number
             countTopicNumber++;
-            console.log(countTopicNumber);
+            await updataTopicNumber(id,countTopicNumber);
             clearInterval(timer);
             let number = document.querySelector(".otherScoreNumber");
             number.innerHTML++;
@@ -170,7 +170,7 @@ Information().then(async function(res){
             const deadline=new Date(currentTime +   11  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
 
-        },2000);
+        },1000);
     });
 
     socket.on("event2",async function(message){
@@ -201,7 +201,7 @@ Information().then(async function(res){
             const currentTime = Date.parse(new Date());
             const deadline=new Date(currentTime +   10  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-        },2000);
+        },1000);
 
     });
 
@@ -266,6 +266,7 @@ function createEnglishTopic(topicEnglish){
 // create chinese option and add lisner
 function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room){
     for (let i=0;topicChinese.length>i;i++){
+
         let  div =document.getElementById("option");
         let  btn =document.createElement("button");
         btn.setAttribute("id","btn"+i);
@@ -274,6 +275,8 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
         div.appendChild(btn);
         
         document.querySelector(".btn"+i).addEventListener("click",async function(){
+            clickReaction();
+
             let english = topicEnglish;
             let option=document.querySelector(".btn"+i).textContent;
             let data={sessionNumber,english,id,name,option,room};
@@ -289,8 +292,8 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
             let check = await res.json();
             if (check.message == "correct"){
                 
+                console.log(countTopicNumber);
                 let data={sessionNumber,countTopicNumber,id};
-                // socket.emit("confirmWhoWillArriveFirst",data);
                 let config={
                     method:"POST",
                     headers:{
@@ -302,19 +305,18 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
 
                 let res=await fetch("/api/1.0/function/confirmWhoWillArriveFirst",config);
                 let result=await res.json();
-                console.log(result);
                 if(result.message  == true){
+                    countTopicNumber++;                                     //數自己下一題要達打什麼 更新自己答到哪一題
+                    document.querySelector(".scoreNumber").innerHTML++;     //自己的分數++
+                    let click=document.querySelector(".btn"+i).className;  
                     clearInterval(timer);
-                    document.querySelector(".scoreNumber").innerHTML++;  //自己的分數++
-                    let click=document.querySelector(".btn"+i).className;  //通知房間其他人
-                    socket.emit("otherSessionCorrect",click);
-                    createDisabled(click);                //自己的頁面更新
-                    countTopicNumber++;                    //數自己下一題要達打什麼 更新自己答到哪一題
-                    await updataTopicNumber(id,countTopicNumber);
+                    createDisabled(click);                                  //自己的頁面更新
+                    await updataTopicNumber(id,countTopicNumber);           //自己SQL裡面topicNumber+1
+                    socket.emit("otherSessionCorrect",click);               //通知房間其他人
                     socket.emit("updataCurrectNumberToSQL",{id});
                     
                    
-                    setTimeout(async function(){            //過兩秒後做這件事情
+                    setTimeout(async function(){                            //過兩秒後做這件事情
                         killChild();
                         let config5 = {
                             method:"POST",
@@ -334,27 +336,20 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                         const currentTime = Date.parse(new Date());
                         const deadline=new Date(currentTime +   10  *1000);
                         initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-                    },2000);
+                    },1000);
                     
                 }
 
-
-
-
-
-                
-
             }
-
 
             else if (check.message == "error"){
                 let click=document.querySelector(".btn"+i).className;
                 socket.emit("otherSessionWrong",click);
-                document.getElementById(click).style.backgroundColor="#FFC0C0";
                 wrongDisabled(click);
                 
+                
 
-                let data={room,countTopicNumber};
+                let data={room,countTopicNumber,id};
                 let config = {
                     method:"POST",
                     headers:{"Content-Type": "application/json"},
@@ -362,21 +357,9 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                 };
                 let res= await fetch("/api/1.0/function/confirmStatus",config);
                 let result =await res.json();
-                if (result.message == "true"){
-                    let status="false";
-                    console.log(id,status);
-                    await updateGameStatus(id,status);
-                }
-                else{
+                if (result.message == "false"){
                     clearInterval(timer);
                     countTopicNumber++;
-                    let data={room};
-                    let config = {
-                        method:"POST",
-                        headers:{"Content-Type": "application/json"},
-                        body:JSON.stringify(data)
-                    };
-                    await fetch("/api/1.0/function/updataStatusAndNumber",config);
                     socket.emit("BothError","change Topic");
                     //換題了
                     setTimeout(async function(){
@@ -389,9 +372,41 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                         const currentTime = Date.parse(new Date());
                         const deadline=new Date(currentTime +   10  *1000);
                         initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-                    
-                    },2000);
+                    },1000);
+
                 }
+                // if (result.message == "true"){
+                //     let status="false";
+                //     console.log(id,status);
+                //     //==================================更改這裡
+                //     await updateGameStatus(id,status);
+                //     //===================================
+                // }
+                // else{
+                //     clearInterval(timer);
+                //     countTopicNumber++;
+                //     let data={room};
+                //     let config = {
+                //         method:"POST",
+                //         headers:{"Content-Type": "application/json"},
+                //         body:JSON.stringify(data)
+                //     };
+                //     await fetch("/api/1.0/function/updataStatusAndNumber",config);
+                //     socket.emit("BothError","change Topic");
+                //     //換題了
+                //     setTimeout(async function(){
+                //         killChild();
+                //         let topic=await newTopic(localStorageSession,countTopicNumber);
+                //         let {topicEnglish,topicChinese} = topic;
+                //         createEnglishTopic(topicEnglish);
+                //         createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+
+                //         const currentTime = Date.parse(new Date());
+                //         const deadline=new Date(currentTime +   10  *1000);
+                //         initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
+                    
+                //     },2000);
+                // }
             }
         });
     }
@@ -450,10 +465,7 @@ function killChild(){
 
 
 
-
-
-//答對後反應
-function createDisabled(element){
+function clickReaction(){
     document.getElementById("btn0").setAttribute("disabled","disabled");
     document.getElementById("btn1").setAttribute("disabled","disabled");
     document.getElementById("btn2").setAttribute("disabled","disabled");
@@ -462,6 +474,9 @@ function createDisabled(element){
     document.getElementById("btn1").style.cursor="default";
     document.getElementById("btn2").style.cursor="default";
     document.getElementById("btn3").style.cursor="default";
+}
+//答對後反應
+function createDisabled(element){
     document.getElementById(element).style.backgroundColor="#00FA9A";
     document.getElementById(element).style.color="#f5f7f9";
 }
@@ -478,6 +493,7 @@ function wrongDisabled(element){
     document.getElementById("btn3").style.cursor="default";
     document.getElementById(element).style.backgroundColor="#FFC0C0";
     document.getElementById(element).style.color="#f5f7f9";
+    // document.getElementById(element).style.backgroundColor="#FFC0C0";
 }
 
 // =============   clock function   ==============
