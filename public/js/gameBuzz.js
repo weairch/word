@@ -155,7 +155,6 @@ Information().then(async function(res){
         setTimeout(async function(){
             //updata now topic number
             countTopicNumber++;
-            console.log(countTopicNumber);
             await updataTopicNumber(id,countTopicNumber);
             clearInterval(timer);
             let number = document.querySelector(".otherScoreNumber");
@@ -171,7 +170,7 @@ Information().then(async function(res){
             const deadline=new Date(currentTime +   11  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
 
-        },2000);
+        },1000);
     });
 
     socket.on("event2",async function(message){
@@ -202,7 +201,7 @@ Information().then(async function(res){
             const currentTime = Date.parse(new Date());
             const deadline=new Date(currentTime +   10  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-        },2000);
+        },1000);
 
     });
 
@@ -337,7 +336,7 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                         const currentTime = Date.parse(new Date());
                         const deadline=new Date(currentTime +   10  *1000);
                         initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-                    },2000);
+                    },1000);
                     
                 }
 
@@ -373,7 +372,7 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                         const currentTime = Date.parse(new Date());
                         const deadline=new Date(currentTime +   10  *1000);
                         initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-                    },2000);
+                    },1000);
 
                 }
                 // if (result.message == "true"){
