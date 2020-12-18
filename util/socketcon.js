@@ -192,26 +192,7 @@ const socketCon=function(io){
             }
         });
 
-        // socket.on("raceCondition",async function(res){
-        //     let { sessionNumber,countTopicNumber }=res;
 
-        //     let result=await checkGameTopicStatus(sessionNumber,countTopicNumber);
-        //     if (result[0]["status"] == null){
-
-        //         await updateGameTopicStatus(sessionNumber,countTopicNumber);
-        //         console.log("OKOK");
-        //         io.sockets.in(socketId).emit("checkOk","Success");
-        //     }
-        // });
-
-
-        // socket.on("confirmWhoWillArriveFirst",async function(res){
-        //     let { sessionNumber,countTopicNumber }=res;
-        //     console.log(sessionNumber);
-        //     console.log(countTopicNumber);
-        //     let result=await raceCondition(sessionNumber,countTopicNumber);
-        //     console.log(result);
-        // });
 
         socket.on("disconnect",function(){
             let time=moment().format("HH:mm:ss");
@@ -220,7 +201,6 @@ const socketCon=function(io){
             deleteBuzzGame(user_id);
             console.log(`user: ${name} is left room:${room} `);
             deleteStandbyRoom(user_id);
-            // leaveRoom(user_id);
         });
     });
 

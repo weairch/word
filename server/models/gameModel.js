@@ -108,7 +108,7 @@ const serchStandbyRoom = async function(){
 };
 
 const insertBuzzGame=async function (uid,room){
-    return await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`,`status`,`currect`) VALUES (?,?,0,'null','0');",[uid,room]);
+    return await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`,`status`,`currect`) VALUES (?,?,0,'NULL','0');",[uid,room]);
 };
 
 const deleteBuzzGame= async function(uid){
@@ -135,20 +135,60 @@ const buzzTopic = async function(session,topicNumber){
 };
 
 
+
+//=====================
 const updateTopicNnumber = async function(uid,questionNumber){
-    return await query("UPDATE `word`.`buzzGameRoom` SET `questionNumber` =? , `status`='null' WHERE (`uid` =?);",[questionNumber,uid]); 
+    return await query("UPDATE `word`.`buzzGameRoom` SET `questionNumber` =? , `status`='NULL' WHERE (`uid` =?);",[questionNumber,uid]); 
 };
+//====================
+
 
 const updataTopicError = async function (uid,status){
-    return await query ("UPDATE `word`.`buzzGameRoom` SET `status` = ? WHERE (`uid` = ?)",[status,uid]);
+    try{
+        await transaction();
+        await query ("UPDATE `word`.`buzzGameRoom` SET `status` = ? WHERE (`uid` = ?) ",[status,uid]);
+        await commit();
+        return {message:"success"};
+    }
+    catch(error){
+        await rollback();
+        return {error};
+    }
 };
 
-const confirmBuzzGameRoomStatus = async function (room,questionNumber){
-    return await query("select count(status) from word.buzzGameRoom where Room=? and questionNumber=? and `status`='false';",[room,questionNumber]);
+//======================
+// const confirmBuzzGameRoomStatus = async function (room,questionNumber){
+//     return await query("select count(status) from word.buzzGameRoom where Room=? and questionNumber=? and `status`='false';",[room,questionNumber]);
+// };
+//=====================
+
+const confirmBuzzGameRoomStatus = async function (room,questionNumber,uid){
+    console.log(uid);
+    try{
+        await transaction();
+        let result1 = await query("select count(status) from word.buzzGameRoom where Room=? and questionNumber=? and `status`='false' for update;",[room,questionNumber]);
+        let length=result1[0]["count(status)"];
+
+        if (length == 0){
+            await query("UPDATE `word`.`buzzGameRoom` SET `status` = 'false' WHERE (`uid` = ?)",uid );
+            await commit();
+            return {message:"update status to false"};
+        }
+        else{
+            await query ("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='NULL' where Room = ?",room);
+            await commit();
+            return {message:"Change question"};
+        }
+
+    }
+    catch(error){
+        await rollback();
+        return{error};
+    }
 };
 
 const updataStatusAndNumberIfError = async function (room){
-    return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='null' where Room = ?;",room);
+    return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='NULL' where Room = ?;",room);
 };
 
 const confirmBuzzGameRoomStatusIsNull = async function (room,questionNumber){
@@ -156,7 +196,7 @@ const confirmBuzzGameRoomStatusIsNull = async function (room,questionNumber){
 };
 
 const updataNoResponseTopicNumber=async function(uid){
-    return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='null' where uid = ?;",uid);
+    return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='NULL' where uid = ?;",uid);
 };
 
 const checkGameTopicStatus= async function (session,topicNumber){
@@ -172,9 +212,7 @@ const raceCondition= async function(session,topicNumber){
         await transaction();
         let result=await query("select id from word.buzzGameTopic where session=? and topicNumber=? ;",[session,topicNumber]);
         let id=result[0]["id"];
-        console.log(id);
         let result2=await query("select * from word.buzzGameTopic where `status` is null and id=? FOR UPDATE;",id);
-        // console.log(result2);
 
         if (result2 == ""){
             await commit();

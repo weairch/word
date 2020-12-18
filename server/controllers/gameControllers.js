@@ -214,19 +214,23 @@ const gameStatus =async function (req,res){
 };
 
 const confirmStatus= async function (req,res){
-    let { room } = req.body;
+    let { room ,id} = req.body;
     let Number = req.body.countTopicNumber;
     let countTopicNumber=Number;
-    console.log(countTopicNumber);
-    console.log(room);
-    let result = await confirmBuzzGameRoomStatus(room,countTopicNumber);
-    console.log(result);
-    if (result[0]["count(status)"] == 0){
-        res.json({message:"true"});
-    }
-    else {
+    // console.log(countTopicNumber);
+    // console.log(room);
+    let result = await confirmBuzzGameRoomStatus(room,countTopicNumber,id);
+    let message=result.message;
+    if (message == "Change question"){
         res.json({message:"false"});
     }
+    // console.log(result);
+    // if (result[0]["count(status)"] == 0){
+    //     res.json({message:"true"});
+    // }
+    // else {
+    //     res.json({message:"false"});
+    // }
 };
 
 const updataStatusAndNumber =async function (req,res){
@@ -251,6 +255,7 @@ const updataTimeOutTopicNumber=async function (req,res){
     res.json({message:"success"});
 };
 
+//=============================沒用了======================
 const checkBuzzGameTopicStatus =async function (req,res){
     let { sessionNumber,countTopicNumber } =req.body;
     let result= await checkGameTopicStatus(sessionNumber,countTopicNumber);
@@ -262,6 +267,7 @@ const checkBuzzGameTopicStatus =async function (req,res){
         res.json({message:false});
     }
 };
+//=============================沒用了============================================
 
 const updateBuzzGameTopicStatus=async function (req,res){
     let { sessionNumber,countTopicNumber } =req.body;   
@@ -270,9 +276,7 @@ const updateBuzzGameTopicStatus=async function (req,res){
 };
 
 const confirmWhoWillArriveFirst=async function(req,res){
-    let { sessionNumber,countTopicNumber,id}=req.body;
-    console.log("我是玩家: "+id);
-    console.log("我送出的場次數字是"+countTopicNumber);
+    let { sessionNumber,countTopicNumber}=req.body;
     let result=await raceCondition(sessionNumber,countTopicNumber);
     let {message}=result;
     if (message == "success"){

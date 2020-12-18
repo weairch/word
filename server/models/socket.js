@@ -30,31 +30,6 @@ function addSocketId(uid,socketId){
     });
 }
 
-// function addNowRoom(uid,room){
-//     return new Promise (function(resolve,reject){
-//         let sql = `update word.user set nowRoom = "${room}" where id = "${uid}"`;
-//         query(sql)
-//             .then(function(result){
-//                 resolve (result);
-//             })
-//             .catch(function(err){
-//                 reject (err);
-//             });
-//     });
-// }
-
-// function leaveRoom(uid){
-//     return new Promise(function(resolve,reject){
-//         let sql = `update word.user set nowRoom = "null" where id = "${uid}"`;
-//         query(sql)
-//             .then(function(result){
-//                 resolve (result);
-//             })
-//             .catch(function(err){
-//                 reject (err);
-//             });
-//     });
-// }
 
 
 function sessionNumber(room){
