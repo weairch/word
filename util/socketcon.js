@@ -30,7 +30,7 @@ const {
     // deleteBuzzGameTopic,
     randomThirtyWord,
     insertBuzzGame,
-    raceCondition,
+    // raceCondition,
 } = require("../server/models/gameModel");
 
 const { 
@@ -112,12 +112,12 @@ const socketCon=function(io){
                 }
                 let word=await randomThirtyWord();
                 let final={};
-                for (let i=0 ;30>=i;i++){
+                for (let i=0 ;50>=i;i++){
                     let english=[];
                     let chinese=[];
                     for (let i=1;4>=i;i++){
                         //
-                        let randomNumber= random(0,30);
+                        let randomNumber= random(0,100);
                         chinese.push(word[randomNumber].chinese);
                         english.push(word[randomNumber].english);
                     }

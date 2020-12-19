@@ -127,7 +127,7 @@ const deleteBuzzGameTopic=async function(room){
 
 
 const randomThirtyWord= async function (){
-    return await query("SELECT * FROM word.English3000 ORDER BY RAND() LIMIT 30;");
+    return await query("SELECT * FROM word.English3000 ORDER BY RAND() LIMIT 200;");
 };
 
 const buzzTopic = async function(session,topicNumber){
@@ -143,18 +143,18 @@ const updateTopicNnumber = async function(uid,questionNumber){
 //====================
 
 
-const updataTopicError = async function (uid,status){
-    try{
-        await transaction();
-        await query ("UPDATE `word`.`buzzGameRoom` SET `status` = ? WHERE (`uid` = ?) ",[status,uid]);
-        await commit();
-        return {message:"success"};
-    }
-    catch(error){
-        await rollback();
-        return {error};
-    }
-};
+// const updataTopicError = async function (uid,status){
+//     try{
+//         await transaction();
+//         await query ("UPDATE `word`.`buzzGameRoom` SET `status` = ? WHERE (`uid` = ?) ",[status,uid]);
+//         await commit();
+//         return {message:"success"};
+//     }
+//     catch(error){
+//         await rollback();
+//         return {error};
+//     }
+// };
 
 //======================
 // const confirmBuzzGameRoomStatus = async function (room,questionNumber){
@@ -163,7 +163,6 @@ const updataTopicError = async function (uid,status){
 //=====================
 
 const confirmBuzzGameRoomStatus = async function (room,questionNumber,uid){
-    console.log(uid);
     try{
         await transaction();
         let result1 = await query("select count(status) from word.buzzGameRoom where Room=? and questionNumber=? and `status`='false' for update;",[room,questionNumber]);
@@ -187,9 +186,9 @@ const confirmBuzzGameRoomStatus = async function (room,questionNumber,uid){
     }
 };
 
-const updataStatusAndNumberIfError = async function (room){
-    return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='NULL' where Room = ?;",room);
-};
+// const updataStatusAndNumberIfError = async function (room){
+//     return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='NULL' where Room = ?;",room);
+// };
 
 const confirmBuzzGameRoomStatusIsNull = async function (room,questionNumber){
     return await query(`select count(status) from word.buzzGameRoom where Room=${room} and questionNumber=${questionNumber} and status= 'null' ;`);
@@ -238,9 +237,9 @@ module.exports ={
     updateGameTopicStatus,
     updataNoResponseTopicNumber,
     confirmBuzzGameRoomStatusIsNull,
-    updataStatusAndNumberIfError,
+    // updataStatusAndNumberIfError,
     confirmBuzzGameRoomStatus,
-    updataTopicError,
+    // updataTopicError,
     updateTopicNnumber,
     buzzTopic,
     randomThirtyWord,

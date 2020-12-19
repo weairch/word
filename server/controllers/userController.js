@@ -18,8 +18,8 @@ const jwt = require("jsonwebtoken");
 
 
 function signIn(req,res){
-    let {name , password , email } = req.body;
-    if (!name.length || !password.length || !email.length ){
+    let {password , email } = req.body;
+    if (!password.length || !email.length ){
         return res.status(500).send ({message:"Please enter the correct format"});
     }
     checkUser(email)
@@ -54,30 +54,31 @@ function signIn(req,res){
 }
 
 
-function signUp(req,res){
-    let {name,password,email} = req.body;
-    if (!name.length || !password.length || !email.length ){
-        return res.status(500).send ({message:"Please enter the correct format"});
-    }
-    checkUser(email)
-        .then(function(result){
-            if (result.length > 0){
-                return Promise.reject();
-            }
-            else {
-                return bcrypt.hash(password,8);
-            }
-        })
-        .then(function(hashPwd){
-            return insertUserData(name,email,hashPwd,"native");
-        })
-        .then(function(){
-            res.status(200).send({message:"signUp success"});
-        })
-        .catch(function(){
+async function signUp(req,res){
+    try{
+        let {name,password,email} = req.body;
+        if (!name.length || !password.length || !email.length ){
+            return res.status(500).send ({message:"Please enter the correct format"});
+        }
+        let result=await checkUser(email);
+        if (result.length >0){
             res.status(500).send ({message:"Email already exists"}) ;
-        });
-
+        }
+        else{
+            let hashPwd=await bcrypt.hash(password,8);
+            await insertUserData(name,email,hashPwd,"native");
+            let user=await checkUser(email);
+            let userId=user[0].id;
+            let userName=user[0].name;
+            let userEmail=user[0].email;
+            let payload={id:userId,name:userName,email:userEmail};
+            let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
+            res.status(200).send({message:"signup success",token:token});
+        }
+    }
+    catch{
+        return res.status(500).send ({message:"Email already exists"}) ;
+    }
 }
 
 function checkUserToken (req,res){

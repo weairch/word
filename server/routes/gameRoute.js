@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 const {
     // ThirtyWord,
-    gameStatus,
+    // gameStatus,
     nowGameTopicNnumber,
     gameBuzzTopic,
     randomNumber,
@@ -15,7 +15,7 @@ const {
     serchRoom,
     insertBuzzGameInfomation,
     confirmStatus,
-    updataStatusAndNumber,
+    // updataStatusAndNumber,
     countBuzzGameRoomStatusIsNull,
     updataTimeOutTopicNumber,
     checkBuzzGameTopicStatus,
@@ -57,14 +57,14 @@ router.route("/function/gameBuzzTopic")
 router.route("/function/nowGameTopicNnumber")
     .post(nowGameTopicNnumber);
 
-router.route("/function/updataTopicError")
-    .post(gameStatus);
+// router.route("/function/updataTopicError")
+//     .post(gameStatus);
 
 router.route("/function/confirmStatus")
     .post(confirmStatus);
 
-router.route("/function/updataStatusAndNumber")
-    .post(updataStatusAndNumber);
+// router.route("/function/updataStatusAndNumber")
+//     .post(updataStatusAndNumber);
 
 router.route("/function/countBuzzGameRoomStatusIsNull")
     .post(countBuzzGameRoomStatusIsNull);

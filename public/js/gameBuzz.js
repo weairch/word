@@ -140,8 +140,7 @@ Information().then(async function(res){
     socket.on("event",async function(message){
 
         let element=message;
-
-
+        document.getElementById(element).style.opacity=0.7;
         document.getElementById(element).style.backgroundColor="#FFC0C0";
         document.getElementById("btn0").setAttribute("disabled","disabled");
         document.getElementById("btn1").setAttribute("disabled","disabled");
@@ -175,6 +174,7 @@ Information().then(async function(res){
 
     socket.on("event2",async function(message){
         let element=message;
+        document.getElementById(element).style.opacity=0.7;
         document.getElementById(element).style.backgroundColor="#FFC0C0";
         document.getElementById(element).setAttribute("disabled","disabled");
         document.getElementById(element).style.cursor="default";
@@ -187,14 +187,20 @@ Information().then(async function(res){
         document.getElementById("btn1").setAttribute("disabled","disabled");
         document.getElementById("btn2").setAttribute("disabled","disabled");
         document.getElementById("btn3").setAttribute("disabled","disabled");
-
         // 兩者都答錯了 就換題
+        
         countTopicNumber++;
         setTimeout(async function(){
+            console.log("1:setTimeOut裡面");
             killChild();
+            console.log(countTopicNumber);
+            //============bug========斷在這裡============
             let topic=await newTopic(localStorageSession,countTopicNumber);
-            console.log(topic);
+            // ===========bug========斷在這裡============
+            //fetch會沒有回來 等不到東西 後面code就沒有辦法執行
+            
             let {topicEnglish,topicChinese} = topic;
+            
             createEnglishTopic(topicEnglish);
             createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
             
@@ -250,6 +256,8 @@ async function newTopic(localStorageSession,countTopicNumber){
     };
     let res = await fetch("/api/1.0/function/gameBuzzTopic",config);
     let topic =await res.json();
+    console.log("2.我在這裡面fetch");
+    console.log("3."+topic);
     return topic;
 } 
 
@@ -347,8 +355,6 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                 socket.emit("otherSessionWrong",click);
                 wrongDisabled(click);
                 
-                
-
                 let data={room,countTopicNumber,id};
                 let config = {
                     method:"POST",
@@ -358,6 +364,7 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
                 let res= await fetch("/api/1.0/function/confirmStatus",config);
                 let result =await res.json();
                 if (result.message == "false"){
+                    console.log("這裡是兩邊答錯的開始");
                     clearInterval(timer);
                     countTopicNumber++;
                     socket.emit("BothError","change Topic");
@@ -424,16 +431,16 @@ async function updataTopicNumber(id,countTopicNumber){
     await fetch("/api/1.0/function/nowGameTopicNnumber",config);
 }
 
-async function updateGameStatus(id,status){
-    let data={id,status};
-    let config = {
-        method:"POST",
-        headers:{"Content-Type": "application/json"},
-        body:JSON.stringify(data)
-    };
-    await fetch("/api/1.0/function/updataTopicError",config);
+// async function updateGameStatus(id,status){
+//     let data={id,status};
+//     let config = {
+//         method:"POST",
+//         headers:{"Content-Type": "application/json"},
+//         body:JSON.stringify(data)
+//     };
+//     await fetch("/api/1.0/function/updataTopicError",config);
 
-}
+// }
 
 
 //刪掉原本頁面上有的資訊
@@ -493,7 +500,6 @@ function wrongDisabled(element){
     document.getElementById("btn3").style.cursor="default";
     document.getElementById(element).style.backgroundColor="#FFC0C0";
     document.getElementById(element).style.color="#f5f7f9";
-    // document.getElementById(element).style.backgroundColor="#FFC0C0";
 }
 
 // =============   clock function   ==============

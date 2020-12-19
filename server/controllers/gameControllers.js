@@ -15,9 +15,9 @@ const {
     // randomThirtyWord,
     buzzTopic,
     updateTopicNnumber,
-    updataTopicError,
+    // updataTopicError,
     confirmBuzzGameRoomStatus,
-    updataStatusAndNumberIfError,
+    // updataStatusAndNumberIfError,
     confirmBuzzGameRoomStatusIsNull,
     updataNoResponseTopicNumber,
     checkGameTopicStatus,
@@ -179,17 +179,17 @@ const insertBuzzGameInfomation= async function (req,res){
 
 
 const gameBuzzTopic= async function (req,res){
-    // console.log(req.headers);
+
     let session= req.headers.session;
     let topicnumber=req.headers.topicnumber;
     let result=await buzzTopic(session,topicnumber);
-    
     let { topicEnglish ,topicNumber} = result[0];
     let string = result[0].topicChinese;
     let topicChinese =JSON.parse(string);
     let topic={topicEnglish,topicChinese,topicNumber};
     
     res.json(topic);
+
 };
 
 
@@ -205,13 +205,13 @@ const nowGameTopicNnumber= async function (req,res){
     res.json({message:"success"});
 };
 
-const gameStatus =async function (req,res){
-    let id=req.body.id;
-    let status=req.body.status;
-    await updataTopicError(id,status);
-    res.json({mesage:"success"});
+// const gameStatus =async function (req,res){
+//     let id=req.body.id;
+//     let status=req.body.status;
+//     await updataTopicError(id,status);
+//     res.json({mesage:"success"});
 
-};
+// };
 
 const confirmStatus= async function (req,res){
     let { room ,id} = req.body;
@@ -233,11 +233,11 @@ const confirmStatus= async function (req,res){
     // }
 };
 
-const updataStatusAndNumber =async function (req,res){
-    let {room}=req.body;
-    await updataStatusAndNumberIfError(room);
-    res.json({message:"success"});
-};
+// const updataStatusAndNumber =async function (req,res){
+//     let {room}=req.body;
+//     await updataStatusAndNumberIfError(room);
+//     res.json({message:"success"});
+// };
 
 const countBuzzGameRoomStatusIsNull=async function (req,res){
     let { room ,countTopicNumber} = req.body;
@@ -295,7 +295,7 @@ module.exports ={
     updateBuzzGameTopicStatus,
     updataTimeOutTopicNumber,
     countBuzzGameRoomStatusIsNull,
-    updataStatusAndNumber,
+    // updataStatusAndNumber,
     confirmStatus,
     nowGameTopicNnumber,
     gameBuzzTopic,
@@ -308,5 +308,5 @@ module.exports ={
     randomNumber,
     sessionNumber,
     insertBuzzGameInfomation,
-    gameStatus,
+    // gameStatus,
 };
