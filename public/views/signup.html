@@ -65,6 +65,7 @@
         document.getElementById('signupName').value=""
         document.getElementById('signupPw').value=""
         document.getElementById('signupEmail').value=""
+        localStorage.setItem("Authorization",result.token)
         alert(result.message);
         location.href="/"
     })
