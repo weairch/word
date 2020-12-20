@@ -104,7 +104,7 @@ const checkCorrectAnswer = async function(id,session){
 };
 
 const serchStandbyRoom = async function(){
-    return await query ("select * from word.standbyRoom");
+    return await query ("select Room,mode,count(1) from word.standbyRoom group by Room,mode ;");
 };
 
 const insertBuzzGame=async function (uid,room){

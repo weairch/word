@@ -3,7 +3,6 @@ const {
     checkUser,
     insertUserData,
     verificationToken,
-    userInStandbyRoom,
     CheckForDuplicate
 }     
     = require("../models/userModels");
@@ -101,15 +100,12 @@ function checkUserToken (req,res){
 
 function sqlAddStandbyRoom(req,res){
     let {mode} = req.body;
-    let roomNum=req.headers.room;
+    let roomNum=req.body.room;
     let token = req.get("Authorization").split(" ")[1];
     verificationToken(token,JWT_SECRET)
         .then(function(payload){
-            userInStandbyRoom(payload.id,roomNum,mode,token);
-            return payload;
-        })
-        .then(function(payload){
             payload.room=roomNum;
+            payload.mode=mode;
             let newJWT=jwt.sign(payload,JWT_SECRET);
             res.json(newJWT);
         });
