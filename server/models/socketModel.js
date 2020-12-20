@@ -88,9 +88,12 @@ async function checkScore(id){
     return await query("select currect from word.buzzGameRoom where uid=?;",id);
 }
 
-
+async function NowStandbyRoomAndMode(){
+    return await query("select Room,mode,count(1) from word.standbyRoom group by Room,mode ;;");
+}
 
 module.exports={
+    NowStandbyRoomAndMode,
     checkScore,
     updataCurrectNumber,
     checkScoreModeAndReady,

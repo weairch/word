@@ -1,4 +1,6 @@
 // eslint-disable-next-line no-unused-vars
+
+
 //check user signin or not
 let localStorageToken = localStorage.getItem("Authorization"); 
 let config = {
@@ -28,12 +30,61 @@ fetch("/api/1.0/function/serchRoom")
         return res.json();
     })
     .then(function(result){
+        let topNode = document.querySelector(".topRoom");
+        for (let i=0;Object.keys(result).length>i;i++){
 
-        //=======這裡可以放個定時讓他跑 並顯示在前端頁面上======
-        alert("現在有的房間是"+Object.values(result));
-        //====================================================
+            let room=Object.keys(result)[i];
+            let mode=Object.values(result)[i];
+            
+            let topRoomDiv=document.createElement("div");
+            topRoomDiv.classList.add("room");
+            
+            let roomNumDiv=document.createElement("div");
+            let roomModeDiv=document.createElement("div");
+            roomNumDiv.classList.add("insideRoom");
+            roomNumDiv.setAttribute("id","insideRoom"+i);
+            roomModeDiv.classList.add("insideMode");
+            roomModeDiv.setAttribute("id","insideMode"+i);
+            roomNumDiv.innerHTML="Room: "+room;
+            roomModeDiv.innerHTML="Mode: "+mode;
 
+            topRoomDiv.addEventListener("click",async function(){
+                let roomText=document.getElementById("insideRoom"+i).textContent;
+                let roomNum=roomText.replace("Room: ","");
+                
+                let modeText=document.getElementById("insideMode"+i).textContent;
+                let mode=modeText.replace("Mode: ","");
+                
+                let data = {mode:mode,room:roomNum};
+                let config = {
+                    method:"POST",
+                    body:JSON.stringify(data),
+                    headers:{
+                        Authorization:"Bearer "+localStorageToken,
+                        "Content-Type": "application/json"
+                    }
+                };
+                await fetch("/api/1.0/sqlAddStandbyRoom",config)
+                    .then(function(res){
+                        return res.json();
+                    })
+                    .then(function(token){
+                        localStorage.setItem("Authorization",token);
+                        location.href="/contest/standby";
+                    });
+
+            });
+
+
+            topRoomDiv.appendChild(roomNumDiv);
+            topRoomDiv.appendChild(roomModeDiv);
+            topNode.append(topRoomDiv);
+
+
+        }
     });
+
+
 
 
 
@@ -67,23 +118,22 @@ async function room(){
         };
         let res=await fetch("/api/1.0/checkStandbyRoomModeAndRoom",config);
         let result=await res.json();
-        if (result.message == "This room is a different model"){
+        if (result.message == "This room is a different mode"){
             alert(result.message);
             return location.href="/contest/multi";
         }
     }
     if (roomNum){
-        let data = {mode:mode};
+        let data = {mode:mode,room:roomNum};
         let config = {
             method:"POST",
             body:JSON.stringify(data),
             headers:{
-                room:roomNum,
                 Authorization:"Bearer "+localStorageToken,
                 "Content-Type": "application/json"
             }
         };
-        fetch("/api/1.0/sqlAddStandbyRoom",config)
+        await fetch("/api/1.0/sqlAddStandbyRoom",config)
             .then(function(res){
                 return res.json();
             })
@@ -96,3 +146,72 @@ async function room(){
         alert("Pleast enter correct room format!");
     }
 }
+
+
+
+// eslint-disable-next-line no-undef
+const socket = io({
+    query: {
+        Authorization: localStorage.getItem("Authorization")
+    }
+});
+
+
+socket.on("howManyStandbyRoomsNow",function(result){
+
+    let topNode = document.querySelector(".topRoom");
+    topNode.innerHTML="";
+    
+    console.log(result);
+    for (let i=0;Object.keys(result).length>i;i++){
+
+        let room=Object.keys(result)[i];
+        let mode=Object.values(result)[i];
+        
+        let topRoomDiv=document.createElement("div");
+        topRoomDiv.classList.add("room");
+        
+        let roomNumDiv=document.createElement("div");
+        let roomModeDiv=document.createElement("div");
+        roomNumDiv.classList.add("insideRoom");
+        roomNumDiv.setAttribute("id","insideRoom"+i);
+        roomModeDiv.classList.add("insideMode");
+        roomModeDiv.setAttribute("id","insideMode"+i);
+        roomNumDiv.innerHTML="Room: "+room;
+        roomModeDiv.innerHTML="Mode: "+mode;
+
+        topRoomDiv.addEventListener("click",async function(){
+            let roomText=document.getElementById("insideRoom"+i).textContent;
+            let roomNum=roomText.replace("Room: ","");
+            
+            let modeText=document.getElementById("insideMode"+i).textContent;
+            let mode=modeText.replace("Mode: ","");
+            
+            let data = {mode:mode,room:roomNum};
+            let config = {
+                method:"POST",
+                body:JSON.stringify(data),
+                headers:{
+                    Authorization:"Bearer "+localStorageToken,
+                    "Content-Type": "application/json"
+                }
+            };
+            await fetch("/api/1.0/sqlAddStandbyRoom",config)
+                .then(function(res){
+                    return res.json();
+                })
+                .then(function(token){
+                    localStorage.setItem("Authorization",token);
+                    location.href="/contest/standby";
+                });
+
+        });
+
+
+        topRoomDiv.appendChild(roomNumDiv);
+        topRoomDiv.appendChild(roomModeDiv);
+        topNode.append(topRoomDiv);
+
+
+    }
+});

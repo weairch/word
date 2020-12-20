@@ -9,13 +9,15 @@ const {
     checkScore,
     // checkGameTopicStatus,
     // updateGameTopicStatus,
-} = require("../server/models/socket");
+    NowStandbyRoomAndMode,
+} = require("../server/models/socketModel");
 
 
 const { 
     verificationToken,
     userReady,
-    userUnReady
+    userUnReady,
+    userInStandbyRoom,
 } = require("../server/models/userModels");
 
 
@@ -30,6 +32,7 @@ const {
     // deleteBuzzGameTopic,
     randomThirtyWord,
     insertBuzzGame,
+    buzzTopic,
     // raceCondition,
 } = require("../server/models/gameModel");
 
@@ -71,8 +74,9 @@ const socketCon=function(io){
     // let Online=0;
     io.on("connection",async function(socket){
         // Online++;
-        
+        console.log("connection");
         let { user_id ,room , socketId ,name }=socket.handshake.query;
+
         
         //限制房間人數
         if (io.sockets.adapter.rooms.get(room).size >2){
@@ -137,16 +141,20 @@ const socketCon=function(io){
             let time=moment().format("HH:mm:ss");
             let data={name,time};
             io.sockets.in(room).emit("userUnreadyMessage",data);
-
             userUnReady(user_id);
             console.log("取消準備");
         });
 
 
         //答對
-        socket.on("otherSessionCorrect",function(message){
-            console.log(message);
-            socket.broadcast.to(room).emit("event", message);
+        socket.on("otherSessionCorrect",async function(message){
+            let { countTopicNumber,localStorageSession,click }=message;
+            let result=await buzzTopic(localStorageSession,countTopicNumber);
+            let { topicEnglish } = result[0];
+            let Chinese=result[0].topicChinese;
+            let topicChinese=JSON.parse(Chinese);
+            let data={element:click,topicEnglish,topicChinese};
+            socket.broadcast.to(room).emit("event",data);
         });
 
         //一個人答錯 給另外一個人反應畫面
@@ -155,14 +163,17 @@ const socketCon=function(io){
         });
 
         //兩個人都錯了 該換題了
-        socket.on("BothError",function(message){
-            socket.broadcast.to(room).emit("event3",message);
+        socket.on("BothError",async function(message){
+            // console.log(message);
+            let { countTopicNumber,localStorageSession }=message;
+            let result=await buzzTopic(localStorageSession,countTopicNumber);
+            let { topicEnglish } = result[0];
+            let Chinese=result[0].topicChinese;
+            let topicChinese=JSON.parse(Chinese);
+            let data={topicEnglish,topicChinese};
+            socket.broadcast.to(room).emit("event3",data);
         });
 
-        socket.on("test",function(){
-            console.log("收到了");
-            io.sockets.in(socketId).emit("killer","kill");
-        });
 
         //chat bar
         socket.on("sendMessage",function(res){
@@ -193,14 +204,45 @@ const socketCon=function(io){
         });
 
 
+        socket.on("addStandbyRoomToSQL",async function(token){
+            let res=await verificationToken(token,JWT_SECRET);
+            let { id,room,mode }=res;
+            await userInStandbyRoom(id,room,mode,token);
+        });
 
-        socket.on("disconnect",function(){
+
+        socket.on("tellEveryoneAboutTheRoom",async function(){
+            let room=await NowStandbyRoomAndMode();
+            let nowRoom={};
+            for(let i=0;room.length>i;i++){
+                if (room[i]["count(1)"]<2){
+                    nowRoom[room[i]["Room"]]=room[i]["mode"];
+                }
+            }
+            io.sockets.emit("howManyStandbyRoomsNow",nowRoom);
+        });
+
+
+
+        socket.on("disconnect",async function(){
             let time=moment().format("HH:mm:ss");
             let data = {name,time};
             io.sockets.in(room).emit("leaveRoomMessage",data);
             deleteBuzzGame(user_id);
             console.log(`user: ${name} is left room:${room} `);
             deleteStandbyRoom(user_id);
+
+
+
+
+            let totalRoom=await NowStandbyRoomAndMode();
+            let nowRoom={};
+            for(let i=0;totalRoom.length>i;i++){
+                if (totalRoom[i]["count(1)"]<2){
+                    nowRoom[totalRoom[i]["Room"]]=totalRoom[i]["mode"];
+                }
+            }
+            io.sockets.emit("howManyStandbyRoomsNow",nowRoom);
         });
     });
 

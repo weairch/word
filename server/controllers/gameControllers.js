@@ -157,15 +157,17 @@ const checkAll=async function (req,res){
 
 const serchRoom = async function (req,res){
     let room =await serchStandbyRoom();
-    let roomALL={};
+    let roomAll={};
     if (room == ""){
-        res.json({message:"目前沒有人開啟房間"});
+        res.json("");
     }
     else if (room.length){
-        for (let i=0 ; room.length>i ;i++ ){
-            roomALL["room"+i]=room[i].Room;
+        for(let i=0;room.length>i;i++){
+            if (room[i]["count(1)"]<2){
+                roomAll[room[i]["Room"]]=room[i]["mode"];
+            }
         }
-        res.json(roomALL);
+        res.json(roomAll);
     }
 };
 
@@ -179,9 +181,10 @@ const insertBuzzGameInfomation= async function (req,res){
 
 
 const gameBuzzTopic= async function (req,res){
-
-    let session= req.headers.session;
-    let topicnumber=req.headers.topicnumber;
+    //這裡會收不到其中一個人答錯的東西
+    // console.log(req.body);
+    let session= req.body.session;
+    let topicnumber=req.body.topicNumber;
     let result=await buzzTopic(session,topicnumber);
     let { topicEnglish ,topicNumber} = result[0];
     let string = result[0].topicChinese;

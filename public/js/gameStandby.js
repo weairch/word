@@ -8,6 +8,12 @@ const socket = io({
 
 let localStorageToken = localStorage.getItem("Authorization"); 
 
+
+socket.emit("addStandbyRoomToSQL",localStorageToken);
+setTimeout(function(){
+    socket.emit("tellEveryoneAboutTheRoom","roomNow");
+},500);
+
 const userInformation=async function (){
     let config = {
         method:"POST",
@@ -152,7 +158,7 @@ socket.on("ortherMessage",function(res){
 socket.on("joinRoomWelcomeMessage",function(res){
     let { name,time }=res;
     console.log(name,time);
-    let message ="歡迎玩家: "+name+" 進入房間";
+    let message ="Welcome Player: "+name+" join room";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");
@@ -174,7 +180,7 @@ socket.on("joinRoomWelcomeMessage",function(res){
 socket.on("leaveRoomMessage",function(res){
     let { name,time }=res;
     console.log(name,time);
-    let message ="玩家: "+name+" 離開房間";
+    let message ="Player: "+name+" leave room";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");
@@ -195,7 +201,7 @@ socket.on("leaveRoomMessage",function(res){
 socket.on("userReadyMessage",function(res){
     let { name,time }=res;
     console.log(name,time);
-    let message ="玩家: "+name+" 已準備";
+    let message ="Player: "+name+" is ready";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");
@@ -216,7 +222,7 @@ socket.on("userReadyMessage",function(res){
 socket.on("userUnreadyMessage",function(res){
     let { name,time }=res;
     console.log(name,time);
-    let message ="玩家: "+name+" 已取消準備";
+    let message ="Player: "+name+" is waitting";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");
