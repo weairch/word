@@ -58,6 +58,8 @@ socket.on("toMany",function(message){
 userInformation().then(async function (user){
     let { name,room }=user;
     socket.emit("joinRoomMessage","welcome");
+    socket.emit("roomUser",room);
+ 
 
 
     document.getElementById("btn").addEventListener("click",function(){
@@ -66,6 +68,19 @@ userInformation().then(async function (user){
         let data={name,room,message};
         socket.emit("sendMessage",data);
     });
+
+});
+
+socket.on("userList",function(list){
+    let topUserBox=document.querySelector(".user");
+    topUserBox.innerHTML="";
+
+    for (let i=0;list.length>i;i++){
+        let userName=list[i];
+        let userDiv=document.createElement("div");
+        userDiv.innerHTML=userName;
+        topUserBox.appendChild(userDiv);
+    }
 });
 
 
@@ -155,6 +170,8 @@ socket.on("ortherMessage",function(res){
 
 
 
+
+
 socket.on("joinRoomWelcomeMessage",function(res){
     let { name,time }=res;
     console.log(name,time);
@@ -170,6 +187,13 @@ socket.on("joinRoomWelcomeMessage",function(res){
     otherMessage.classList.add("msg_cotainer_send");
     otherMessage.innerHTML=message;
     
+    // let userList=document.querySelector(".user");
+    // let userDiv=document.createElement("div");
+    // userDiv.setAttribute("id",name);
+    // userDiv.classList.add(name);
+    // userDiv.innerHTML=name;
+    // userList.appendChild(userDiv);
+
     nodeDiv.appendChild(otherMessage);
     father.appendChild(nodeDiv);
 

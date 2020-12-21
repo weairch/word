@@ -163,7 +163,7 @@ async function answer(i,sessionNumber,english,id,name,room){
     if (check.message == "correct"){
 
         //通知房間其他人
-        socket.emit("otherSessionCorrect","correct");
+        socket.emit("otherOneChangeTopic","currect");
         document.getElementById("btn"+i).style.backgroundColor="#00FA9A";
         document.getElementById("btn"+i).style.color="#f5f7f9";
         

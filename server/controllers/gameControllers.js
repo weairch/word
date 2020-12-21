@@ -12,12 +12,9 @@ const {
     checkCorrectAnswer,
     serchStandbyRoom,
     insertBuzzGame,
-    // randomThirtyWord,
     buzzTopic,
     updateTopicNnumber,
-    // updataTopicError,
     confirmBuzzGameRoomStatus,
-    // updataStatusAndNumberIfError,
     confirmBuzzGameRoomStatusIsNull,
     updataNoResponseTopicNumber,
     checkGameTopicStatus,
@@ -208,32 +205,18 @@ const nowGameTopicNnumber= async function (req,res){
     res.json({message:"success"});
 };
 
-// const gameStatus =async function (req,res){
-//     let id=req.body.id;
-//     let status=req.body.status;
-//     await updataTopicError(id,status);
-//     res.json({mesage:"success"});
 
-// };
 
 const confirmStatus= async function (req,res){
     let { room ,id} = req.body;
     let Number = req.body.countTopicNumber;
     let countTopicNumber=Number;
-    // console.log(countTopicNumber);
-    // console.log(room);
+
     let result = await confirmBuzzGameRoomStatus(room,countTopicNumber,id);
     let message=result.message;
     if (message == "Change question"){
         res.json({message:"false"});
     }
-    // console.log(result);
-    // if (result[0]["count(status)"] == 0){
-    //     res.json({message:"true"});
-    // }
-    // else {
-    //     res.json({message:"false"});
-    // }
 };
 
 // const updataStatusAndNumber =async function (req,res){

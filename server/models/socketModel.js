@@ -92,7 +92,29 @@ async function NowStandbyRoomAndMode(){
     return await query("select Room,mode,count(1) from word.standbyRoom group by Room,mode ;;");
 }
 
+async function standbyRoomUser(room){
+    try{
+        if (room==undefined){
+            return;
+        }
+        else{
+            let userNmae=[];
+            let res=await query("select * from word.standbyRoom where Room=?",room);
+            for (let i=0;res.length>i;i++){
+                let user=await query("select name from word.user where id=?",res[i].uid);
+                userNmae.push(user[0]["name"]);
+            }
+            return userNmae;
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+
 module.exports={
+    standbyRoomUser,
     NowStandbyRoomAndMode,
     checkScore,
     updataCurrectNumber,

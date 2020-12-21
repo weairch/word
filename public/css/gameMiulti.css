@@ -65,6 +65,7 @@ body :-ms-input-placeholder {
 }
 
 .title {
+    margin-right: 60%;
     cursor: pointer;
     position: relative;
     z-index: 2;

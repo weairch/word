@@ -123,6 +123,7 @@ form button:hover {
 }
 
 .title{
+  margin-right: 60%;
     cursor: pointer;
     position: relative;
     z-index: 2;
@@ -275,15 +276,30 @@ form button:hover {
   margin-right: 20%;
   position: relative;
   z-index: 2;
+  display: contents;
 }
 
-.card{
-  height: 420px;
+.contacts_card{
+  height: 100px;
+  width: 90px;
   border-radius: 15px !important;
   background-color: rgba(0,0,0,0.4) !important;
 }
+.card-header{
+  text-align: center;
+}
+.card{
+  height: 420px;
+  width:400px;
+  border-radius: 15px !important;
+  background-color: rgba(0,0,0,0.4) !important;
+  position: relative;
+  z-index: 2;
+}
 
-
+.user{
+  text-align: center;
+}
 .type_msg{
   background-color: rgba(0,0,0,0.3) !important;
   border:0 !important;
