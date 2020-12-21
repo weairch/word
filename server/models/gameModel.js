@@ -79,7 +79,15 @@ const insertCorrect = async function (uid,session,topic){
 };
 
 const insertError = async function (uid,session,topic){
-    return await query("update word.game_detail set correct = 'error' where uid = ? and gid=? and topic=?",[uid,session,topic]);
+    try{
+        await transaction();
+        await query("update word.game_detail set correct = 'error' where uid = ? and gid=? and topic=?",[uid,session,topic]);
+        await commit();
+    }
+    catch(error){
+        await rollback();
+        console.log(error);
+    }
 };
 
 const selectSessionPlayer = async function(session){
@@ -131,7 +139,10 @@ const randomThirtyWord= async function (){
 };
 
 const buzzTopic = async function(session,topicNumber){
-    return await query(`select * from word.buzzGameTopic where session=${session} and topicNumber="${topicNumber}";`);
+    // ;
+    // console.log(topicNumber);
+    return await query(`select * from word.buzzGameTopic where session='${session}' and topicNumber="${topicNumber}";`);
+    // return await query("select * from word.buzzGameTopic where session=? and topicNumber=?",[session,topicNumber]);
 };
 
 
@@ -167,7 +178,6 @@ const confirmBuzzGameRoomStatus = async function (room,questionNumber,uid){
         await transaction();
         let result1 = await query("select count(status) from word.buzzGameRoom where Room=? and questionNumber=? and `status`='false' for update;",[room,questionNumber]);
         let length=result1[0]["count(status)"];
-
         if (length == 0){
             await query("UPDATE `word`.`buzzGameRoom` SET `status` = 'false' WHERE (`uid` = ?)",uid );
             await commit();
@@ -185,10 +195,6 @@ const confirmBuzzGameRoomStatus = async function (room,questionNumber,uid){
         return{error};
     }
 };
-
-// const updataStatusAndNumberIfError = async function (room){
-//     return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='NULL' where Room = ?;",room);
-// };
 
 const confirmBuzzGameRoomStatusIsNull = async function (room,questionNumber){
     return await query(`select count(status) from word.buzzGameRoom where Room=${room} and questionNumber=${questionNumber} and status= 'null' ;`);
@@ -211,8 +217,8 @@ const raceCondition= async function(session,topicNumber){
         await transaction();
         let result=await query("select id from word.buzzGameTopic where session=? and topicNumber=? ;",[session,topicNumber]);
         let id=result[0]["id"];
-        let result2=await query("select * from word.buzzGameTopic where `status` is null and id=? FOR UPDATE;",id);
 
+        let result2=await query("select * from word.buzzGameTopic where `status` is null and id=? FOR UPDATE;",id);
         if (result2 == ""){
             await commit();
             return {message:"false"};

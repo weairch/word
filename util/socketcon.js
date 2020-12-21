@@ -1,15 +1,13 @@
 const { 
     deleteStandbyRoom,
     addSocketId,
-    // sessionNumber,
     insertSessionToHistory,
     checkScoreModeAndReady,
     checkBuzzModeAndReady,
     updataCurrectNumber,
     checkScore,
-    // checkGameTopicStatus,
-    // updateGameTopicStatus,
     NowStandbyRoomAndMode,
+    standbyRoomUser,
 } = require("../server/models/socketModel");
 
 
@@ -27,13 +25,17 @@ const {
 
 const {
     deleteBuzzGame, 
-    // selectFourRandomWord,
     insertToBuzzGameTopic,
-    // deleteBuzzGameTopic,
     randomThirtyWord,
     insertBuzzGame,
     buzzTopic,
-    // raceCondition,
+    updateTopicNnumber,
+    insertTopic,
+    insertCorrect,
+    insertError,
+    checkAnswer,
+    raceCondition,
+    confirmBuzzGameRoomStatus,
 } = require("../server/models/gameModel");
 
 const { 
@@ -73,7 +75,6 @@ const socketCon=function(io){
     });
     // let Online=0;
     io.on("connection",async function(socket){
-        // Online++;
         console.log("connection");
         let { user_id ,room , socketId ,name }=socket.handshake.query;
 
@@ -84,6 +85,9 @@ const socketCon=function(io){
         } 
         
 
+
+
+        //chat bar
         socket.on("ready",async function(){
             console.log("點擊準備");
 
@@ -136,6 +140,20 @@ const socketCon=function(io){
             }
 
         });
+        
+        socket.on("sendMessage",function(res){
+            let time=moment().format("HH:mm:ss");
+            let {name,room,message}=res;
+            let data = {name,room,time,message};
+            io.sockets.in(socketId).emit("selfInput",data);
+            socket.broadcast.to(room).emit("ortherMessage",data);
+        });
+
+        socket.on("joinRoomMessage",function(){
+            let time=moment().format("HH:mm:ss");
+            let data={name,time};
+            io.sockets.in(room).emit("joinRoomWelcomeMessage",data);
+        });
 
         socket.on("unReady",function(){
             let time=moment().format("HH:mm:ss");
@@ -145,11 +163,94 @@ const socketCon=function(io){
             console.log("取消準備");
         });
 
+        socket.on("tellEveryoneAboutTheRoom",async function(){
+            let room=await NowStandbyRoomAndMode();
+            let nowRoom={};
+            for(let i=0;room.length>i;i++){
+                if (room[i]["count(1)"]<2){
+                    nowRoom[room[i]["Room"]]=room[i]["mode"];
+                }
+            }
+            io.sockets.emit("howManyStandbyRoomsNow",nowRoom);
+        });
+
+        socket.on("roomUser",async function(room){
+            console.log(room);
+            let list=await standbyRoomUser(room);
+            io.sockets.in(room).emit("userList",list);
+        });
+
+
+
+
+
+
+        //buzz mode
+        socket.on("confirmAnswer",async function(message){
+            let { sessionNumber,english,id,name,option,room,countTopicNumber,i }=message;
+            await insertTopic(id,sessionNumber,english);
+            let check =await checkAnswer(english);
+            let answer = check[0].chinese;
+            //correct
+            if (answer == option){
+                await insertCorrect(id,sessionNumber,english);
+                let result=await raceCondition(sessionNumber,countTopicNumber);
+
+                let {message}=result;
+                if (message == "success"){
+                    let data={sessionNumber,english,id,name,option,room,i};
+                    io.sockets.in(socketId).emit("correct",data);
+                }
+            }
+
+            //error
+            else {
+                await insertError(id,sessionNumber,english);
+                socket.broadcast.to(room).emit("event2",i);
+                io.sockets.in(socketId).emit("selfError",i);
+                let result = await confirmBuzzGameRoomStatus(room,countTopicNumber,id);
+                if (result.message == "Change question"){
+                    countTopicNumber++;
+
+                    result=await buzzTopic(sessionNumber,countTopicNumber);
+                    let { topicEnglish } = result[0];
+                    let Chinese=result[0].topicChinese;
+                    let topicChinese=JSON.parse(Chinese);
+                    let data={topicEnglish,topicChinese};
+                    socket.broadcast.to(room).emit("event3",data);
+
+                    let information={id,sessionNumber,name,room,topicChinese,topicEnglish};
+                    io.sockets.in(socketId).emit("error",information);
+                }
+
+            }
+        });
+
+
+
+        socket.on("newTopic",async function(message){
+            let { id,name,room,countTopicNumber}=message;
+            let session=message.sessionNumber;
+            let result=await buzzTopic(session,countTopicNumber);
+            let { topicEnglish ,topicNumber} = result[0];
+            let string = result[0].topicChinese;
+            let topicChinese =JSON.parse(string);
+            let data={topicEnglish,topicChinese,topicNumber,id,name,room,session};
+            io.sockets.in(socketId).emit("createNewTopic",data);
+        });
+
+
+
+
+        socket.on("otherOneChangeTopic",function(message){
+            socket.broadcast.to(room).emit("event",message);
+        });
 
         //答對
         socket.on("otherSessionCorrect",async function(message){
             let { countTopicNumber,localStorageSession,click }=message;
-            let result=await buzzTopic(localStorageSession,countTopicNumber);
+            let session=localStorageSession.replace("\"","").replace("\"","");
+            let result=await buzzTopic(session,countTopicNumber);
             let { topicEnglish } = result[0];
             let Chinese=result[0].topicChinese;
             let topicChinese=JSON.parse(Chinese);
@@ -157,40 +258,11 @@ const socketCon=function(io){
             socket.broadcast.to(room).emit("event",data);
         });
 
-        //一個人答錯 給另外一個人反應畫面
-        socket.on("otherSessionWrong",function(message){
-            socket.broadcast.to(room).emit("event2", message);
+
+        socket.on("updataTopicNumber",async function(message){
+            let {id,countTopicNumber} = message;
+            await updateTopicNnumber(id,countTopicNumber);
         });
-
-        //兩個人都錯了 該換題了
-        socket.on("BothError",async function(message){
-            // console.log(message);
-            let { countTopicNumber,localStorageSession }=message;
-            let result=await buzzTopic(localStorageSession,countTopicNumber);
-            let { topicEnglish } = result[0];
-            let Chinese=result[0].topicChinese;
-            let topicChinese=JSON.parse(Chinese);
-            let data={topicEnglish,topicChinese};
-            socket.broadcast.to(room).emit("event3",data);
-        });
-
-
-        //chat bar
-        socket.on("sendMessage",function(res){
-            let time=moment().format("HH:mm:ss");
-            let {name,room,message}=res;
-            let data = {name,room,time,message};
-            io.sockets.in(socketId).emit("selfInput",data);
-            socket.broadcast.to(room).emit("ortherMessage",data);
-        });
-
-
-        socket.on("joinRoomMessage",function(){
-            let time=moment().format("HH:mm:ss");
-            let data={name,time};
-            io.sockets.in(room).emit("joinRoomWelcomeMessage",data);
-        });
-
 
         socket.on("updataCurrectNumberToSQL",async function(res){
             let { id }=res;
@@ -211,16 +283,6 @@ const socketCon=function(io){
         });
 
 
-        socket.on("tellEveryoneAboutTheRoom",async function(){
-            let room=await NowStandbyRoomAndMode();
-            let nowRoom={};
-            for(let i=0;room.length>i;i++){
-                if (room[i]["count(1)"]<2){
-                    nowRoom[room[i]["Room"]]=room[i]["mode"];
-                }
-            }
-            io.sockets.emit("howManyStandbyRoomsNow",nowRoom);
-        });
 
 
 
@@ -233,7 +295,8 @@ const socketCon=function(io){
             deleteStandbyRoom(user_id);
 
 
-
+            let list=await standbyRoomUser(room);
+            io.sockets.in(room).emit("userList",list);
 
             let totalRoom=await NowStandbyRoomAndMode();
             let nowRoom={};
@@ -247,6 +310,7 @@ const socketCon=function(io){
     });
 
 };
+
 
 module.exports= {
     socketCon

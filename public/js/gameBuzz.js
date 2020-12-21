@@ -52,7 +52,9 @@ const Information= async function () {
     let res1 = await fetch("/api/1.0/needInformationStartGame",config);
     let user = await res1.json();
 
-    let topic=await newTopic(localStorageSession,countTopicNumber);
+    let session1=localStorageSession.replace("\"","").replace("\"","");
+    // let topic=await newTopic(localStorageSession,countTopicNumber);
+    let topic=await fetchnewTopic(session1,countTopicNumber);
 
     let session ={
         method:"GET",
@@ -140,9 +142,9 @@ Information().then(async function(res){
         document.getElementById("btn3").style.cursor="default";
         document.getElementById(element).style.color="#f5f7f9";
         setTimeout(async function(){
-            //updata now topic number
             countTopicNumber++;
-            await updataTopicNumber(id,countTopicNumber);
+            let data={id,countTopicNumber};
+            socket.emit("updataTopicNumber",data);
             clearInterval(timer);
             let number = document.querySelector(".otherScoreNumber");
             number.innerHTML++;
@@ -159,12 +161,13 @@ Information().then(async function(res){
     });
 
     socket.on("event2",async function(message){
-        let element=message;
-        document.getElementById(element).style.opacity=0.7;
-        document.getElementById(element).style.backgroundColor="#FFC0C0";
-        document.getElementById(element).setAttribute("disabled","disabled");
-        document.getElementById(element).style.cursor="default";
-        document.getElementById(element).style.color="#f5f7f9"; 
+        console.log(message);
+        let i=message;
+        document.getElementById("btn"+i).style.opacity=0.7;
+        document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
+        document.getElementById("btn"+i).setAttribute("disabled","disabled");
+        document.getElementById("btn"+i).style.cursor="default";
+        document.getElementById("btn"+i).style.color="#f5f7f9"; 
     });
 
     socket.on("event3",async function(topic){
@@ -176,7 +179,6 @@ Information().then(async function(res){
         
         countTopicNumber++;
         setTimeout(async function(){
-            console.log("1:setTimeOut裡面");
             killChild();
            
             let {topicEnglish,topicChinese} = topic;   
@@ -223,9 +225,8 @@ Information().then(async function(res){
 
 
 //get new topic
-async function newTopic(localStorageSession,countTopicNumber){
+async function fetchnewTopic(localStorageSession,countTopicNumber){
     let data = {session:localStorageSession,topicNumber:countTopicNumber};
-    console.log(data);
     let config = {
         method:"POST",
         body:JSON.stringify(data),
@@ -236,8 +237,6 @@ async function newTopic(localStorageSession,countTopicNumber){
     };
     let res = await fetch("/api/1.0/function/gameBuzzTopic",config);
     let topic =await res.json();
-    console.log("2.我在這裡面fetch");
-    console.log("3."+topic);
     return topic;
 } 
 
@@ -253,6 +252,7 @@ function createEnglishTopic(topicEnglish){
 
 // create chinese option and add lisner
 function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room){
+    console.log(topicChinese,sessionNumber,topicEnglish,id,name,room,countTopicNumber);
     for (let i=0;topicChinese.length>i;i++){
 
         let  div =document.getElementById("option");
@@ -267,111 +267,71 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
 
             let english = topicEnglish;
             let option=document.querySelector(".btn"+i).textContent;
-            let data={sessionNumber,english,id,name,option,room};
-            let config={
-                method:"POST",
-                headers:{
-                    Authorization:"Bearer "+localStorageToken,
-                    "Content-Type": "application/json",
-                },
-                body:JSON.stringify(data)
-            };
-            let res = await fetch("/api/1.0/function/confirmAnswer",config);
-            let check = await res.json();
-            if (check.message == "correct"){
-                
-                console.log(countTopicNumber);
-                let data={sessionNumber,countTopicNumber,id};
-                let config={
-                    method:"POST",
-                    headers:{
-                        Authorization:"Bearer "+localStorageToken,
-                        "Content-Type": "application/json",
-                    },
-                    body:JSON.stringify(data)
-                };
-
-                let res=await fetch("/api/1.0/function/confirmWhoWillArriveFirst",config);
-                let result=await res.json();
-                if(result.message  == true){
-                    countTopicNumber++;                                     //數自己下一題要達打什麼 更新自己答到哪一題
-                    document.querySelector(".scoreNumber").innerHTML++;     //自己的分數++
-                    let click=document.querySelector(".btn"+i).className;  
-                    clearInterval(timer);
-                    createDisabled(click);                                  //自己的頁面更新
-                    await updataTopicNumber(id,countTopicNumber);           //自己SQL裡面topicNumber+1
-                    let message={click,countTopicNumber,localStorageSession};
-                    socket.emit("otherSessionCorrect",message);//通知房間其他人
-                    socket.emit("updataCurrectNumberToSQL",{id});
-                    
-                   
-                    setTimeout(async function(){                            //過兩秒後做這件事情
-                        killChild();
-                        let topic =await newTopic(localStorageSession,countTopicNumber);
-                        let {topicEnglish,topicChinese} = topic;
-                        createEnglishTopic(topicEnglish);
-                        createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
-                        
-                        const currentTime = Date.parse(new Date());
-                        const deadline=new Date(currentTime +   10  *1000);
-                        initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-                    },1000);
-                    
-                }
-
-            }
-
-            else if (check.message == "error"){
-                let click=document.querySelector(".btn"+i).className;
-                socket.emit("otherSessionWrong",click);
-                wrongDisabled(click);
-                
-                let data={room,countTopicNumber,id};
-                let config = {
-                    method:"POST",
-                    headers:{"Content-Type": "application/json"},
-                    body:JSON.stringify(data)
-                };
-                let res= await fetch("/api/1.0/function/confirmStatus",config);
-                let result =await res.json();
-                if (result.message == "false"){
-
-
-                    clearInterval(timer);
-                    countTopicNumber++;
-                    console.log(countTopicNumber);
-                    let data={countTopicNumber,localStorageSession};
-                    socket.emit("BothError",data);
-                    //換題了
-                    setTimeout(async function(){
-                        killChild();
-                        let topic=await newTopic(localStorageSession,countTopicNumber);
-                        let {topicEnglish,topicChinese} = topic;
-                        createEnglishTopic(topicEnglish);
-                        createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
-
-                        const currentTime = Date.parse(new Date());
-                        const deadline=new Date(currentTime +   10  *1000);
-                        initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-                    },1000);
-
-                }
-            }
+            let data={sessionNumber,english,id,name,option,room,countTopicNumber,i};
+            socket.emit("confirmAnswer",data);
         });
     }
 }
 
-//updata topic number
-async function updataTopicNumber(id,countTopicNumber){
-    //updata now topic number
+//======答對的socket====
+socket.on("correct",function(message){
+    let { sessionNumber,id,name,room,i}=message;
+    countTopicNumber++; 
+    console.log(countTopicNumber);
+    document.querySelector(".scoreNumber").innerHTML++;
+    let click=document.querySelector(".btn"+i).className;  
+    clearInterval(timer);
+    createDisabled(click);
     let data={id,countTopicNumber};
-    let config = {
-        method:"POST",
-        headers:{"Content-Type": "application/json"},
-        body:JSON.stringify(data)
-    };
-    await fetch("/api/1.0/function/nowGameTopicNnumber",config);
-}
+    socket.emit("updataTopicNumber",data);
+
+    let data2={click,countTopicNumber,localStorageSession};
+    socket.emit("otherSessionCorrect",data2);//通知房間其他人
+    socket.emit("updataCurrectNumberToSQL",{id});
+    console.log(sessionNumber);
+    let information={sessionNumber,countTopicNumber,id,name,room };
+    socket.emit("newTopic",information);
+});
+
+socket.on("createNewTopic",function(message){
+    setTimeout(function(){
+        let {topicEnglish,topicChinese,id,name,room,session}=message;
+        let sessionNumber=message.session;
+        killChild();
+        createEnglishTopic(topicEnglish);
+        createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+    
+        const currentTime = Date.parse(new Date());
+        const deadline=new Date(currentTime +   10  *1000);
+        initializeClock("clockdiv", deadline,id,session,name,room);
+    },1000);
+});
+
+
+
+//====答錯的socket====
+socket.on("error",function(message){
+    let {id,sessionNumber,name,room,topicChinese,topicEnglish}=message;
+    clearInterval(timer);
+    countTopicNumber++;
+
+    setTimeout(async function(){
+        killChild();
+        createEnglishTopic(topicEnglish);
+        createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
+    
+        const currentTime = Date.parse(new Date());
+        const deadline=new Date(currentTime +   10  *1000);
+        initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
+    },1000);
+});
+
+
+
+
+socket.on("selfError",function(message){
+    wrongDisabled(message);
+});
 
 //刪掉原本頁面上有的資訊
 
@@ -419,7 +379,7 @@ function createDisabled(element){
 }
 
 //答錯後反應
-function wrongDisabled(element){
+function wrongDisabled(i){
     document.getElementById("btn0").setAttribute("disabled","disabled");
     document.getElementById("btn1").setAttribute("disabled","disabled");
     document.getElementById("btn2").setAttribute("disabled","disabled");
@@ -428,8 +388,8 @@ function wrongDisabled(element){
     document.getElementById("btn1").style.cursor="default";
     document.getElementById("btn2").style.cursor="default";
     document.getElementById("btn3").style.cursor="default";
-    document.getElementById(element).style.backgroundColor="#FFC0C0";
-    document.getElementById(element).style.color="#f5f7f9";
+    document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
+    document.getElementById("btn"+i).style.color="#f5f7f9";
 }
 
 // =============   clock function   ==============
@@ -450,9 +410,12 @@ function initializeClock(id, endtime,uid,sessionNumber,name,room) {
         if (t.total <= 0) {
             countTopicNumber++;
             clearInterval(timer);
-            await updataTopicNumber(uid,countTopicNumber);
+
+            let data={id,countTopicNumber};
+            socket.emit("updataTopicNumber",data);
+
             killChild();
-            let topic=await newTopic(localStorageSession,countTopicNumber);
+            let topic=await fetchnewTopic(sessionNumber,countTopicNumber);
             let {topicEnglish,topicChinese} = topic;
             createEnglishTopic(topicEnglish);
             createChineseOption(topicChinese,sessionNumber,topicEnglish,uid,name,room);
