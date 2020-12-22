@@ -16,6 +16,7 @@ const {
     userReady,
     userUnReady,
     userInStandbyRoom,
+    buzzWin,
 } = require("../server/models/userModels");
 
 
@@ -54,26 +55,30 @@ const socketCon=function(io){
     //缺乏判斷驗證方式
     io.use(function (socket ,next){
         let token=socket.handshake.query.Authorization;
-        verificationToken(token,JWT_SECRET)
-            .then(function(user){
-                let { id , room ,name ,player} = user;
-                //放SQL
-                // addNowRoom(id,room);
-                addSocketId(id,socket.id);
-
-                //放handshake
-                socket.handshake.query.user_id=id;
-                socket.handshake.query.room=room;
-                socket.handshake.query.socketId=socket.id;
-                socket.handshake.query.name=name;
-                socket.handshake.query.player=player;
-                
-                socket.join(room);
-                
-                next();
-            });
+        if (token == "null"){
+            return {message:"please signin first"};
+        }
+        else{
+            verificationToken(token,JWT_SECRET)
+                .then(function(user){
+                    let { id , room ,name ,player} = user;
+                    //放SQL
+                    // addNowRoom(id,room);
+                    addSocketId(id,socket.id);
+    
+                    //放handshake
+                    socket.handshake.query.user_id=id;
+                    socket.handshake.query.room=room;
+                    socket.handshake.query.socketId=socket.id;
+                    socket.handshake.query.name=name;
+                    socket.handshake.query.player=player;
+                    
+                    socket.join(room);
+                    
+                    next();
+                });
+        }
     });
-    // let Online=0;
     io.on("connection",async function(socket){
         console.log("connection");
         let { user_id ,room , socketId ,name }=socket.handshake.query;
@@ -269,7 +274,9 @@ const socketCon=function(io){
             await updataCurrectNumber(id);
             let result=await checkScore(id);
             let score=result[0]["currect"];
+            console.log(id);
             if (score ==10){ //這裡傳送出贏的訊息 10分者贏
+                await buzzWin(id);
                 io.sockets.in(socketId).emit("WinMessage","Win");
                 socket.broadcast.to(room).emit("LostMessage","Lost");
             }
