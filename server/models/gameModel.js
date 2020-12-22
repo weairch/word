@@ -189,7 +189,6 @@ const confirmBuzzGameRoomStatus = async function (room,questionNumber,uid){
             await commit();
             return {message:"Change question"};
         }
-
     }
     catch(error){
         await rollback();

@@ -416,7 +416,7 @@ function initializeClock(id, endtime,uid,sessionNumber,name,room) {
             countTopicNumber++;
             clearInterval(timer);
 
-            let data={id,countTopicNumber};
+            let data={uid,countTopicNumber};
             socket.emit("updataTopicNumber",data);
 
             killChild();
