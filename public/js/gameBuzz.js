@@ -59,7 +59,6 @@ const Information= async function () {
     let user = await res1.json();
 
     let session1=localStorageSession.replace("\"","").replace("\"","");
-    // let topic=await newTopic(localStorageSession,countTopicNumber);
     let topic=await fetchnewTopic(session1,countTopicNumber);
 
     let session ={
@@ -269,7 +268,7 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
         div.appendChild(btn);
         
         document.querySelector(".btn"+i).addEventListener("click",async function(){
-            clickReaction();
+            // clickReaction();
 
             let english = topicEnglish;
             let option=document.querySelector(".btn"+i).textContent;
@@ -320,7 +319,7 @@ socket.on("error",function(message){
     let {id,sessionNumber,name,room,topicChinese,topicEnglish}=message;
     clearInterval(timer);
     countTopicNumber++;
-
+    clickReaction();
     setTimeout(async function(){
         killChild();
         createEnglishTopic(topicEnglish);

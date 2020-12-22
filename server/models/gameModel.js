@@ -81,7 +81,8 @@ const insertCorrect = async function (uid,session,topic){
 const insertError = async function (uid,session,topic){
     try{
         await transaction();
-        await query("update word.game_detail set correct = 'error' where uid = ? and gid=? and topic=?",[uid,session,topic]);
+        await query("select * from word.game_detail where uid=? and gid=? for update;",[uid,session]);
+        await query("update word.game_detail set correct = 'error' where uid = ? and gid=? and topic=? ",[uid,session,topic]);
         await commit();
     }
     catch(error){

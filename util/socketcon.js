@@ -52,7 +52,6 @@ const { now } = require("moment");
 
 
 const socketCon=function(io){
-    //缺乏判斷驗證方式
     io.use(function (socket ,next){
         let token=socket.handshake.query.Authorization;
         if (token == "null"){
