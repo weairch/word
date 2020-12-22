@@ -1,8 +1,6 @@
 const router = require("express").Router();
 
 const {
-    // ThirtyWord,
-    // gameStatus,
     nowGameTopicNnumber,
     gameBuzzTopic,
     randomNumber,
@@ -15,7 +13,6 @@ const {
     serchRoom,
     insertBuzzGameInfomation,
     confirmStatus,
-    // updataStatusAndNumber,
     countBuzzGameRoomStatusIsNull,
     updataTimeOutTopicNumber,
     checkBuzzGameTopicStatus,

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // eslint-disable-next-line no-undef
 const socket = io({
     query: {
@@ -49,8 +50,14 @@ socket.on("buzzPlayerReady",function(session){
 
 
 socket.on("toMany",function(message){
-    alert(message);
-    location.href="/contest/multi";
+    swal(message,{
+        buttons:{
+            OK:true,
+        },
+    })
+        .then(()=>{
+            location.href="/contest/multi";
+        });
 });
 
 
@@ -186,13 +193,6 @@ socket.on("joinRoomWelcomeMessage",function(res){
     let otherMessage=document.createElement("div");
     otherMessage.classList.add("msg_cotainer_send");
     otherMessage.innerHTML=message;
-    
-    // let userList=document.querySelector(".user");
-    // let userDiv=document.createElement("div");
-    // userDiv.setAttribute("id",name);
-    // userDiv.classList.add(name);
-    // userDiv.innerHTML=name;
-    // userList.appendChild(userDiv);
 
     nodeDiv.appendChild(otherMessage);
     father.appendChild(nodeDiv);

@@ -1,3 +1,5 @@
+/* eslint-disable indent */
+/* eslint-disable no-undef */
 // eslint-disable-next-line no-unused-vars
 
 
@@ -16,8 +18,15 @@ fetch("/api/1.0/checkUserToken",config)
     })
     .then(function(result){
         if (result.Token == undefined){
-            alert(result.message);
-            location.href="/admin/signin";
+            swal(result.message,{
+                buttons:{
+                    OK:true,
+                },
+            })
+            .then(()=>{
+                location.href="/admin/signin";
+            });
+            // location.href="/admin/signin";
         }
     })
     .catch(function(err){
@@ -103,7 +112,7 @@ async function room(){
     let roomNum=document.getElementById("room").value;
 
     if (mode == "null"){
-        return alert("Please select mode!");
+        return swal("Please select mode!");
     }
     if (mode){
         let data = {mode,roomNum};
@@ -119,8 +128,15 @@ async function room(){
         let res=await fetch("/api/1.0/checkStandbyRoomModeAndRoom",config);
         let result=await res.json();
         if (result.message == "This room is a different mode"){
-            alert(result.message);
-            return location.href="/contest/multi";
+            swal(result.message,{
+                buttons:{
+                    OK:true,
+                },
+            })
+            .then(()=>{
+                return location.href="/contest/multi";
+            });
+            // return location.href="/contest/multi";
         }
     }
     if (roomNum){
@@ -143,7 +159,7 @@ async function room(){
             });
     }
     else{
-        alert("Pleast enter correct room format!");
+        swal("Pleast enter correct room format!");
     }
 }
 

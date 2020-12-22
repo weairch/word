@@ -22,6 +22,10 @@ const {
     raceCondition,
 } = require("../models/gameModel");
 
+const {
+    scoreWin
+} =require("../models/userModels");
+
 
 const { 
     random
@@ -115,6 +119,7 @@ const lostOrWin= async function (req,res){
     let player2 = await correctAnsrs(other,Session);
     let scorePlayer2=player2[0]["count(*)"];
     if (scorePlayer1 > scorePlayer2){
+        await scoreWin(uid);
         res.json({message:"Congratulations,you win"});
     }
     else if (scorePlayer1 == scorePlayer2){

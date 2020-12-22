@@ -20,7 +20,7 @@ app.use(cors());
 //api routs
 app.use("/api/"+API_VERSION,
     [
-        require("./server/routes/historyRoute"),
+        require("./server/routes/rankingRoute"),
         require("./server/routes/gameRoute"),    
         require("./server/routes/userRoute")    
     ]
@@ -61,8 +61,8 @@ app.get("/contest/standby",function(req,res){
     res.sendFile(__dirname+"/public/views/gameStandby.html");
 });
 
-app.get("/function/history",function(req,res){
-    res.sendFile(__dirname+"/public/views/historyAll.html");
+app.get("/function/ranking",function(req,res){
+    res.sendFile(__dirname+"/public/views/ranking.html");
 });
 
 app.get("/contest/game/multe",function(req,res){
@@ -73,12 +73,6 @@ app.get("/contest/game/Buzz",function(req,res){
     res.sendFile(__dirname+"/public/views/gameBuzz.html");
 });
 
-
-// Error handling
-// app.use(function(err, req, res, ) {
-//     console.log(err);
-//     res.status(500).send("Internal Server Error");
-// });
 
 server.listen(PORT,function(){
     console.log("listening on port "+PORT);

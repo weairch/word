@@ -23,7 +23,7 @@
       <br>
       <button type="button" class="Battle-mode" id="Battle-mode">Battle mode</button>
       <br>
-      <button type="button" class="Query-history" id="Query-history">history</button>
+      <button type="button" class="Query-ranking" id="Query-ranking">Ranking</button>
 
 	</div>
 
@@ -52,8 +52,8 @@
   $("#Battle-mode").click(function(event){
     window.location.href="/contest/multi"
   })
-  $("#Query-history").click(function(event){
-    window.location.href="/function/history"
+  $("#Query-ranking").click(function(event){
+    window.location.href="/function/ranking"
   })
 
 
@@ -64,37 +64,3 @@
 
 </html>
  
-
-
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/index.css" >
-    <title>Word War</title>
-
-</head>
-<body>
-    <div class="title">我是title</div>
-    <button class="signin" onclick="location.href='admin/signin'">登錄</button>
-    <button class="single" onclick="location.href='contest/single'">單人模式</button>
-    <button class="multi" onclick="location.href='contest/multi'">多人模式</button>
-    <button class="history" onclick="location.href='function/history'">歷史紀錄</button>
-    <br><br>
-    <button class="search" >搜尋單字</button>
-    <p>搜尋單字串接api=>https://rapidapi.com/dpventures/api/wordsapi 已註測 登陸可直接使用 </p>
-    <br>
-    <button class="translation">翻譯</button>
-    <br>
-    <p>串接google翻譯 每個月 翻譯50萬字免費 </p>
-    <p>https://cloud.google.com/translate/docs/quickstarts?hl=zh-tw</p>
-    <p>翻譯跟單字看要擺在同個頁面 還是直接放在首頁?</p>
-     </body>
-</html> -->

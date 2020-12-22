@@ -21,7 +21,7 @@ function checkUser(email){
 
 function insertUserData(name,email,bcryptPwd,login){
     return new Promise(function(resolve,reject){
-        let sql = `INSERT INTO word.user (name, email, password,login) VALUES ("${name}", "${email}", "${bcryptPwd}" , "${login}")`;
+        let sql = `INSERT INTO word.user (name, email, password,login,buzz,score) VALUES ("${name}", "${email}", "${bcryptPwd}" , "${login}","0","0")`;
         query(sql)
             .then(function(result){
                 resolve(result);
@@ -88,8 +88,17 @@ async function CheckForDuplicate(room){
     return await query("SELECT * FROM word.standbyRoom where Room=?",room);
 }
 
+const buzzWin=async function(id){
+    return await query ("update word.user set buzz=buzz+1 where id = ?;",id);
+};
+
+const scoreWin=async function(id){
+    return await query("update word.user set score=score+1 where id = ?;",id);
+};
 
 module.exports ={
+    scoreWin,
+    buzzWin,
     CheckForDuplicate,
     userUnReady,
     userReady,

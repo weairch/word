@@ -25,8 +25,14 @@ fetch("/api/1.0/checkUserToken",config2)
     })
     .then(function(result){
         if (result.Token == undefined){
-            alert(result.message);
-            location.href="/admin/signin";
+            swal(result.message,{
+                buttons:{
+                    OK:true,
+                },
+            })
+            .then(()=>{
+                location.href="/admin/signin";
+            });
         }
     })
     .catch(function(err){
