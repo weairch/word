@@ -264,8 +264,8 @@ const socketCon=function(io){
 
 
         socket.on("updataTopicNumber",async function(message){
-            let {id,countTopicNumber} = message;
-            await updateTopicNnumber(id,countTopicNumber);
+            let {uid,countTopicNumber} = message;
+            await updateTopicNnumber(uid,countTopicNumber);
         });
 
         socket.on("updataCurrectNumberToSQL",async function(res){
