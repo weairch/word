@@ -82,7 +82,7 @@ form input {
   outline: 0;
   border: 1px solid rgba(255, 255, 255, 0.4);
   background-color: rgba(255, 255, 255, 0.2);
-  width: 250px;
+  width: 310px;
   border-radius: 3px;
   padding: 10px 15px;
   margin: 0 auto 10px auto;
@@ -140,7 +140,7 @@ form button:hover {
 }
 
 .custom-dropdown select {
-  width: 250px;
+  width: 310px;
   background-color: white;
   color:#53e3a6;
   font-size: inherit;
@@ -162,10 +162,13 @@ form button:hover {
   pointer-events: none;
 }
 
-
+.button{
+  display: flex;
+}
 .joinroom {
     margin-bottom: 15px;
     margin-top: 20px;
+    margin-left: 10px;
     outline: 0;
     background-color: white;
     border: 0;

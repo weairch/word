@@ -25,7 +25,7 @@ fetch("/api/1.0/checkUserToken",config2)
     })
     .then(function(result){
         if (result.Token == undefined){
-            swal(result.message,{
+            Swal.fire(result.message,{
                 buttons:{
                     OK:true,
                 },
@@ -162,7 +162,7 @@ Information().then(async function(res){
             const deadline=new Date(currentTime +   11  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
 
-        },1000);
+        },1300);
     });
 
     socket.on("event2",async function(message){
@@ -193,12 +193,23 @@ Information().then(async function(res){
             const currentTime = Date.parse(new Date());
             const deadline=new Date(currentTime +   10  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-        },1000);
+        },1300);
+    });
 
+    socket.on("stopClick",function(i){
+        document.getElementById("btn"+i).style.opacity=0.7;
+        document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
+        document.getElementById("btn"+i).setAttribute("disabled","disabled");
+        document.getElementById("btn"+i).style.cursor="default";
+        document.getElementById("btn"+i).style.color="#f5f7f9"; 
     });
 
     socket.on("WinMessage",function(){
-        swal("Congratulations ,you win",{
+        Swal.fire({
+            title:"Congratulations ,you win",
+            imageUrl: "/image/win.jpg",
+            imageWidth: 300,
+            imageHeight: 300,
             buttons:{
                 OK:true,
             },
@@ -209,7 +220,9 @@ Information().then(async function(res){
     });
 
     socket.on("LostMessage",function(){
-        swal("you lose",{
+        Swal.fire({
+            title:"Sorry , you lose",
+            icon:"error",
             buttons:{
                 OK:true,
             },
@@ -257,7 +270,6 @@ function createEnglishTopic(topicEnglish){
 
 // create chinese option and add lisner
 function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room){
-    console.log(topicChinese,sessionNumber,topicEnglish,id,name,room,countTopicNumber);
     for (let i=0;topicChinese.length>i;i++){
 
         let  div =document.getElementById("option");
@@ -268,12 +280,14 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
         div.appendChild(btn);
         
         document.querySelector(".btn"+i).addEventListener("click",async function(){
-            // clickReaction();
 
+            clickReaction();
+            
             let english = topicEnglish;
             let option=document.querySelector(".btn"+i).textContent;
             let data={sessionNumber,english,id,name,option,room,countTopicNumber,i};
             socket.emit("confirmAnswer",data);
+            socket.emit("click",i);
         });
     }
 }
@@ -309,7 +323,7 @@ socket.on("createNewTopic",function(message){
         const currentTime = Date.parse(new Date());
         const deadline=new Date(currentTime +   10  *1000);
         initializeClock("clockdiv", deadline,id,session,name,room);
-    },1000);
+    },1300);
 });
 
 
@@ -319,6 +333,7 @@ socket.on("error",function(message){
     let {id,sessionNumber,name,room,topicChinese,topicEnglish}=message;
     clearInterval(timer);
     countTopicNumber++;
+    console.log("我這裡是countTopicNumber",countTopicNumber);
     clickReaction();
     setTimeout(async function(){
         killChild();
@@ -328,7 +343,7 @@ socket.on("error",function(message){
         const currentTime = Date.parse(new Date());
         const deadline=new Date(currentTime +   10  *1000);
         initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
-    },1000);
+    },1300);
 });
 
 

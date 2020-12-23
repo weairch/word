@@ -131,7 +131,8 @@ form button:hover {
 }
 
 
-.ready {
+.back {
+    font-weight: bold;
     margin-right: 20px;
     margin-bottom: 15px;
     margin-top: 20px;
@@ -152,7 +153,8 @@ form button:hover {
 }
 
 
-.unready{
+.ready{
+  font-weight: bold;
     margin-left: 20px;
     margin-bottom: 15px;
     margin-top: 20px;

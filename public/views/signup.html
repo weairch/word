@@ -15,17 +15,17 @@
   <body>
 <div class="wrapper">
 	<div class="container">
-		<h1>Sign-up</h1>
+		<h1>Sign up</h1>
 		
 		<form name="form" id="form" method="POST">
 			<input type="text" name="name" id="signupName" placeholder="Please enter name">
-      <input type="password" name="password" id="signupPw" placeholder="Please enter password">
       <input type="email" name="email" id="signupEmail" placeholder="Please Enter Email">
-			<button type="submit" id="signup-button">Sign-up</button>
+      <input type="password" name="password" id="signupPw" placeholder="Please enter password">
+			<button type="submit" id="signup-button">Sign up</button>
     </form>
     <div>
       <button type="button" class="home" id="home" >Homepage</button>
-      <button type="button" class="signin" id="signin">Sign-in</button>
+      <button type="button" class="signin" id="signin">Sign in</button>
     </div>
     <!-- <p>if you don't have an account yet</p>  -->
 	</div>
@@ -44,8 +44,9 @@
 	</ul>
 </div>
 <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
 <script > $("#signup-button").click(function(event){
@@ -72,7 +73,7 @@
         localStorage.setItem("Authorization",result.token)
         
         if (result.message =="signup success"){
-          swal(result.message,{
+          Swal.fire(result.message,{
                           buttons:{
                               OK:true,
                           },
@@ -82,7 +83,7 @@
                       });
         }
         else{
-          swal(result.message);
+          Swal.fire(result.message);
         }
 
     })

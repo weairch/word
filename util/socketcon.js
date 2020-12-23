@@ -37,6 +37,7 @@ const {
     checkAnswer,
     raceCondition,
     confirmBuzzGameRoomStatus,
+    updateCorrectTopicNumber
 } = require("../server/models/gameModel");
 
 const { 
@@ -197,11 +198,14 @@ const socketCon=function(io){
             let answer = check[0].chinese;
             //correct
             if (answer == option){
+                // countTopicNumber++;
                 await insertCorrect(id,sessionNumber,english);
                 let result=await raceCondition(sessionNumber,countTopicNumber);
 
                 let {message}=result;
                 if (message == "success"){
+                    countTopicNumber++;
+                    await updateCorrectTopicNumber(countTopicNumber,room);
                     let data={sessionNumber,english,id,name,option,room,i};
                     io.sockets.in(socketId).emit("correct",data);
                 }
@@ -213,9 +217,9 @@ const socketCon=function(io){
                 socket.broadcast.to(room).emit("event2",i);
                 io.sockets.in(socketId).emit("selfError",i);
                 let result = await confirmBuzzGameRoomStatus(room,countTopicNumber,id);
+                // console.log(result.message);
                 if (result.message == "Change question"){
                     countTopicNumber++;
-
                     result=await buzzTopic(sessionNumber,countTopicNumber);
                     let { topicEnglish } = result[0];
                     let Chinese=result[0].topicChinese;
@@ -230,6 +234,10 @@ const socketCon=function(io){
             }
         });
 
+
+        socket.on("click",function(i){
+            socket.broadcast.to(room).emit("stopClick",i);
+        });
 
 
         socket.on("newTopic",async function(message){
@@ -273,7 +281,6 @@ const socketCon=function(io){
             await updataCurrectNumber(id);
             let result=await checkScore(id);
             let score=result[0]["currect"];
-            console.log(id);
             if (score ==10){ //這裡傳送出贏的訊息 10分者贏
                 await buzzWin(id);
                 io.sockets.in(socketId).emit("WinMessage","Win");

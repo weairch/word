@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 // eslint-disable-next-line no-undef
 const socket = io({
@@ -50,7 +51,7 @@ socket.on("buzzPlayerReady",function(session){
 
 
 socket.on("toMany",function(message){
-    swal(message,{
+    Swal.fire(message,{
         buttons:{
             OK:true,
         },
@@ -71,11 +72,25 @@ userInformation().then(async function (user){
 
     document.getElementById("btn").addEventListener("click",function(){
         let message=document.getElementById("input").value;
-        document.getElementById("input").value="";
-        let data={name,room,message};
-        socket.emit("sendMessage",data);
+        if (message == ""){
+            return;
+        }
+        else {
+            document.getElementById("input").value="";
+            let data={name,room,message};
+            socket.emit("sendMessage",data);
+        }
     });
 
+    document.getElementById("input").addEventListener("keyup",function(event){
+        let message=document.getElementById("input").value;
+        if (event.keyCode === 13){
+            document.getElementById("input").value="";
+            let data={name,room,message};
+            socket.emit("sendMessage",data);
+        }
+
+    });
 });
 
 socket.on("userList",function(list){
@@ -272,16 +287,20 @@ let count=true;
 function ready(){
     if (count){
         count=false;
+        document.getElementById("ready").innerHTML="Cancel";
         socket.emit("ready","ready");
     }
-}
-// eslint-disable-next-line no-unused-vars
-function unReady(){
-    if (!count){
+    else if (!count){
         count=true;
+        document.getElementById("ready").innerHTML="Ready";
         socket.emit("unReady","unready");
     }
+}
 
+
+
+function back(){
+    window.location.href="/contest/multi";
 }
 
 
