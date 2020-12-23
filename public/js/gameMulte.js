@@ -27,7 +27,7 @@ fetch("/api/1.0/checkUserToken",config2)
     })
     .then(function(result){
         if (result.Token == undefined){
-            swal(result.message,{
+            Swal.fire(result.message,{
                 buttons:{
                     OK:true,
                 },
@@ -261,14 +261,43 @@ function initializeClock(id, endtime,Session,uid) {
                     return res.json();
                 })
                 .then(function(result){
-                    swal(result.message,{
-                        buttons:{
-                            OK:true,
-                        },
-                    })
-                    .then(()=>{
-                        location.href="/contest/multi";
-                    });
+                    if (result.message =="Congratulations,you win"){
+                        Swal.fire({
+                            title:"Congratulations ,you win",
+                            imageUrl: "/image/win.jpg",
+                            imageWidth: 300,
+                            imageHeight: 300,
+                            buttons:{
+                                OK:true,
+                            },
+                        })
+                        .then(()=>{
+                            location.href="/contest/multi";
+                        });
+                    }
+                    else if (result.message == "deuce"){
+                        Swal.fire(result.message,{
+                            buttons:{
+                                OK:true,
+                            },
+                        })
+                        .then(()=>{
+                            location.href="/contest/multi";
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            title:"Sorry , you lose",
+                            icon:"error",
+                            buttons:{
+                                OK:true,
+                            },
+                        })
+                        .then(()=>{
+                            location.href="/contest/multi";
+                        });
+                    }
+
                 });
         }
     },1000);

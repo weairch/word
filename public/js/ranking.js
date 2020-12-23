@@ -16,8 +16,8 @@ fetch("/api/1.0/checkUserToken",config1)
     })
     .then(function(result){
         if (result.Token == undefined){
-            swal(result.message);
-            swal(result.message,{
+            Swal.fire(result.message);
+            Swal.fire(result.message,{
                 buttons:{
                     OK:true,
                 },

@@ -18,7 +18,7 @@ fetch("/api/1.0/checkUserToken",config)
     })
     .then(function(result){
         if (result.Token == undefined){
-            swal(result.message,{
+            Swal.fire(result.message,{
                 buttons:{
                     OK:true,
                 },
@@ -112,7 +112,7 @@ async function room(){
     let roomNum=document.getElementById("room").value;
 
     if (mode == "null"){
-        return swal("Please select mode!");
+        return Swal.fire("Please select mode!");
     }
     if (mode){
         let data = {mode,roomNum};
@@ -128,7 +128,7 @@ async function room(){
         let res=await fetch("/api/1.0/checkStandbyRoomModeAndRoom",config);
         let result=await res.json();
         if (result.message == "This room is a different mode"){
-            swal(result.message,{
+            Swal.fire(result.message,{
                 buttons:{
                     OK:true,
                 },
@@ -159,9 +159,15 @@ async function room(){
             });
     }
     else{
-        swal("Pleast enter correct room format!");
+        Swal.fire("Pleast enter correct room format!");
     }
 }
+
+// eslint-disable-next-line no-unused-vars
+async function back(){
+    window.location.href="/";
+}
+
 
 
 

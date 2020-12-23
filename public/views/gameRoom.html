@@ -34,8 +34,10 @@
 					<option value="Buzz">Rush/Buzz mode</option>
 				</select>
 			</span>
-			<button type="button" class="joinroom" id="joinroom" onclick="room()">Create room</button>
-
+			<div class="button">
+				<button type="button" class="joinroom" id="back" onclick="back()">Home page</button>
+				<button type="button" class="joinroom" id="joinroom" onclick="room()">Create room</button>
+			</div>
 	    </div>
 
 	<ul class="bg-bubbles">
@@ -52,7 +54,8 @@
 	</ul>
 </div>
 </script><script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </body>
 <script src="../js/gameRoom.js"></script>
 </html>

@@ -217,13 +217,12 @@ const raceCondition= async function(session,topicNumber){
         await transaction();
         let result=await query("select id from word.buzzGameTopic where session=? and topicNumber=? ;",[session,topicNumber]);
         let id=result[0]["id"];
-
-        let result2=await query("select * from word.buzzGameTopic where `status` is null and id=? FOR UPDATE;",id);
-        if (result2 == ""){
+        let result3=await query("select * from word.buzzGameTopic where `status` is null and id=? FOR UPDATE;",id);
+        if (result3 == ""){
             await commit();
             return {message:"false"};
         }
-        else if (result2){
+        else if (result3){
             await query("update word.buzzGameTopic set `status`='true' where id=? ;",id);
             await commit();
             return {message:"success"};
@@ -236,8 +235,17 @@ const raceCondition= async function(session,topicNumber){
 
 };
 
+const updateCorrectTopicNumber = async function(topicNumber,room){
+    try{
+        await query("update word.buzzGameRoom set questionNumber=? , status=NULL where Room=?",[topicNumber,room]); 
+    }
+    catch(error){
+        console.log(error);
+    }
+};
 
 module.exports ={
+    updateCorrectTopicNumber,
     raceCondition,
     checkGameTopicStatus,
     updateGameTopicStatus,
