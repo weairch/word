@@ -145,7 +145,7 @@ Information().then(async function(res){
         document.getElementById("btn1").style.cursor="default";
         document.getElementById("btn2").style.cursor="default";
         document.getElementById("btn3").style.cursor="default";
-        document.getElementById(element).style.color="#f5f7f9";
+        document.getElementById(element).style.color="#000";
         setTimeout(async function(){
             countTopicNumber++;
             let data={id,countTopicNumber};
@@ -172,7 +172,7 @@ Information().then(async function(res){
         document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
         document.getElementById("btn"+i).setAttribute("disabled","disabled");
         document.getElementById("btn"+i).style.cursor="default";
-        document.getElementById("btn"+i).style.color="#f5f7f9"; 
+        document.getElementById("btn"+i).style.color="#000"; 
     });
 
     socket.on("event3",async function(topic){
@@ -201,7 +201,7 @@ Information().then(async function(res){
         document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
         document.getElementById("btn"+i).setAttribute("disabled","disabled");
         document.getElementById("btn"+i).style.cursor="default";
-        document.getElementById("btn"+i).style.color="#f5f7f9"; 
+        document.getElementById("btn"+i).style.color="#000"; 
     });
 
     socket.on("WinMessage",function(){
@@ -222,7 +222,9 @@ Information().then(async function(res){
     socket.on("LostMessage",function(){
         Swal.fire({
             title:"Sorry , you lose",
-            icon:"error",
+            imageUrl:"/image/lose.jpg",
+            imageWidth: 330,
+            imageHeight: 300,
             buttons:{
                 OK:true,
             },
@@ -395,7 +397,7 @@ function clickReaction(){
 //答對後反應
 function createDisabled(element){
     document.getElementById(element).style.backgroundColor="#00FA9A";
-    document.getElementById(element).style.color="#f5f7f9";
+    document.getElementById(element).style.color="#000";
 }
 
 //答錯後反應
@@ -409,7 +411,7 @@ function wrongDisabled(i){
     document.getElementById("btn2").style.cursor="default";
     document.getElementById("btn3").style.cursor="default";
     document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
-    document.getElementById("btn"+i).style.color="#f5f7f9";
+    document.getElementById("btn"+i).style.color="#000";
 }
 
 // =============   clock function   ==============

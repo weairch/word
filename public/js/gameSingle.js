@@ -155,7 +155,7 @@ async function answer(i,sessionNumber,english,id,name){
 
 
     if (check.message == "correct"){
-        document.getElementById("btn"+i).style.color="#f5f7f9";
+        document.getElementById("btn"+i).style.color="#000";
         document.getElementById("btn"+i).style.backgroundColor="#00FA9A";
 
         document.querySelector(".scoreNumber").innerHTML++;
@@ -184,7 +184,7 @@ async function answer(i,sessionNumber,english,id,name){
     }
     else if (check.message == "error"){
         document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
-        document.getElementById("btn"+i).style.color="#f5f7f9";
+        document.getElementById("btn"+i).style.color="#000";
         let res = await fetch("/api/1.0/function/randomWord");
         let topic = await res.json();
         let { english,chinese } = topic;

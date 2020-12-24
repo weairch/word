@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300);
+@import url(https://fonts.googleapis.com/css2?family=Marcellus&family=Ubuntu&display=swap);
 * {
   box-sizing: border-box;
   margin: 0;
@@ -39,7 +40,7 @@ body :-ms-input-placeholder {
 .wrapper {
   background: #50a3a2;
   background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-  background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
+  background: linear-gradient(to bottom right, #000 35%, #fff 100%);
   position: absolute;
   /* top: 50%; */
   left: 0;
@@ -65,6 +66,7 @@ body :-ms-input-placeholder {
 }
 
 .title {
+  font-family: 'Marcellus', sans-serif;
     margin-right: 60%;
     cursor: pointer;
     position: relative;
@@ -138,101 +140,114 @@ form button:hover {
 
 
 .Ready {
-  margin-bottom: 15px;
-  margin-top: 20px;
-  outline: 0;
-  background-color: white;
-  border: 0;
-  padding: 10px 15px;
-  color: #53e3a6;
-  border-radius: 3px;
-  width: 200px;
-  cursor: pointer;
-  font-size: 20px;
-  -webkit-transition-duration: 0.25s;
-          transition-duration: 0.25s;
-  background-color: #f5f7f9;
-  position: relative;
-  z-index: 3;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    outline: 0;
+    background-color: white;
+    border: 0;
+    padding: 10px 15px;
+    color: #53e3a6;
+    border-radius: 3px;
+    width: 200px;
+    cursor: pointer;
+    font-size: 20px;
+    -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s;
+    background-color: #f5f7f9;
+    position: relative;
+    z-index: 3;
 }
 
 .score{
-margin-right: 200px;
-font-size: x-large;
+  font-family: 'Ubuntu', sans-serif;
+  margin-right: 200px;
+  font-size: x-large;
 }
 
 .otherScore{
-margin-left: 200px;
-font-size: x-large;
+  font-family: 'Ubuntu', sans-serif;
+  margin-left: 200px;
+  font-size: x-large;
 }
 .timer{
-font-size: 30px;
-}
-
-.topicEnglish{
-margin-top: 10% ;
-margin-bottom: 10% ;
-font-size: 30px ;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 30px;
 }
 
 .topic{
-font-size: 50px;
-}
-
-.box1{
-display: inline-flex;
+  font-weight: bold;
+  font-size: 50px;
+  margin-top: 10%;
+  margin-bottom: 10%;
 }
 
 
 .option {
-  width: 500px;
-  margin-left: 135px;
+  font-family: 'Ubuntu', sans-serif;
+    width: 500px;
+    margin-left: 30px;
+}
+
+.box1{
+  display: inline-flex;
+}
+
+
+.option {
+    width: 500px;
+    margin-left: 135px;
 }
 
 .btn1 ,.btn3 {
-  display: inline;
-  margin-bottom: 10px;
-  margin-top: 20px;
-  margin-left: 13px ;
-  margin-right: 50px;
-  outline: 0;
-  background-color: white;
-  border: 0;
-  padding: 15px 15px;
-  color: #53e3a6;
-  border-radius: 10px;
-  width: 200px;
-  cursor: pointer;
-  font-size: 20px;
-  -webkit-transition-duration: 0.25s;
-          transition-duration: 0.25s;
-  /* background-color: #f5f7f9; */
-  font-weight:bold;
-  position: relative;
-  z-index: 3;
+  font-weight: bold;
+    font-family: 'Ubuntu', sans-serif;
+    display: inline;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    margin-left: 13px ;
+    margin-right: 50px;
+    outline: 0;
+    background-color: #dddddd;
+    border: 0;
+    padding: 15px 15px;
+    color: #000000;
+    border-radius: 10px;
+    width: 200px;
+    cursor: pointer;
+    font-size: 20px;
+    /* -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s; */
+    /* background-color: #f5f7f9; */
+    font-weight:bold;
+    position: relative;
+    z-index: 3;
 }
 
 .btn0 , .btn2{
-  display: inline;
-  margin-bottom: 10px;
-  margin-top: 20px;
-  margin-right: 12px;
-  outline: 0;
-  background-color: white;
-  border: 0;
-  padding: 15px 15px;
-  color: #53e3a6;
-  border-radius: 10px;
-  width: 200px;
-  cursor: pointer;
-  font-size: 20px;
-  -webkit-transition-duration: 0.25s;
-          transition-duration: 0.25s;
-  /* background-color: #f5f7f9; */
-  font-weight:bold;
-  position: relative;
-  z-index: 3;
+  font-weight: bold;
+    font-family: 'Ubuntu', sans-serif;
+    display: inline;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    margin-right: 12px;
+    outline: 0;
+    background-color: #dddddd;
+    border: 0;
+    padding: 15px 15px;
+    color: #000000;
+    border-radius: 10px;
+    width: 200px;
+    cursor: pointer;
+    font-size: 20px;
+    /* -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s; */
+    /* background-color: #f5f7f9; */
+    font-weight:bold;
+    position: relative;
+    z-index: 3;
 }
+
+
 
 .bg-bubbles {
   position: absolute;

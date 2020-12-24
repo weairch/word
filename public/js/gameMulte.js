@@ -172,7 +172,7 @@ async function answer(i,sessionNumber,english,id,name,room){
         //通知房間其他人
         socket.emit("otherOneChangeTopic","currect");
         document.getElementById("btn"+i).style.backgroundColor="#00FA9A";
-        document.getElementById("btn"+i).style.color="#f5f7f9";
+        document.getElementById("btn"+i).style.color="#000";
         
         
         document.querySelector(".scoreNumber").innerHTML++;
@@ -203,7 +203,7 @@ async function answer(i,sessionNumber,english,id,name,room){
 
     else if (check.message == "error"){
         document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
-        document.getElementById("btn"+i).style.color="#f5f7f9";
+        document.getElementById("btn"+i).style.color="#000";
 
         let res = await fetch("/api/1.0/function/randomWord");
         let topic = await res.json();
@@ -288,7 +288,9 @@ function initializeClock(id, endtime,Session,uid) {
                     else {
                         Swal.fire({
                             title:"Sorry , you lose",
-                            icon:"error",
+                            imageUrl:"/image/lose.jpg",
+                            imageWidth: 330,
+                            imageHeight: 300,
                             buttons:{
                                 OK:true,
                             },
