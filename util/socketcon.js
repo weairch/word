@@ -8,6 +8,7 @@ const {
     checkScore,
     NowStandbyRoomAndMode,
     standbyRoomUser,
+    confirmStandbyRoomNumber
 } = require("../server/models/socketModel");
 
 
@@ -80,16 +81,21 @@ const socketCon=function(io){
         }
     });
     io.on("connection",async function(socket){
-        console.log("connection");
+        // console.log("connection");
         let { user_id ,room , socketId ,name }=socket.handshake.query;
 
         
         //限制房間人數
-        if (io.sockets.adapter.rooms.get(room).size >2){
-            io.sockets.in(socketId).emit("toMany","人數已滿 請換間房間");
-        } 
+        // if (io.sockets.adapter.rooms.get(room).size >2){
+        //     io.sockets.in(socketId).emit("toMany","The room is full, please change rooms");
+        // } 
         
-
+        socket.on("checkStandbyRoom",async function(room){
+            let res = await confirmStandbyRoomNumber(room);
+            if (res[0]["count(*)"] >= 3 ){
+                io.sockets.in(socketId).emit("toMany","The room is full, please change rooms");
+            }
+        });
 
 
         //chat bar
@@ -180,7 +186,6 @@ const socketCon=function(io){
         });
 
         socket.on("roomUser",async function(room){
-            console.log(room);
             let list=await standbyRoomUser(room);
             io.sockets.in(room).emit("userList",list);
         });

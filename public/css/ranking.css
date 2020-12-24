@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300);
+@import url(https://fonts.googleapis.com/css2?family=Marcellus&family=Ubuntu&display=swap);
 * {
   box-sizing: border-box;
   margin: 0;
@@ -39,7 +40,7 @@ body :-ms-input-placeholder {
 .wrapper {
   background: #50a3a2;
   background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-  background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
+  background: linear-gradient(to bottom right, #000 35%, #fff 100%);
   position: absolute;
   /* top: 50%; */
   left: 0;
@@ -55,7 +56,8 @@ body :-ms-input-placeholder {
 }
 .container {
   max-width: 600px;
-  margin: 0 auto;
+  /* margin: 0 auto; */
+  margin: -70px auto;
   /* padding: 50px 0; */
   /* padding: 100px 0; */
   padding: 110px;
@@ -123,6 +125,7 @@ form button:hover {
 }
 
 .title {
+  font-family: 'Marcellus', sans-serif;
     margin-right: 60% auto;
     cursor: pointer;
     position: relative;
@@ -154,6 +157,13 @@ form button:hover {
   position: relative;
 }
 
+.image{
+  margin-top: 5px;
+  width: 40px;
+  border-radius: 5px;
+}
+
+
 .session {
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -162,7 +172,7 @@ form button:hover {
   border: 1px solid rgba(255, 255, 255, 0.4);
   background-color: rgba(255, 255, 255, 0.2);
   width: 400px;
-  height: 200px;
+  height: 250px;
   border-radius: 3px;
   padding: 10px 15px;
   margin: 0 auto 10px auto;
@@ -187,14 +197,16 @@ form button:hover {
     background-color: white;
     border: 0;
     padding: 10px 18px;
-    color: #53e3a6;
+    /* color: #53e3a6; */
+    color: #000000;
     border-radius: 3px;
     width: 115px;
     cursor: pointer;
     font-size: 20px;
     -webkit-transition-duration: 0.25s;
             transition-duration: 0.25s;
-    background-color: #f5f7f9;
+    /* background-color: #f5f7f9; */
+    background-color: #DDDDDD;
     position: relative;
     z-index: 2;
 }
@@ -208,14 +220,16 @@ form button:hover {
     background-color: white;
     border: 0;
     padding: 10px 18px;
-    color: #53e3a6;
+    /* color: #53e3a6; */
+    color: #000000;
     border-radius: 3px;
     width: 115px;
     cursor: pointer;
     font-size: 20px;
     -webkit-transition-duration: 0.25s;
             transition-duration: 0.25s;
-    background-color: #f5f7f9;
+    /* background-color: #f5f7f9; */
+    background-color: #DDDDDD;
     position: relative;
     z-index: 2;
     margin-left: 15px;

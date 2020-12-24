@@ -43,24 +43,77 @@ document.getElementById("Score").addEventListener("click",async function(){
     topNode.innerHTML="";
     
     for (let i=0;total.length>i;i++){
-        let name=total[i].split(",")[0];
-        let score=total[i].split(",")[1];
-        let secondnode=document.createElement("div");
-        secondnode.classList.add("scoreRank");
-
-        let nameDiv=document.createElement("div");
-        nameDiv.classList.add("name");
-        nameDiv.innerHTML=name;
-        
-        let scoreDiv=document.createElement("div");
-        scoreDiv.classList.add("fraction");
-        scoreDiv.innerHTML=score;
-        
-        secondnode.appendChild(nameDiv);
-        secondnode.appendChild(scoreDiv);
-        topNode.appendChild(secondnode);
+        let imageSrc = "/image/"+(i+1)+".png";
+        createRanking(topNode,total,i,imageSrc);
+        // if (i == 0){
+        //     let imageSrc = "/image/1.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==1){
+        //     let imageSrc="/image/2.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==2){
+        //     let imageSrc="/image/3.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==3){
+        //     let imageSrc="/image/4.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==3){
+        //     let imageSrc="/image/5.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==3){
+        //     let imageSrc="/image/6.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==3){
+        //     let imageSrc="/image/7.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==3){
+        //     let imageSrc="/image/8.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==3){
+        //     let imageSrc="/image/9.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
+        // if (i==3){
+        //     let imageSrc="/image/10.png";
+        //     createRanking(topNode,total,i,imageSrc);
+        // }
     }
 });
+
+function createRanking(topNode,total,i,imageSrc){
+    let name=total[i].split(",")[0];
+    let score=total[i].split(",")[1];
+    let secondnode=document.createElement("div");
+    secondnode.classList.add("scoreRank");
+    //=======================================
+    let image=document.createElement("img");
+    image.src=imageSrc;
+    image.classList.add("image");
+    image.setAttribute("id","image"+i);
+    // image.src="/image/win.jpg";
+    secondnode.appendChild(image);
+    //=======================================
+
+    let nameDiv=document.createElement("div");
+    nameDiv.classList.add("name");
+    nameDiv.innerHTML=name;
+    
+    let scoreDiv=document.createElement("div");
+    scoreDiv.classList.add("fraction");
+    scoreDiv.innerHTML=score;
+    
+    secondnode.appendChild(nameDiv);
+    secondnode.appendChild(scoreDiv);
+    topNode.appendChild(secondnode);
+}
 
 
 document.getElementById("Buzz").addEventListener("click",async function(){
@@ -93,79 +146,6 @@ document.getElementById("Buzz").addEventListener("click",async function(){
     
 });
 
-
-// document.getElementById("Score").addEventListener("click",function(){
-//     //只允許點擊一次
-//     document.getElementById("single").setAttribute("disabled","discbled");
-//     let config = {
-//         method:"GET",
-//         headers:{
-//             "Content-Type": "application/json",
-//             Authorization: "Bearer " + localStorageToken,
-//         }
-//     };
-//     const Information= async function () {
-//         let userHistory=await fetch("/api/1.0/history/single",config);
-//         let userHistoryAll =await userHistory.json();
-//         return userHistoryAll;
-//     };
-//     Information().then(function(result){
-//         //create session and time
-//         let session = document.getElementById("session");
-//         let sessionAll=result.session;
-//         for (let i=0; Object.keys(sessionAll).length>i ;i++){
-//             let key=Object.keys(sessionAll)[i];
-//             let value = sessionAll[key];
-            
-//             let sessionDiv=document.createElement("div");
-//             let timeDiv=document.createElement("div");
-//             sessionDiv.setAttribute("id",i);
-//             sessionDiv.classList.add("sessionNumber");
-
-//             sessionDiv.innerHTML=key;
-//             timeDiv.innerHTML=value;
-//             session.appendChild(sessionDiv);
-//             session.appendChild(timeDiv);
-//         }
-//     });
-// });
-
-
-// document.getElementById("Buzz").addEventListener("click",function(){
-//     document.getElementById("multi").setAttribute("disabled","discbled");
-
-//     let config = {
-//         method:"GET",
-//         headers:{
-//             "Content-Type": "application/json",
-//             Authorization: "Bearer " + localStorageToken,
-//         }
-//     };
-//     const Information= async function () {
-//         let userHistory=await fetch("/api/1.0/history/multi",config);
-//         let userHistoryAll =await userHistory.json();
-//         return userHistoryAll;
-//     };
-//     Information().then(function(result){
-//         // console.log(result);
-//         let session = document.getElementById("session");
-//         let sessionAll=result.session;
-//         for (let i=0; Object.keys(sessionAll).length>i ;i++){
-//             let key=Object.keys(sessionAll)[i];
-//             let value = sessionAll[key];
-            
-//             let sessionDiv=document.createElement("div");
-//             let timeDiv=document.createElement("div");
-//             sessionDiv.setAttribute("id",i);
-//             sessionDiv.classList.add("sessionNumber");
-
-//             sessionDiv.innerHTML=key;
-//             timeDiv.innerHTML=value;
-//             session.appendChild(sessionDiv);
-//             session.appendChild(timeDiv);
-//         }
-//     });
-// });
 
 document.getElementById("title").addEventListener("click",function(){
     location.href="/";

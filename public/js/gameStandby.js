@@ -29,6 +29,7 @@ const userInformation=async function (){
     let user=await res.json();
     let {id , name , room}=user;
     socket.emit("joinRoom",{id,name,room});
+    socket.emit("checkStandbyRoom",room);
     return user;
 };
 
@@ -51,6 +52,7 @@ socket.on("buzzPlayerReady",function(session){
 
 
 socket.on("toMany",function(message){
+    console.log(message);
     Swal.fire(message,{
         buttons:{
             OK:true,
@@ -60,7 +62,6 @@ socket.on("toMany",function(message){
             location.href="/contest/multi";
         });
 });
-
 
 
 userInformation().then(async function (user){
@@ -84,11 +85,16 @@ userInformation().then(async function (user){
 
     document.getElementById("input").addEventListener("keyup",function(event){
         let message=document.getElementById("input").value;
-        if (event.keyCode === 13){
+        console.log(message);
+        if (message =="\n"){
+            return;
+        }
+        else if (event.keyCode === 13 ){
             document.getElementById("input").value="";
             let data={name,room,message};
             socket.emit("sendMessage",data);
         }
+        
 
     });
 });
@@ -109,7 +115,7 @@ socket.on("userList",function(list){
 
 const topBox=document.getElementById("topBox");
 socket.on("selfInput",function(res){
-    console.log("這裡是我拿到我自己的"+res);
+    // console.log("這裡是我拿到我自己的"+res);
     let {name,time,message}=res;
 
     //最上層容器
