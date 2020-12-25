@@ -81,14 +81,9 @@ const socketCon=function(io){
         }
     });
     io.on("connection",async function(socket){
-        // console.log("connection");
+        
         let { user_id ,room , socketId ,name }=socket.handshake.query;
 
-        
-        //限制房間人數
-        // if (io.sockets.adapter.rooms.get(room).size >2){
-        //     io.sockets.in(socketId).emit("toMany","The room is full, please change rooms");
-        // } 
         
         socket.on("checkStandbyRoom",async function(room){
             let res = await confirmStandbyRoomNumber(room);
