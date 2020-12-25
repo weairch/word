@@ -34,7 +34,6 @@ fetch("/api/1.0/checkUserToken",config1)
 
 
 
-
 document.getElementById("Score").addEventListener("click",async function(){
     let res =await fetch("/api/1.0/ranking/score");
     let resulet =await res.json();
@@ -42,78 +41,29 @@ document.getElementById("Score").addEventListener("click",async function(){
     let topNode=document.getElementById("session");
     topNode.innerHTML="";
     
-    for (let i=0;total.length>i;i++){
-        let imageSrc = "/image/"+(i+1)+".png";
-        createRanking(topNode,total,i,imageSrc);
-        // if (i == 0){
-        //     let imageSrc = "/image/1.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==1){
-        //     let imageSrc="/image/2.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==2){
-        //     let imageSrc="/image/3.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==3){
-        //     let imageSrc="/image/4.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==3){
-        //     let imageSrc="/image/5.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==3){
-        //     let imageSrc="/image/6.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==3){
-        //     let imageSrc="/image/7.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==3){
-        //     let imageSrc="/image/8.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==3){
-        //     let imageSrc="/image/9.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-        // if (i==3){
-        //     let imageSrc="/image/10.png";
-        //     createRanking(topNode,total,i,imageSrc);
-        // }
-    }
-});
 
-function createRanking(topNode,total,i,imageSrc){
-    let name=total[i].split(",")[0];
-    let score=total[i].split(",")[1];
     let secondnode=document.createElement("div");
     secondnode.classList.add("scoreRank");
-    //=======================================
-    let image=document.createElement("img");
-    image.src=imageSrc;
-    image.classList.add("image");
-    image.setAttribute("id","image"+i);
-    // image.src="/image/win.jpg";
-    secondnode.appendChild(image);
-    //=======================================
 
     let nameDiv=document.createElement("div");
-    nameDiv.classList.add("name");
-    nameDiv.innerHTML=name;
+    nameDiv.classList.add("nameTitle");
+    nameDiv.innerHTML="Name";
     
     let scoreDiv=document.createElement("div");
-    scoreDiv.classList.add("fraction");
-    scoreDiv.innerHTML=score;
+    scoreDiv.classList.add("fractionTitle");
+    scoreDiv.innerHTML="Total win";
     
     secondnode.appendChild(nameDiv);
     secondnode.appendChild(scoreDiv);
     topNode.appendChild(secondnode);
-}
+
+    for (let i=0;total.length>i;i++){
+        let imageSrc = "/image/"+(i+1)+".png";
+        createRanking(topNode,total,i,imageSrc);
+    }
+});
+
+
 
 
 document.getElementById("Buzz").addEventListener("click",async function(){
@@ -124,23 +74,27 @@ document.getElementById("Buzz").addEventListener("click",async function(){
     let topNode=document.getElementById("session");
     topNode.innerHTML="";
     
-    for (let i=0;total.length>i;i++){
-        let name=total[i].split(",")[0];
-        let score=total[i].split(",")[1];
-        let secondnode=document.createElement("div");
-        secondnode.classList.add("scoreRank");
 
-        let nameDiv=document.createElement("div");
-        nameDiv.classList.add("name");
-        nameDiv.innerHTML=name;
-        
-        let scoreDiv=document.createElement("div");
-        scoreDiv.classList.add("fraction");
-        scoreDiv.innerHTML=score;
-        
-        secondnode.appendChild(nameDiv);
-        secondnode.appendChild(scoreDiv);
-        topNode.appendChild(secondnode);
+    let secondnode=document.createElement("div");
+    secondnode.classList.add("scoreRank");
+
+    let nameDiv=document.createElement("div");
+    nameDiv.classList.add("nameTitle");
+    nameDiv.innerHTML="Name";
+    
+    let scoreDiv=document.createElement("div");
+    scoreDiv.classList.add("fractionTitle");
+    scoreDiv.innerHTML="Total win";
+    
+    secondnode.appendChild(nameDiv);
+    secondnode.appendChild(scoreDiv);
+    topNode.appendChild(secondnode);
+
+
+
+    for (let i=0;total.length>i;i++){
+        let imageSrc = "/image/"+(i+1)+".png";
+        createRanking(topNode,total,i,imageSrc);
     }
 
     
@@ -150,3 +104,44 @@ document.getElementById("Buzz").addEventListener("click",async function(){
 document.getElementById("title").addEventListener("click",function(){
     location.href="/";
 });
+
+
+function createRanking(topNode,total,i,imageSrc){
+    let name=total[i].split(",")[0];
+    let score=total[i].split(",")[1];
+    let secondnode=document.createElement("div");
+    secondnode.classList.add("scoreRank");
+
+
+    let image=document.createElement("img");
+    image.src=imageSrc;
+    image.classList.add("image");
+    image.setAttribute("id","image"+i);
+    secondnode.appendChild(image);
+
+
+    let nameTopDiv=document.createElement("div");
+    nameTopDiv.classList.add("nameTop");
+    let nameDiv=document.createElement("div");
+    nameDiv.classList.add("name");
+    nameDiv.innerHTML=name;
+    
+    let scoreTopDiv=document.createElement("div");
+    scoreTopDiv.classList.add("fractionTop");
+    let scoreDiv=document.createElement("div");
+    scoreDiv.classList.add("fraction");
+    scoreDiv.innerHTML=score;
+    
+    nameTopDiv.appendChild(nameDiv);
+    secondnode.appendChild(nameTopDiv);
+
+    scoreTopDiv.appendChild(scoreDiv);
+    secondnode.appendChild(scoreTopDiv);
+    topNode.appendChild(secondnode);
+}
+
+
+// eslint-disable-next-line no-unused-vars
+function back(){
+    window.location.href="/";
+}

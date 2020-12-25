@@ -162,7 +162,9 @@ form button:hover {
   width: 40px;
   border-radius: 5px;
 }
-
+.nameTop{
+  width: 100px;
+}
 
 .session {
   -webkit-appearance: none;
@@ -234,15 +236,52 @@ form button:hover {
     z-index: 2;
     margin-left: 15px;
 }
-
+.back {
+  display: inline;
+  margin-bottom: 15px;
+  margin-top: 10px;
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 18px;
+  color: #000000;
+  border-radius: 3px;
+  width: 250px;
+  cursor: pointer;
+  font-size: 20px;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  background-color: #DDDDDD;
+  position: relative;
+  z-index: 2;
+}
 .scoreRank{
   display: flex;
 }
-.name{
-  font-size: 30px;
 
+.nameTitle{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 30px;
+  margin: 0 auto;
+}
+.fractionTitle{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 30px;
+}
+.nameTop{
+  margin-right: auto;
+  text-align: center;
+  width: 140px;
+}
+.name{
+  margin-top: 8px;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 30px;
 }
 .fraction{
+  margin-top: 8px;
+  width: 135px;
+  font-family: 'Ubuntu', sans-serif;
   font-size: 30px;
 }
 
