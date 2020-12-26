@@ -24,7 +24,6 @@
       <button type="button" class="Battle-mode" id="Battle-mode">Battle mode</button>
       <br>
       <button type="button" class="Query-ranking" id="Query-ranking">Ranking</button>
-
 	</div>
 
 	<ul class="bg-bubbles">
@@ -44,7 +43,7 @@
 <script >
 
   $("#signin").click(function(event){
-    window.location.href="/admin/signin"
+    window.location.href="/user/signin"
   })
   $("#Single-player-mode").click(function(event){
     window.location.href="/contest/single"
@@ -56,6 +55,33 @@
     window.location.href="/function/ranking"
   })
 
+  let token = localStorage.getItem("Authorization");
+  if (token){
+    let config = {
+      method:"POST",
+      headers:{
+          Authorization:"Bearer "+token,
+          "Content-Type": "application/json"
+      }
+    };
+    fetch("/api/1.0/checkUserToken",config)
+      .then(function(res){
+        return res.json();
+      })
+      .then(function(result){
+        let message = result.Token;
+        if (message == "user is OK , aleard signin"){
+          let btn=document.getElementById("signin")
+          btn.innerHTML="Profile"
+          btn.addEventListener("click",function(){
+            window.location.href="/user/profile"
+          })
+        }
+      })
+      .catch(function(err){
+        console.log(err);
+      })
+  }
 
 </script>
 

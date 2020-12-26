@@ -24,9 +24,9 @@ fetch("/api/1.0/checkUserToken",config)
                 },
             })
             .then(()=>{
-                location.href="/admin/signin";
+                location.href="/user/signin";
             });
-            // location.href="/admin/signin";
+            // location.href="/user/signin";
         }
     })
     .catch(function(err){
