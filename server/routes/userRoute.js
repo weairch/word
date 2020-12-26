@@ -8,6 +8,7 @@ const {
     userIdAndNowRoom,
     needInformationStartGame,
     checkStandbyRoomModeAndRoom,
+    profileWinRat
 }=require("../controllers/userController");
 
 //url = /api/1.0/xxxx
@@ -32,4 +33,7 @@ router.route("/needInformationStartGame")
 router.route("/checkStandbyRoomModeAndRoom")
     .post(checkStandbyRoomModeAndRoom);
     
+router.route("/profileWinRat")
+    .get(profileWinRat);
+
 module.exports = router;

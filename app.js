@@ -40,12 +40,14 @@ socketCon(io);
 app.get("/",function(req,res){
     res.sendFile(__dirname+"/public/views/index.html");
 });
-
-app.get("/admin/signin",function(req,res){
+app.get("/user/profile",function(req,res){
+    res.sendFile(__dirname+"/public/views/profile.html");
+});
+app.get("/user/signin",function(req,res){
     res.sendFile(__dirname+"/public/views/signin.html");
 });
 
-app.get("/admin/signup",function(req,res){
+app.get("//signup",function(req,res){
     res.sendFile(__dirname+"/public/views/signup.html");
 });
 
