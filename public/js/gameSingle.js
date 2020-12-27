@@ -212,7 +212,21 @@ async function answer(i,sessionNumber,english,id,name){
 
 
 
-
+document.getElementById("exit").addEventListener("click",function(){
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to leave the game?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, I do!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href="/";
+        }
+      });
+});
 
 
 //=============   clock function   ==============

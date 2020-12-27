@@ -203,7 +203,7 @@ socket.on("ortherMessage",function(res){
 socket.on("joinRoomWelcomeMessage",function(res){
     let { name,time }=res;
     console.log(name,time);
-    let message ="Welcome Player: "+name+" join room";
+    let message ="Welcome Player: "+name+" joins room";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");

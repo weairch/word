@@ -192,7 +192,17 @@ form button:hover {
   display: inline-flex;
 }
 
-
+.exit{
+  border-radius: 50px;
+  position: relative;
+  z-index: 3;
+  width: 50px;
+  height: 50px;
+  margin-left: 90%;
+  margin-top: 18%;
+  border: 5px;
+  cursor: pointer;
+}
 .option {
     width: 500px;
     margin-left: 135px;
