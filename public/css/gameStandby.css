@@ -359,11 +359,11 @@ form button:hover {
 }
 .msg_cotainer{
   /* font-family: 'Ubuntu', sans-serif; */
-  font-weight: bold;
+  /* font-weight: bold; */
   margin-top: auto;
   margin-bottom: auto;
   margin-left: 10px;
-  border-radius: 25px;
+  border-radius: 10px;
   background-color: #a9aaa99d;
   color: #fff;
   padding: 10px;
@@ -374,7 +374,7 @@ form button:hover {
   margin-top: auto;
   margin-bottom: auto;
   margin-right: 10px;
-  border-radius: 25px;
+  border-radius: 10px;
   background-color: #a9aaa99d;
   color: #fff;
   padding: 10px;
