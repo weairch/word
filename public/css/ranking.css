@@ -192,6 +192,7 @@ form button:hover {
 
 
 .Score {
+  font-family: 'Ubuntu', sans-serif;
     display: inline;
     margin-bottom: 15px;
     margin-top: 10px;
@@ -215,6 +216,7 @@ form button:hover {
 
 
 .Buzz {
+  font-family: 'Ubuntu', sans-serif;
     display: inline;
     margin-bottom: 15px;
     margin-top: 10px;
@@ -237,6 +239,7 @@ form button:hover {
     margin-left: 15px;
 }
 .back {
+  font-family: 'Ubuntu', sans-serif;
   display: inline;
   margin-bottom: 15px;
   /* margin-top: 10px; */
