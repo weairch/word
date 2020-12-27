@@ -212,6 +212,7 @@ form button:hover {
 
 
 .signOut{
+  font-family: 'Ubuntu', sans-serif;
     display: inline;
     width: 190px !important;
     margin-bottom: 15px;
@@ -233,6 +234,7 @@ form button:hover {
     z-index: 2;
 }
 .back {
+  font-family: 'Ubuntu', sans-serif;
   display: inline;
   margin-bottom: 15px;
   margin-left: 20px;
