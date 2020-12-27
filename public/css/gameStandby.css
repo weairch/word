@@ -319,6 +319,7 @@ form button:hover {
 .card{
   height: 420px;
   width:400px;
+  margin-right: 5%;
   border-radius: 15px !important;
   background-color: rgba(0,0,0,0.4) !important;
   position: relative;

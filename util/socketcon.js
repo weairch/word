@@ -18,6 +18,7 @@ const {
     userUnReady,
     userInStandbyRoom,
     buzzWin,
+    scoreWin,
 } = require("../server/models/userModels");
 
 
@@ -296,7 +297,17 @@ const socketCon=function(io){
         });
 
 
+        socket.on("opponentLeaveGame",function(){
+            socket.broadcast.to(room).emit("catchOpponentLeaveGame","leave");
+        });
 
+        socket.on("buzzOpponentLeaveGameSoYouWin",async function(){
+            await buzzWin(user_id);
+        });
+
+        socket.on("scoreOpponentLeaveGameSoYouWin",async function(){
+            await scoreWin(user_id);
+        });
 
 
         socket.on("disconnect",async function(){
