@@ -11,71 +11,73 @@ const {
 } = require("../../util/random");
 
 
+const sqlMaxLength=async function(){
+    try{
+        let result=await query("select max(id) from word.English3000");
+        return result[0]["max(id)"];
+    }
+    catch(error){
+        console.log(error);
+    }
+};
 
-function sqlMaxLength(){
-    return new Promise (function(resolve,reject){
-        let sql = "select max(id) from word.English3000";
-        query(sql)
-            .then(function(result){
-                resolve(result[0]["max(id)"]); 
-            })
-            .catch(function(err){
-                reject(err);
-            });
-    });
-}
+const selectFourRandomWord =async function(){
+    try{
+        let number=await sqlMaxLength();
+        let randomNumber=random(1,number);
+        let result= await query("SELECT * FROM word.English3000 ORDER BY RAND() LIMIT 4",randomNumber);
+        return result;
+    }
+    catch(error){
+        console.log(error);
+    }
+};
 
-function selectFourRandomWord(){
-    return new Promise (function(resolve,reject){
-        sqlMaxLength()
-            .then(function(number){
-                let randomNumber = random(1,number);
-                let sql = "SELECT * FROM word.English3000 ORDER BY RAND() LIMIT 4";
-                query(sql,randomNumber)
-                    .then(function(result){
-                        resolve (result);
-                    })
-                    .catch(function(err){
-                        reject (err);
-                    });
-            });
-    });
-}
-
-function findSessionNumber(uid){
-    return new Promise(function(resolve,reject){
-        let sql = `select max(id) from word.game_history where uid="${uid}"`;
-        query(sql)
-            .then(function(result){
-                return (result[0]["max(id)"]);
-            })
-            .then(function(id){
-                let sql = `select * from word.game_history where uid="${uid}" and id="${id}"`; 
-                query(sql)
-                    .then(function(result){
-                        resolve(result[0].SessionNumber);
-                    })
-                    .catch(function(err){
-                        reject(err);
-                    });
-            })
-            .catch(function(err){
-                reject (err);
-            });
-    });
-}
-
+const findSessionNumber =async function(uid){
+    try{
+        let result=await query(`select max(id) from word.game_history where uid="${uid}"`);
+        let id=result[0]["max(id)"];
+        let session=await query(`select * from word.game_history where uid="${uid}" and id="${id}"`);
+        return session[0].SessionNumber;
+    }
+    catch(error){
+        console.log(error);
+    }
+};
 
 const checkAnswer = async function(englishTopic){
-    return await query("select * from word.English3000 where english = ?",englishTopic);
+    try{
+        return await query("select * from word.English3000 where english = ?",englishTopic);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const insertTopic = async function(uid,gid,topic){
-    return await query("INSERT INTO word.game_detail (`uid`,`gid`,`topic`) VALUES (?,?,?)",[uid,gid,topic]);
+    try{
+        await transaction();
+        let res=await query("INSERT INTO word.game_detail (`uid`,`gid`,`topic`) VALUES (?,?,?)",[uid,gid,topic]);        
+        await commit();
+        return res;
+    }
+    catch(error){
+        console.log(error);
+        await rollback();
+    }
 };
 
 const insertCorrect = async function (uid,session,topic){
-    return await query("update word.game_detail set correct = 'correct' where uid = ? and gid=? and topic=?",[uid,session,topic]);
+    try{
+        await transaction();
+        let res=await query("update word.game_detail set correct = 'correct' where uid = ? and gid=? and topic=?",[uid,session,topic]);
+        await commit();
+        return res;
+    }
+    catch(error){
+        console.log(error);
+        await rollback();
+    }
 };
 
 const insertError = async function (uid,session,topic){
@@ -92,87 +94,152 @@ const insertError = async function (uid,session,topic){
 };
 
 const selectSessionPlayer = async function(session){
-    return await query("select uid from word.game_detail where gid=?",session);
+    try{
+        return await query("select uid from word.game_detail where gid=?",session);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const correctAnsrs = async function(id,session){
-    return await query("select count(*) from word.game_detail where uid=? and gid=?",[id,session]);
+    try{
+        return await query("select count(*) from word.game_detail where uid=? and gid=?",[id,session]);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const addSingleModeAndSessions = async function(id,number,startTime,mode){
-    return await query("INSERT INTO word.game_history (`uid`,`SessionNumber`,`mode`,`startTime`) VALUES (?,?,?,?)",[id,number,mode,startTime]);
+    try{
+        await transaction();
+        let res=await query("INSERT INTO word.game_history (`uid`,`SessionNumber`,`mode`,`startTime`) VALUES (?,?,?,?)",[id,number,mode,startTime]);
+        await commit();
+        return res;
+    }
+    catch(error){
+        console.log(error);
+        await rollback();
+    }
 };
 
 
 const confirmedWinRate = async function(id,session){
-    return await query("SELECT * FROM word.game_detail where uid = ? and gid =?",[id,session]);
+    try{
+        return await query("SELECT * FROM word.game_detail where uid = ? and gid =?",[id,session]);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const checkCorrectAnswer = async function(id,session){
-    return await query("select count(*) from word.game_detail where  uid=? and gid=? and correct='correct'",[id,session]);
+    try{
+        return await query("select count(*) from word.game_detail where  uid=? and gid=? and correct='correct'",[id,session]);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const serchStandbyRoom = async function(){
-    return await query ("select Room,mode,count(1) from word.standbyRoom group by Room,mode ;");
+    try{
+        return await query ("select Room,mode,count(1) from word.standbyRoom group by Room,mode ;");
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const insertBuzzGame=async function (uid,room){
-    return await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`,`status`,`currect`) VALUES (?,?,0,'NULL','0');",[uid,room]);
+    try{
+        await transaction();
+        let res=await query("INSERT INTO word.buzzGameRoom (`uid`, `Room`,`questionNumber`,`status`,`currect`) VALUES (?,?,0,'NULL','0');",[uid,room]);
+        await commit();
+        return res;
+    }
+    catch(error){
+        console.log(error);
+        await rollback();
+    }
 };
 
 const deleteBuzzGame= async function(uid){
-    return await query("DELETE FROM `word`.`buzzGameRoom` WHERE (`uid` = ?);",uid);
+    try{
+        await transaction();
+        let res=await query("DELETE FROM `word`.`buzzGameRoom` WHERE (`uid` = ?);",uid);
+        await commit();
+        return res;
+    }
+    catch(error){
+        console.log(error);
+        await rollback();
+    }
 };
 
 
 const insertToBuzzGameTopic=async function(session,topicEnglish,topicNumber, topicChinese){
-    return await query("INSERT INTO `word`.`buzzGameTopic` (`session`, `topicEnglish`, `topicNumber`, `topicChinese`) VALUES (?, ?, ?, ?);",[session,topicEnglish,topicNumber,topicChinese]);
+    try{
+        await transaction();
+        let res=await query("INSERT INTO `word`.`buzzGameTopic` (`session`, `topicEnglish`, `topicNumber`, `topicChinese`) VALUES (?, ?, ?, ?);",[session,topicEnglish,topicNumber,topicChinese]);
+        await commit();
+        return res;
+    }
+    catch(error){
+        console.log(error);
+        await rollback();
+    }
 };
 
 
 const deleteBuzzGameTopic=async function(room){
-    return await query("DELETE FROM `word`.`buzzGameTopic` WHERE (`Room` = ?);",room);
+    try{
+        await transaction();
+        let res=await query("DELETE FROM `word`.`buzzGameTopic` WHERE (`Room` = ?);",room);
+        await commit();
+        return res;
+    }
+    catch(error){
+        console.log(error);
+        await rollback();
+    }
 };
 
 
 const randomThirtyWord= async function (){
-    return await query("SELECT * FROM word.English3000 ORDER BY RAND() LIMIT 200;");
+    try{
+        return await query("SELECT * FROM word.English3000 ORDER BY RAND() LIMIT 200;");
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const buzzTopic = async function(session,topicNumber){
-    // ;
-    // console.log(topicNumber);
-    return await query(`select * from word.buzzGameTopic where session='${session}' and topicNumber="${topicNumber}";`);
-    // return await query("select * from word.buzzGameTopic where session=? and topicNumber=?",[session,topicNumber]);
+    try{
+        return await query(`select * from word.buzzGameTopic where session='${session}' and topicNumber="${topicNumber}";`);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 
 
-//=====================
 const updateTopicNnumber = async function(uid,questionNumber){
-    return await query("UPDATE `word`.`buzzGameRoom` SET `questionNumber` =? , `status`='NULL' WHERE (`uid` =?);",[questionNumber,uid]); 
+    try{
+        await transaction();
+        let res=await query("UPDATE `word`.`buzzGameRoom` SET `questionNumber` =? , `status`='NULL' WHERE (`uid` =?);",[questionNumber,uid]); 
+        await commit();
+        return res;
+    }
+    catch(error){
+        await rollback();
+        console.log(error);
+    }
 };
-//====================
 
-
-// const updataTopicError = async function (uid,status){
-//     try{
-//         await transaction();
-//         await query ("UPDATE `word`.`buzzGameRoom` SET `status` = ? WHERE (`uid` = ?) ",[status,uid]);
-//         await commit();
-//         return {message:"success"};
-//     }
-//     catch(error){
-//         await rollback();
-//         return {error};
-//     }
-// };
-
-//======================
-// const confirmBuzzGameRoomStatus = async function (room,questionNumber){
-//     return await query("select count(status) from word.buzzGameRoom where Room=? and questionNumber=? and `status`='false';",[room,questionNumber]);
-// };
-//=====================
 
 const confirmBuzzGameRoomStatus = async function (room,questionNumber,uid){
     try{
@@ -197,19 +264,43 @@ const confirmBuzzGameRoomStatus = async function (room,questionNumber,uid){
 };
 
 const confirmBuzzGameRoomStatusIsNull = async function (room,questionNumber){
-    return await query(`select count(status) from word.buzzGameRoom where Room=${room} and questionNumber=${questionNumber} and status= 'null' ;`);
+    try{
+        return await query(`select count(status) from word.buzzGameRoom where Room=${room} and questionNumber=${questionNumber} and status= 'null' ;`);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const updataNoResponseTopicNumber=async function(uid){
-    return await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='NULL' where uid = ?;",uid);
+    try{
+        await transaction();
+        let res=await query("update word.buzzGameRoom set questionNumber=questionNumber+1 ,status='NULL' where uid = ?;",uid);
+        await commit();
+        return res;
+    }
+    catch(error){
+        await rollback();
+        console.log(error);
+    }
 };
 
 const checkGameTopicStatus= async function (session,topicNumber){
-    return await query("select status from word.buzzGameTopic where session=? and topicNumber=?;",[session,topicNumber]);
+    try{
+        return await query("select status from word.buzzGameTopic where session=? and topicNumber=?;",[session,topicNumber]);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const updateGameTopicStatus= async function (session,topicNumber){
-    return await query("update word.buzzGameTopic set `status`='true' where `session`=? and `topicNumber`=?;",[session,topicNumber]);
+    try{
+        return await query("update word.buzzGameTopic set `status`='true' where `session`=? and `topicNumber`=?;",[session,topicNumber]);
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const raceCondition= async function(session,topicNumber){
@@ -229,18 +320,23 @@ const raceCondition= async function(session,topicNumber){
         }
     }
     catch(error){
+        console.log(error);
         await rollback();
-        return {error};
+        // return {error};
     }
 
 };
 
 const updateCorrectTopicNumber = async function(topicNumber,room){
     try{
-        await query("update word.buzzGameRoom set questionNumber=? , status=NULL where Room=?",[topicNumber,room]); 
+        await transaction();
+        let res=await query("update word.buzzGameRoom set questionNumber=? , status=NULL where Room=?",[topicNumber,room]); 
+        await commit();
+        return res;
     }
     catch(error){
         console.log(error);
+        await rollback();
     }
 };
 
@@ -251,9 +347,7 @@ module.exports ={
     updateGameTopicStatus,
     updataNoResponseTopicNumber,
     confirmBuzzGameRoomStatusIsNull,
-    // updataStatusAndNumberIfError,
     confirmBuzzGameRoomStatus,
-    // updataTopicError,
     updateTopicNnumber,
     buzzTopic,
     randomThirtyWord,

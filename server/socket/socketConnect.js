@@ -9,8 +9,7 @@ const {
     NowStandbyRoomAndMode,
     standbyRoomUser,
     confirmStandbyRoomNumber
-} = require("../server/models/socketModel");
-
+}=require("../models/socketModel");
 
 const { 
     verificationToken,
@@ -19,12 +18,12 @@ const {
     userInStandbyRoom,
     buzzWin,
     scoreWin,
-} = require("../server/models/userModels");
+} = require("../models/userModels");
 
 
 const {
     random
-} = require("../util/random");
+} = require("../../util/random");
 
 const {
     deleteBuzzGame, 
@@ -40,7 +39,7 @@ const {
     raceCondition,
     confirmBuzzGameRoomStatus,
     updateCorrectTopicNumber
-} = require("../server/models/gameModel");
+} = require("../models/gameModel");
 
 const { 
     JWT_SECRET
@@ -64,11 +63,9 @@ const socketCon=function(io){
             verificationToken(token,JWT_SECRET)
                 .then(function(user){
                     let { id , room ,name ,player} = user;
-                    //放SQL
-                    // addNowRoom(id,room);
                     addSocketId(id,socket.id);
     
-                    //放handshake
+                    //put on handshake
                     socket.handshake.query.user_id=id;
                     socket.handshake.query.room=room;
                     socket.handshake.query.socketId=socket.id;
@@ -84,7 +81,6 @@ const socketCon=function(io){
     io.on("connection",async function(socket){
         
         let { user_id ,room , socketId ,name }=socket.handshake.query;
-
         
         socket.on("checkStandbyRoom",async function(room){
             let res = await confirmStandbyRoomNumber(room);
@@ -94,9 +90,8 @@ const socketCon=function(io){
         });
 
 
-        //chat bar
+        //chat bar (standbyRoom)
         socket.on("ready",async function(){
-            console.log("點擊準備");
 
             let time=moment().format("HH:mm:ss");
             let data={name,time};
@@ -106,6 +101,8 @@ const socketCon=function(io){
 
             let score = await checkScoreModeAndReady(room);
             let buzz = await checkBuzzModeAndReady(room);
+
+            //If two people prepare in score mode
             if (score.length == 2 ){
                 let Number=random(1,2147483647);
                 let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
@@ -116,6 +113,8 @@ const socketCon=function(io){
                 }
                 io.sockets.in(room).emit("scorePlayerReady","ready");
             }
+
+            //If two people prepare in buzz mode
             else if (buzz.length ==2){
                 let Number=random(1,2147483647);
                 let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
@@ -131,7 +130,6 @@ const socketCon=function(io){
                     let english=[];
                     let chinese=[];
                     for (let i=1;4>=i;i++){
-                        //
                         let randomNumber= random(0,100);
                         chinese.push(word[randomNumber].chinese);
                         english.push(word[randomNumber].english);
@@ -162,12 +160,13 @@ const socketCon=function(io){
             io.sockets.in(room).emit("joinRoomWelcomeMessage",data);
         });
 
+
+        //Cancel preparation
         socket.on("unReady",function(){
             let time=moment().format("HH:mm:ss");
             let data={name,time};
             io.sockets.in(room).emit("userUnreadyMessage",data);
             userUnReady(user_id);
-            console.log("取消準備");
         });
 
         socket.on("tellEveryoneAboutTheRoom",async function(){
@@ -218,7 +217,7 @@ const socketCon=function(io){
                 socket.broadcast.to(room).emit("event2",i);
                 io.sockets.in(socketId).emit("selfError",i);
                 let result = await confirmBuzzGameRoomStatus(room,countTopicNumber,id);
-                // console.log(result.message);
+
                 if (result.message == "Change question"){
                     countTopicNumber++;
                     result=await buzzTopic(sessionNumber,countTopicNumber);
@@ -259,7 +258,7 @@ const socketCon=function(io){
             socket.broadcast.to(room).emit("event",message);
         });
 
-        //答對
+        //correct
         socket.on("otherSessionCorrect",async function(message){
             let { countTopicNumber,localStorageSession,click }=message;
             let session=localStorageSession.replace("\"","").replace("\"","");
@@ -282,7 +281,10 @@ const socketCon=function(io){
             await updataCurrectNumber(id);
             let result=await checkScore(id);
             let score=result[0]["currect"];
-            if (score ==10){ //這裡傳送出贏的訊息 10分者贏
+            
+            
+            //Here is the message of winning, 10 points win
+            if (score ==10){ 
                 await buzzWin(id);
                 io.sockets.in(socketId).emit("WinMessage","Win");
                 socket.broadcast.to(room).emit("LostMessage","Lost");

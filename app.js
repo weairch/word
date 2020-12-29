@@ -10,7 +10,7 @@ const cors = require("cors");
 
 
 app.use(express.static("public"));
-app.use("/contest",express.static("public")); //這樣game_multe.js才吃的到
+app.use("/contest",express.static("public")); 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended:true}));
 
@@ -30,7 +30,7 @@ app.use("/api/"+API_VERSION,
 //socket.io
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
-const { socketCon } = require("./util/socketcon");
+const { socketCon } = require("./server/socket/socketConnect");
 socketCon(io);
 
 
@@ -47,7 +47,7 @@ app.get("/user/signin",function(req,res){
     res.sendFile(__dirname+"/public/views/signin.html");
 });
 
-app.get("//signup",function(req,res){
+app.get("/user/signup",function(req,res){
     res.sendFile(__dirname+"/public/views/signup.html");
 });
 
@@ -67,8 +67,8 @@ app.get("/function/ranking",function(req,res){
     res.sendFile(__dirname+"/public/views/ranking.html");
 });
 
-app.get("/contest/game/multe",function(req,res){
-    res.sendFile(__dirname+"/public/views/gameMulte.html");
+app.get("/contest/game/multi",function(req,res){
+    res.sendFile(__dirname+"/public/views/gameMulti.html");
 });
 
 app.get("/contest/game/Buzz",function(req,res){

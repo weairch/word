@@ -1,14 +1,21 @@
 const {
-    query
+    query, 
+    transaction, 
+    commit, 
+    rollback
 }= require("./mysqlConnect");
 
 
 const deleteStandbyRoom =async function (uid){
     try {
-        return await query("delete from word.standbyRoom where uid=?",uid);
+        await transaction();
+        let res= await query("delete from word.standbyRoom where uid=?",uid);
+        await commit();
+        return res;
     }
     catch(error){
         console.log(error);
+        await rollback();
     }
 
 };
@@ -16,9 +23,13 @@ const deleteStandbyRoom =async function (uid){
 
 const addSocketId=async function(uid,socketId){
     try{
-        return await query("update word.user set socketId =? where id =?",[socketId,uid]);
+        await transaction();
+        let res=await query("update word.user set socketId =? where id =?",[socketId,uid]);
+        await commit();
+        return res;
     }
     catch(error){
+        await rollback();
         console.log(error);
     }
 };
@@ -36,9 +47,13 @@ const sessionNumber= async function (room){
 
 const insertSessionToHistory=async function (id,gameNumber,mode,startTime,room){
     try{
-        return await query(`INSERT INTO word.game_history (uid,SessionNumber, mode, startTime,Room) VALUES ('${id}','${gameNumber}', '${mode}', '${startTime}',"${room}")`);
+        await transaction();
+        let res=await query(`INSERT INTO word.game_history (uid,SessionNumber, mode, startTime,Room) VALUES ('${id}','${gameNumber}', '${mode}', '${startTime}',"${room}")`);
+        await commit();
+        return res;
     }
     catch(error){
+        await rollback();
         console.log(error);
     }
 };
@@ -73,7 +88,10 @@ const checkBuzzModeAndReady =async function (room){
 
 const updataCurrectNumber= async function (id){
     try{
-        return await query("update word.buzzGameRoom set currect=currect+1 where uid = ?",id);
+        await transaction();
+        let res=await query("update word.buzzGameRoom set currect=currect+1 where uid = ?",id);
+        await commit();
+        return res;
     }
     catch(error){
         console.log(error);
@@ -104,13 +122,13 @@ const standbyRoomUser= async function (room){
             return;
         }
         else{
-            let userNmae=[];
+            let userName=[];
             let res=await query("select * from word.standbyRoom where Room=?",room);
             for (let i=0;res.length>i;i++){
                 let user=await query("select name from word.user where id=?",res[i].uid);
-                userNmae.push(user[0]["name"]);
+                userName.push(user[0]["name"]);
             }
-            return userNmae;
+            return userName;
         }
     }
     catch(error){

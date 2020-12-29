@@ -25,7 +25,7 @@ const signIn=async function (req,res){
 
         let {password , email } = req.body;
         if (!password.length || !email.length ){
-            return res.status(500).send ({message:"Please enter the correct format"});
+            return res.status(400).send ({message:"Please enter the correct format"});
         }
         let user=await checkUser(email);
         
@@ -45,25 +45,26 @@ const signIn=async function (req,res){
     }
     catch(err){
         console.log(err);
+        return res.status(500).send({message:"Internal server error."});
     }
 };
 
 
-async function signUp(req,res){
+const signUp=async function (req,res){
     try{
         let {name,password,email} = req.body;
         if (!name.length || !password.length || !email.length ){
-            return res.status(500).send ({message:"Please enter the correct format"});
+            return res.status(400).send ({message:"Please enter the correct format"});
         }
         if (email){
             let checkEmail=validator.isEmail(email);
             if (checkEmail == false){
-                return res.status(500).send ({message:"Please enter the correct email format"}) ;
+                return res.status(400).send ({message:"Please enter the correct email format"}) ;
             }
         }
         let result=await checkUser(email);
         if (result.length >0){
-            return res.status(500).send ({message:"Email already exists"}) ;
+            return res.status(400).send ({message:"Email already exists"}) ;
         }
         else{
             let hashPwd=await bcrypt.hash(password,8);
@@ -80,95 +81,104 @@ async function signUp(req,res){
     catch{
         return res.status(500).send ({message:"Email already exists"}) ;
     }
-}
+};
 
-function checkUserToken (req,res){
-    let bearerHeader = req.get("Authorization");
-    let bearerToken = bearerHeader.split(" ")[1];
-    if (bearerToken !== "null"){
-        verificationToken(bearerToken,JWT_SECRET)
-            .then(function(result){
-                let {id,name}=result;
-                res.send({Token:"user is OK , aleard signin",id,name});
-            })
-            .catch(function(){
-                res.status(403).json({message:"Pleast signin first"});
-            });
+const checkUserToken =async function (req,res){
+    try{
+        let bearerHeader = req.get("Authorization");
+        let bearerToken = bearerHeader.split(" ")[1];
+        if (bearerToken !== "null"){
+            let verify=await verificationToken(bearerToken,JWT_SECRET);
+            let {id,name}=verify;
+            res.status(200).send({Token:"user is OK , aleard signin",id,name});
+        }
     }
-    else{
-        res.status(403).json({message:"Pleast signin first"});
+    catch(error){
+        console.log(error);
+        res.status(400).json({message:"Pleast signin first"});
     }
-}
+};
 
-function sqlAddStandbyRoom(req,res){
-    let {mode} = req.body;
-    let roomNum=req.body.room;
-    let token = req.get("Authorization").split(" ")[1];
-    verificationToken(token,JWT_SECRET)
-        .then(function(payload){
-            payload.room=roomNum;
-            payload.mode=mode;
-            let newJWT=jwt.sign(payload,JWT_SECRET);
-            res.json(newJWT);
-        })
-        .catch(function(error){
-            console.log(error);
-            res.status(500).send({error: "Token Error"});
-        });
-}
-
-function userIdAndNowRoom(req,res){
-    let token = req.get("Authorization").split(" ")[1];
-    verificationToken(token,JWT_SECRET)
-        .then(function(payload){
-            let { id ,name, room } = payload;
-            res.json({id,name,room});
-        })
-        .catch(function(error){
-            console.log(error);
-            res.status(500).send({error: "Token Error"});
-        });
-}
-
-
-function needInformationStartGame(req,res){
-    let token = req.get("Authorization").split(" ")[1]; 
-    verificationToken(token,JWT_SECRET)
-        .then(function(payload){
-            let { id ,name,room,player} = payload;
-            res.json({id,name,room,player});
-        })
-        .catch(function(error){
-            console.log(error);
-            res.status(500).send({error: "Token Error"});
-        });
-}
-
-async function checkStandbyRoomModeAndRoom(req,res){
-    let {mode,roomNum} =req.body;
-    let check=await CheckForDuplicate(roomNum);
-    if (check == ""){
-        res.json({message:"Confirm entry"});
+const sqlAddStandbyRoom=async function(req,res){
+    try{
+        let {mode} = req.body;
+        let roomNum=req.body.room;
+        let token = req.get("Authorization").split(" ")[1];
+        let payload=await verificationToken(token,JWT_SECRET);
+        payload.room=roomNum;
+        payload.mode=mode;
+        let newJWT=await jwt.sign(payload,JWT_SECRET);
+        res.status(200).json({message:"success",token:newJWT});
     }
-    else if (check[0].mode == mode){
-        res.json({message:"Confirm entry"});
+    catch(error){
+        console.log(error);
+        res.status(500).send({error: "Internal server error."});
     }
-    else{
-        res.json({message:"This room is a different model"});
-    }
-}
-
-
-
-async function profileWinRat(req,res){
-    let id=req.headers.id;
-    let score=await scoreWinRat(id);
     
-    let buzz=await buzzWinRat(id);
-    let data={score,buzz};
+};
 
-    res.json(data);
-}
+const userIdAndNowRoom=async function (req,res){
+    try{
+        let token = req.get("Authorization").split(" ")[1];
+        let payload=await verificationToken(token,JWT_SECRET);
+        let {id,name,room} = payload;
+        res.status(200).json({id,name,room});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).send({error: "Token Error"});
+    }
+};
+
+
+const needInformationStartGame=async function (req,res){
+    try{
+        let token = req.get("Authorization").split(" ")[1];
+        let payload=await verificationToken(token,JWT_SECRET); 
+        let { id ,name,room,player} = payload;
+        res.status(200).json({id,name,room,player});
+    }
+    catch(error){
+        res.status(500).send({error: "Token Error"});
+    }
+};
+
+const checkStandbyRoomModeAndRoom=async function (req,res){
+    try{
+        let {mode,roomNum} =req.body;
+        let check=await CheckForDuplicate(roomNum);
+        if (check == ""){
+            res.status(200).json({message:"Confirm entry"});
+        }
+        else if (check[0].mode == mode){
+            res.status(200).json({message:"Confirm entry"});
+        }
+        else{
+            res.status(400).json({message:"This room is a different model"});
+        }
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message:"Internal server error."});
+    }
+};
+
+
+
+const profileWinRat=async function (req,res){
+    try{
+        let id=req.headers.id;
+        let score=await scoreWinRat(id);
+        
+        let buzz=await buzzWinRat(id);
+        let data={score,buzz};
+    
+        res.status(200).json(data);
+    }
+    catch(error){
+        res.status(500).json({message:"Internal server error."});
+    }
+};
 
 
 

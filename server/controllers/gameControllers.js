@@ -34,6 +34,9 @@ const {
 
 const moment = require("moment");
 
+
+
+//used in single and multi
 const randomNumber = function (req,res){
     selectFourRandomWord()
         .then(function(result){
@@ -96,14 +99,14 @@ const confirmAnswer =async function (req,res){
 const lostOrWin= async function (req,res){
     let { uid, Session } = req.body;
 
-    //找出這場所有的玩家
+    //Find this game player
     let player =await selectSessionPlayer(Session);
     let resultplayer=[];
     for (let i=0; player.length>i;i++){
         resultplayer.push(player[i].uid);
     }
     
-    //過濾掉重複的值並找到另外一個player
+    //find other player
     let playerAll=resultplayer.filter(function(element,index,arr){
         return arr.indexOf(element)===index;
     });
@@ -146,7 +149,7 @@ const addSingleModeAndSession= async function (req,res){
     let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
     let mode="single";
     await addSingleModeAndSessions(id,sessions,moments,mode);
-    res.json({message:"遊戲資料已記錄"});
+    res.json({message:"Game data has been recorded"});
 };
 
 const checkAll=async function (req,res){
@@ -154,7 +157,7 @@ const checkAll=async function (req,res){
     let result=await confirmedWinRate(uid,Session);
     
     let answer=await checkCorrectAnswer(uid,Session);
-    res.json({message:"總共答題了: "+result.length+" 答對了: "+answer[0]["count(*)"]+"題"});
+    res.json({message:"A total of answers: "+result.length+" Correct: "+answer[0]["count(*)"]});
 };
 
 const serchRoom = async function (req,res){
@@ -183,8 +186,6 @@ const insertBuzzGameInfomation= async function (req,res){
 
 
 const gameBuzzTopic= async function (req,res){
-    //這裡會收不到其中一個人答錯的東西
-    // console.log(req.body);
     let session= req.body.session;
     let topicnumber=req.body.topicNumber;
     let result=await buzzTopic(session,topicnumber);

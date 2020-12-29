@@ -12,6 +12,7 @@ let localStorageToken = localStorage.getItem("Authorization");
 
 
 socket.emit("addStandbyRoomToSQL",localStorageToken);
+
 setTimeout(function(){
     socket.emit("tellEveryoneAboutTheRoom","roomNow");
 },500);
@@ -41,7 +42,7 @@ socket.on("sessionNumber",function(number){
 });
 
 socket.on("scorePlayerReady",function(){
-    location.href="/contest/game/multe";
+    location.href="/contest/game/multi";
 });
 
 socket.on("buzzPlayerReady",function(session){
@@ -52,7 +53,6 @@ socket.on("buzzPlayerReady",function(session){
 
 
 socket.on("toMany",function(message){
-    console.log(message);
     Swal.fire(message,{
         buttons:{
             OK:true,
@@ -115,19 +115,18 @@ socket.on("userList",function(list){
 
 const topBox=document.getElementById("topBox");
 socket.on("selfInput",function(res){
-    // console.log("這裡是我拿到我自己的"+res);
     let {name,time,message}=res;
 
-    //最上層容器
+    //Top container 
     let father=document.getElementById("father");
 
-    //第二層(都要綁在它上面)
+    //second,Tied to it
     let nodeDiv=document.createElement("div");
     nodeDiv.classList.add("d-flex");
     nodeDiv.classList.add("justify-content-start");
     nodeDiv.classList.add("mb-4");
     
-    //名字
+
     let imagDiv=document.createElement("div");
     imagDiv.classList.add("img_cont_msg");
 
@@ -135,19 +134,19 @@ socket.on("selfInput",function(res){
     imagName.classList.add("rounded-circle");
     imagName.innerHTML=name;
     imagDiv.appendChild(imagName);
-    
-    //訊息
+
+    //Message
     let msgDiv=document.createElement("div");
     msgDiv.classList.add("msg_cotainer");
     msgDiv.innerHTML=message;
     
-    //時間
+    //time
     let timeSpan=document.createElement("span");
     timeSpan.classList.add("msg_time");
     timeSpan.innerHTML=time;
     msgDiv.appendChild(timeSpan);
 
-    //最後appendChild
+
     nodeDiv.appendChild(imagDiv);
     nodeDiv.appendChild(msgDiv);
     father.appendChild(nodeDiv);
@@ -157,30 +156,31 @@ socket.on("selfInput",function(res){
 
 
 socket.on("ortherMessage",function(res){
-    console.log("這裡是別人傳給我的"+res);
 
     let {name,time,message}=res;
 
-    //最上層容器
+    //Top container 
     let father=document.getElementById("father");
 
-    //第二層容器 都綁在它上面
+    //second,Tied to it
     let nodeDiv=document.createElement("div");
     nodeDiv.classList.add("d-flex");
     nodeDiv.classList.add("justify-content-end");
     nodeDiv.classList.add("mb-4");
 
-    //訊息
+    //Message
     let otherMessage=document.createElement("div");
     otherMessage.classList.add("msg_cotainer_send");
     otherMessage.innerHTML=message;
     
-    //時間
+    //time
     let timeSpan=document.createElement("span");
     timeSpan.classList.add("msg_time_send");
     timeSpan.innerHTML=time;
     otherMessage.appendChild(timeSpan);
     
+
+
     let div=document.createElement("div");
     div.classList.add("img_cont_msg");
     let nameDiv=document.createElement("div");
@@ -287,7 +287,7 @@ socket.on("userUnreadyMessage",function(res){
 
 
 
-//限制只能點擊一次
+//limit one click
 let count=true;
 // eslint-disable-next-line no-unused-vars
 function ready(){

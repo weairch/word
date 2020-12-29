@@ -1,8 +1,5 @@
 const { 
     query, 
-    // transaction, 
-    // commit, 
-    // rollback
 } =require("../models/mysqlConnect");
 
 
