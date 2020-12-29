@@ -1,5 +1,6 @@
 require("dotenv").config();
 const mysql = require("mysql");
+const {promisify} = require("util");
 
 
 const { DB_HOST,
@@ -16,24 +17,12 @@ const mysqlConfig = {
     database : DB_DATABASE, 
 };
 
-// const mysqlCon = mysql.createPool(mysqlConfig);
+
 const mysqlCon = mysql.createConnection(mysqlConfig);
 
-// function promiseQuery (sql,value){
-//     return new Promise (function(resolve,reject){
-//         mysqlCon.query(sql,value,function(err,result){
-//             if (err){
-//                 reject (err);
-//             }
-//             else{
-//                 resolve (result);
-//             }
-//         });
-//     });
-// }
 
 
-const {promisify} = require("util");
+
 
 const promiseQuery = promisify(mysqlCon.query).bind(mysqlCon);
 const promiseTransaction = promisify(mysqlCon.beginTransaction).bind(mysqlCon);

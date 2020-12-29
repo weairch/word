@@ -1,6 +1,6 @@
 const { 
     query
-} = require("../../util/mysqlCon");
+} = require("./mysqlConnect");
 
 
 const jwt = require("jsonwebtoken");
