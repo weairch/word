@@ -20,42 +20,33 @@ const bcrypt=require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 
-function signIn(req,res){
-    let {password , email } = req.body;
-    if (!password.length || !email.length ){
-        return res.status(500).send ({message:"Please enter the correct format"});
-    }
+const signIn=async function (req,res){
+    try{
 
-    checkUser(email)
-        .then(function(result){
-            if (result.length == 0){
-                return Promise.reject() ;
-            }
-            else {
-                return result;
-            }
-        })
-        .then(async function(result){
-            let hashPwd=result[0].password;
-            let bcryptPwd = await bcrypt.compare(password,hashPwd);
-            let data = [result,bcryptPwd];
-            return data ;
-        })
-        .then(function(result){
-            if (result[1] == false){
-                res.status(500).send({message:"Please enter correct Email or password"});
-            }
-            else {
-                let { id,name,email,socketId } = result[0][0];
-                let payload ={id,name,email,socketId};
-                let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
-                res.status(200).json(token);
-            }
-        })
-        .catch(function(){
+        let {password , email } = req.body;
+        if (!password.length || !email.length ){
+            return res.status(500).send ({message:"Please enter the correct format"});
+        }
+        let user=await checkUser(email);
+        
+        if (user.length == 0){
+            return res.status(400).send({message:"Please enter correct Email or password"});
+        }
+    
+        let hashPwd=user[0].password;
+        let bcryptPwd = await bcrypt.compare(password,hashPwd);
+        if (bcryptPwd == false){
             return res.status(500).send({message:"Please enter correct Email or password"});
-        });
-}
+        }
+        let { id,name,socketId } = user[0];
+        let payload ={id,name,email,socketId};
+        let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
+        res.status(200).json(token);
+    }
+    catch(err){
+        console.log(err);
+    }
+};
 
 
 async function signUp(req,res){
@@ -119,6 +110,10 @@ function sqlAddStandbyRoom(req,res){
             payload.mode=mode;
             let newJWT=jwt.sign(payload,JWT_SECRET);
             res.json(newJWT);
+        })
+        .catch(function(error){
+            console.log(error);
+            res.status(500).send({error: "Token Error"});
         });
 }
 
@@ -128,6 +123,10 @@ function userIdAndNowRoom(req,res){
         .then(function(payload){
             let { id ,name, room } = payload;
             res.json({id,name,room});
+        })
+        .catch(function(error){
+            console.log(error);
+            res.status(500).send({error: "Token Error"});
         });
 }
 
@@ -138,6 +137,10 @@ function needInformationStartGame(req,res){
         .then(function(payload){
             let { id ,name,room,player} = payload;
             res.json({id,name,room,player});
+        })
+        .catch(function(error){
+            console.log(error);
+            res.status(500).send({error: "Token Error"});
         });
 }
 
@@ -166,11 +169,6 @@ async function profileWinRat(req,res){
 
     res.json(data);
 }
-
-
-
-
-
 
 
 

@@ -86,7 +86,7 @@ user().then(async function(result){
 
     let winRatDiv=document.createElement("div");
     winRatDiv.classList.add("winRat");
-    winRatDiv.innerHTML="Win rat";
+    winRatDiv.innerHTML="Win rate";
 
 
 
