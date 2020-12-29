@@ -31,7 +31,7 @@ fetch("/api/1.0/checkUserToken",config2)
                 },
             })
             .then(()=>{
-                location.href="/admin/signin";
+                location.href="/user/signin";
             });
         }
     })
@@ -449,3 +449,36 @@ function initializeClock(id, endtime,uid,sessionNumber,name,room) {
     },1000);
 }
 
+document.getElementById("exit").addEventListener("click",function(){
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to leave the game?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, I do!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href="/contest/multi";
+            socket.emit("opponentLeaveGame","leave");
+        }
+      });
+});
+
+socket.on("catchOpponentLeaveGame",function(){
+    socket.emit("buzzOpponentLeaveGameSoYouWin","win");
+    
+    Swal.fire({
+        title:"Your opponent left the game,Congratulations ,you win",
+        imageUrl: "/image/win.jpg",
+        imageWidth: 300,
+        imageHeight: 300,
+        buttons:{
+            OK:true,
+        },
+    })
+    .then(()=>{
+        location.href="/contest/multi";
+    });
+});

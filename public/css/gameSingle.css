@@ -215,7 +215,17 @@ form button:hover {
   position: relative;
   z-index: 3;
 }
-
+.exit{
+  border-radius: 50px;
+  position: relative;
+  z-index: 3;
+  width: 50px;
+  height: 50px;
+  margin-left: 90%;
+  margin-top: 18%;
+  border: 5px;
+  cursor: pointer;
+}
 .btn0 , .btn2{
   font-family: 'Ubuntu', sans-serif;
   display: inline;

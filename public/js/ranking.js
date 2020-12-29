@@ -23,7 +23,7 @@ fetch("/api/1.0/checkUserToken",config1)
                 },
             })
                 .then(()=>{
-                    location.href="/admin/signin";
+                    location.href="/user/signin";
                 });
         }
     })

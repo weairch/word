@@ -55,31 +55,14 @@ body :-ms-input-placeholder {
           transform: translateY(85px);
 }
 .container {
-  max-width: 1000px;
-  margin: -100px auto;
-  /* margin: 0 auto; */
-  /* padding: 50px 0; */
-  /* padding: 100px 0; */
-  padding: 140px;
+  max-width: 720px;
+  margin: -70px auto;
+  padding: 110px;
   height: 400px;
   text-align: center;
 }
-
-.title {
-  font-family: 'Marcellus', sans-serif;
-    margin-right: 60%;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-    font-size: 50px;
-}
-
-
-
-
-
 .container h1 {
-  font-size: 40px;
+  font-size: 75px;
   -webkit-transition-duration: 1s;
           transition-duration: 1s;
   -webkit-transition-timing-function: ease-in-put;
@@ -138,126 +121,226 @@ form button:hover {
   background-color: #f5f7f9;
 }
 
+.title {
+  font-family: 'Marcellus', sans-serif;
+    margin-right: 60% auto;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    font-size: 75px;
+    margin-bottom: 25px;
+}
+.custom-dropdown select {
+  width: 250px;
+  background-color: white;
+  color:#53e3a6;
+  font-size: inherit;
+  padding: .5em;
+  padding-right: 2.5em; 
+  border: 0;
+  margin: 0;
+  border-radius: 3px;
+  text-indent: 0.01px;
+  text-overflow: '';
+  -webkit-appearance: button; /* hide default arrow in chrome OSX */
+  background-color:#f5f7f9;
+}
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px; /* demo only */
+  z-index: 3;
+  position: relative;
+}
 
-.Ready {
+.image{
+  margin-top: 5px;
+  width: 40px;
+  border-radius: 5px;
+}
+.nameTop{
+  width: 100px;
+}
+
+.session {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  outline: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 400px;
+  height: 250px;
+  border-radius: 3px;
+  padding: 10px 15px;
+  margin: 0 auto 10px auto;
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  font-weight: 300;
+  overflow-y: auto;
+  position: relative;
+  z-index: 3;
+}
+
+
+.winRatBtn {
+    display: inline;
     margin-bottom: 15px;
-    margin-top: 20px;
+    margin-top: 10px;
     outline: 0;
     background-color: white;
     border: 0;
-    padding: 10px 15px;
-    color: #53e3a6;
+    padding: 10px 18px;
+    /* color: #53e3a6; */
+    color: #000000;
     border-radius: 3px;
-    width: 200px;
+    width: 115px;
     cursor: pointer;
     font-size: 20px;
     -webkit-transition-duration: 0.25s;
             transition-duration: 0.25s;
-    background-color: #f5f7f9;
+    /* background-color: #f5f7f9; */
+    background-color: #DDDDDD;
     position: relative;
-    z-index: 3;
+    z-index: 2;
 }
 
+
+.signOut{
+  font-family: 'Ubuntu', sans-serif;
+    display: inline;
+    width: 190px !important;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    outline: 0;
+    background-color: white;
+    border: 0;
+    padding: 10px 18px;
+    /* color: #53e3a6; */
+    color: #000000;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 20px;
+    -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s;
+    /* background-color: #f5f7f9; */
+    background-color: #DDDDDD;
+    position: relative;
+    z-index: 2;
+}
+.back {
+  font-family: 'Ubuntu', sans-serif;
+  display: inline;
+  margin-bottom: 15px;
+  margin-left: 20px;
+  /* margin-top: 10px; */
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 18px;
+  color: #000000;
+  border-radius: 3px;
+  width: 190px;
+  cursor: pointer;
+  font-size: 20px;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  background-color: #DDDDDD;
+  position: relative;
+  z-index: 2;
+}
+.modeTitle{
+  display: flex;
+}
+.scoreMode ,.buzzMode{
+  margin-top: 10px;
+  display: flex;
+}
 .score{
   font-family: 'Ubuntu', sans-serif;
-  margin-right: 200px;
-  font-size: x-large;
+  font-size: 17px;
+  margin-left: 5px;
 }
 
-.otherScore{
+.scoreTotalWin {
   font-family: 'Ubuntu', sans-serif;
-  margin-left: 200px;
-  font-size: x-large;
+  font-size: 17px;
+  margin-left: 65px;
 }
-.timer{
+.scorePlayTimes{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 17px;
+  margin-left: 95px;
+}
+.scoreWinRat{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 17px;
+  margin-left: 80px;
+}
+
+.buzz{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 17px;
+  margin-left: 6px;
+}
+.buzzTotalWin{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 17px;
+  margin-left: 70px;
+}
+.buzzPlayTimes{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 17px;
+  margin-left: 95px;
+}
+.buzzWinRat{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 17px;
+  margin-left: 70px;
+}
+
+.Mode{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 20px;
+  /* margin: 0 auto; */
+}
+.winRat{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 20px;
+  margin-left: 20px;
+}
+.totalWinDiv{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 20px;
+  margin-left: 20px;
+}
+.playTimes{
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 20px;
+  margin-left: 23px;
+  
+}
+.nameTop{
+  margin-right: auto;
+  text-align: center;
+  width: 140px;
+}
+.name{
+  margin-top: 8px;
   font-family: 'Ubuntu', sans-serif;
   font-size: 30px;
 }
-
-.topic{
-  font-weight: bold;
-  font-size: 50px;
-  margin-top: 10%;
-  margin-bottom: 10%;
-}
-
-
-.option {
+.fraction{
+  margin-top: 8px;
+  width: 135px;
   font-family: 'Ubuntu', sans-serif;
-    width: 500px;
-    margin-left: 30px;
+  font-size: 30px;
 }
-
-.box1{
-  display: inline-flex;
-}
-
-.exit{
-  border-radius: 50px;
-  position: relative;
-  z-index: 3;
-  width: 50px;
-  height: 50px;
-  margin-left: 90%;
-  margin-top: 18%;
-  border: 5px;
-  cursor: pointer;
-}
-.option {
-    width: 500px;
-    margin-left: 135px;
-}
-
-.btn1 ,.btn3 {
-  font-weight: bold;
-    font-family: 'Ubuntu', sans-serif;
-    display: inline;
-    margin-bottom: 10px;
-    margin-top: 20px;
-    margin-left: 13px ;
-    margin-right: 50px;
-    outline: 0;
-    background-color: #dddddd;
-    border: 0;
-    padding: 15px 15px;
-    color: #000000;
-    border-radius: 10px;
-    width: 200px;
-    cursor: pointer;
-    font-size: 20px;
-    /* -webkit-transition-duration: 0.25s;
-            transition-duration: 0.25s; */
-    /* background-color: #f5f7f9; */
-    font-weight:bold;
-    position: relative;
-    z-index: 3;
-}
-
-.btn0 , .btn2{
-  font-weight: bold;
-    font-family: 'Ubuntu', sans-serif;
-    display: inline;
-    margin-bottom: 10px;
-    margin-top: 20px;
-    margin-right: 12px;
-    outline: 0;
-    background-color: #dddddd;
-    border: 0;
-    padding: 15px 15px;
-    color: #000000;
-    border-radius: 10px;
-    width: 200px;
-    cursor: pointer;
-    font-size: 20px;
-    /* -webkit-transition-duration: 0.25s;
-            transition-duration: 0.25s; */
-    /* background-color: #f5f7f9; */
-    font-weight:bold;
-    position: relative;
-    z-index: 3;
-}
-
-
 
 .bg-bubbles {
   position: absolute;

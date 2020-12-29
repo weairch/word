@@ -3,7 +3,7 @@ const {
     // transaction, 
     // commit, 
     // rollback
-} =require("../../util/mysqlCon");
+} =require("../models/mysqlConnect");
 
 
 const Score=async function(){

@@ -1,9 +1,13 @@
 require("dotenv").config();
+const validator = require("validator");
+
 const { 
     checkUser,
     insertUserData,
     verificationToken,
-    CheckForDuplicate
+    CheckForDuplicate,
+    scoreWinRat,
+    buzzWinRat
 }     
     = require("../models/userModels");
 
@@ -51,9 +55,15 @@ async function signUp(req,res){
         if (!name.length || !password.length || !email.length ){
             return res.status(500).send ({message:"Please enter the correct format"});
         }
+        if (email){
+            let checkEmail=validator.isEmail(email);
+            if (checkEmail == false){
+                return res.status(500).send ({message:"Please enter the correct email format"}) ;
+            }
+        }
         let result=await checkUser(email);
         if (result.length >0){
-            res.status(500).send ({message:"Email already exists"}) ;
+            return res.status(500).send ({message:"Email already exists"}) ;
         }
         else{
             let hashPwd=await bcrypt.hash(password,8);
@@ -64,7 +74,7 @@ async function signUp(req,res){
             let userEmail=user[0].email;
             let payload={id:userId,name:userName,email:userEmail};
             let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
-            res.status(200).send({message:"signup success",token:token});
+            return res.status(200).send({message:"signup success",token:token});
         }
     }
     catch{
@@ -150,7 +160,15 @@ async function checkStandbyRoomModeAndRoom(req,res){
 
 
 
+async function profileWinRat(req,res){
+    let id=req.headers.id;
+    let score=await scoreWinRat(id);
+    
+    let buzz=await buzzWinRat(id);
+    let data={score,buzz};
 
+    res.json(data);
+}
 
 
 
@@ -161,7 +179,8 @@ module.exports={
     sqlAddStandbyRoom,
     userIdAndNowRoom,
     needInformationStartGame,
-    checkStandbyRoomModeAndRoom
+    checkStandbyRoomModeAndRoom,
+    profileWinRat
 };
 
 

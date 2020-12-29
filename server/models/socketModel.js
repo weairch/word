@@ -1,6 +1,6 @@
 const {
     query
-}= require("../../util/mysqlCon");
+}= require("./mysqlConnect");
 
 
 const deleteStandbyRoom =async function (uid){
@@ -10,16 +10,7 @@ const deleteStandbyRoom =async function (uid){
     catch(error){
         console.log(error);
     }
-    // return new Promise(function(resolve,reject){
-    //     let sql = `delete from word.standbyRoom where uid= "${uid}"`;
-    //     query(sql)
-    //         .then(function(result){
-    //             resolve(result);
-    //         })
-    //         .catch(function(err){
-    //             reject(err);
-    //         });
-    // });
+
 };
 
 
@@ -30,16 +21,6 @@ const addSocketId=async function(uid,socketId){
     catch(error){
         console.log(error);
     }
-    // return new Promise (function(resolve , reject){
-    //     let sql = `update word.user set socketId = "${socketId}" where id = "${uid}"`;
-    //     query(sql)
-    //         .then(function(result){
-    //             resolve (result);
-    //         })
-    //         .catch(function(err){
-    //             reject (err);
-    //         });
-    // });
 };
 
 
@@ -51,16 +32,6 @@ const sessionNumber= async function (room){
     catch(error){
         console.log(error);
     }
-    // return new Promise(function(resolve , reject){
-    //     let sql = `select count(*) from word.standbyRoom where room ="${room}";`;
-    //     query(sql)
-    //         .then(function(result){
-    //             resolve (result);
-    //         })
-    //         .catch(function(err){
-    //             reject (err);
-    //         });
-    // });
 };
 
 const insertSessionToHistory=async function (id,gameNumber,mode,startTime,room){
@@ -70,16 +41,6 @@ const insertSessionToHistory=async function (id,gameNumber,mode,startTime,room){
     catch(error){
         console.log(error);
     }
-    // return new Promise (function(resolve,reject){
-    //     let sql = `INSERT INTO word.game_history (uid,SessionNumber, mode, startTime,Room) VALUES ('${id}','${gameNumber}', '${mode}', '${startTime}',"${room}")`;
-    //     query(sql)
-    //         .then(function(result){
-    //             resolve (result);
-    //         })
-    //         .catch(function(err){
-    //             reject(err);
-    //         });
-    // });
 };
 
 
@@ -90,16 +51,6 @@ const confirmStart=async function (room){
     catch(error){
         console.log(error);
     }
-    // return new Promise (function(resolve,reject){
-    //     let sql = `select count(*) from word.standbyRoom where room ="${room}";`;
-    //     query(sql)
-    //         .then(function(result){
-    //             resolve(result);
-    //         })
-    //         .catch(function(err){
-    //             reject(err);
-    //         });
-    // });
 };
 
 const checkScoreModeAndReady =async function (room){
@@ -109,7 +60,6 @@ const checkScoreModeAndReady =async function (room){
     catch(error){
         console.log(error);
     }
-    // return await query("select * from word.standbyRoom where ready='ready' and mode='Score' and room=?",room);
 };
 
 const checkBuzzModeAndReady =async function (room){
