@@ -48,7 +48,7 @@ const sessionNumber= async function (room){
 const insertSessionToHistory=async function (id,gameNumber,mode,startTime,room){
     try{
         await transaction();
-        let res=await query(`INSERT INTO word.game_history (uid,SessionNumber, mode, startTime,room) VALUES ('${id}','${gameNumber}', '${mode}', '${startTime}',"${room}")`);
+        let res=await query(`INSERT INTO word.game_history (uid,session_number, mode, start_time,room) VALUES ('${id}','${gameNumber}', '${mode}', '${startTime}',"${room}")`);
         await commit();
         return res;
     }

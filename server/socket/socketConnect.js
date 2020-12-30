@@ -221,8 +221,8 @@ const socketCon=function(io){
                 if (result.message == "Change question"){
                     countTopicNumber++;
                     result=await buzzTopic(sessionNumber,countTopicNumber);
-                    let { topicEnglish } = result[0];
-                    let Chinese=result[0].topicChinese;
+                    let topicEnglish = result[0].topic_english;
+                    let Chinese=result[0].topic_chinese;
                     let topicChinese=JSON.parse(Chinese);
                     let data={topicEnglish,topicChinese};
                     socket.broadcast.to(room).emit("event3",data);
@@ -244,8 +244,10 @@ const socketCon=function(io){
             let { id,name,room,countTopicNumber}=message;
             let session=message.sessionNumber;
             let result=await buzzTopic(session,countTopicNumber);
-            let { topicEnglish ,topicNumber} = result[0];
-            let string = result[0].topicChinese;
+            let topicEnglish=result[0].topic_english;
+            let topicNumber=result[0].topic_number;
+            // let { topicEnglish ,topicNumber} = result[0];
+            let string = result[0].topic_chinese;
             let topicChinese =JSON.parse(string);
             let data={topicEnglish,topicChinese,topicNumber,id,name,room,session};
             io.sockets.in(socketId).emit("createNewTopic",data);
@@ -263,8 +265,8 @@ const socketCon=function(io){
             let { countTopicNumber,localStorageSession,click }=message;
             let session=localStorageSession.replace("\"","").replace("\"","");
             let result=await buzzTopic(session,countTopicNumber);
-            let { topicEnglish } = result[0];
-            let Chinese=result[0].topicChinese;
+            let topicEnglish=result[0].topic_english;
+            let Chinese=result[0].topic_chinese;
             let topicChinese=JSON.parse(Chinese);
             let data={element:click,topicEnglish,topicChinese};
             socket.broadcast.to(room).emit("event",data);

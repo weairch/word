@@ -181,8 +181,10 @@ const gameBuzzTopic= async function (req,res){
     let session= req.body.session;
     let topicnumber=req.body.topicNumber;
     let result=await buzzTopic(session,topicnumber);
-    let { topicEnglish ,topicNumber} = result[0];
-    let string = result[0].topicChinese;
+    
+    let topicNumber=result[0].topic_number;
+    let topicEnglish=result[0].topic_english;
+    let string = result[0].topic_chinese;
     let topicChinese =JSON.parse(string);
     let topic={topicEnglish,topicChinese,topicNumber};
     
