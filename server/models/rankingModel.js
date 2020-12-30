@@ -4,11 +4,21 @@ const {
 
 
 const Score=async function(){
-    return await query("SELECT * FROM word.user ORDER BY score desc limit 10 ;");
+    try{
+        return await query("SELECT * FROM word.user ORDER BY score desc limit 10 ;");
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 const Buzz=async function(){
-    return await query("SELECT * FROM word.user ORDER BY buzz desc limit 10 ;");
+    try{
+        return await query("SELECT * FROM word.user ORDER BY buzz desc limit 10 ;");
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 

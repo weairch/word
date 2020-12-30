@@ -18,7 +18,7 @@ const checkUser= async function (email){
 const insertUserData= async function (name,email,bcryptPwd,login){
     try{
         await transaction();
-        let res=await query(`INSERT INTO word.user (name, email, password,login,buzz,score) VALUES ("${name}", "${email}", "${bcryptPwd}" , "${login}","0","0")`);
+        let res=await query(`INSERT INTO word.user (name, email, password,login,buzz,score) VALUES ("${name}", "${email}", "${bcryptPwd}" , "${login}",0,0)`);
         await commit();
         return res;
     }

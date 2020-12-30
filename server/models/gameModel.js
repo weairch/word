@@ -104,7 +104,7 @@ const selectSessionPlayer = async function(session){
 
 const correctAnsrs = async function(id,session){
     try{
-        return await query("select count(*) from word.game_detail where uid=? and session_number=?",[id,session]);
+        return await query("select count(*) from word.game_detail where uid=? and session_number=? and correct='correct'",[id,session]);
     }
     catch(error){
         console.log(error);

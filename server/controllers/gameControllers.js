@@ -90,7 +90,7 @@ const confirmAnswer =async function (req,res){
 
 const lostOrWin= async function (req,res){
     let { uid, Session } = req.body;
-
+    
     //Find this game player
     let player =await selectSessionPlayer(Session);
     let resultplayer=[];
@@ -107,12 +107,13 @@ const lostOrWin= async function (req,res){
         playerAll.splice(index,1);
     }
     let other = playerAll[0];
-
-    
+  
     let player1 =await correctAnsrs(uid,Session);
     let scorePlayer1=player1[0]["count(*)"];
+
     let player2 = await correctAnsrs(other,Session);
     let scorePlayer2=player2[0]["count(*)"];
+
     if (scorePlayer1 > scorePlayer2){
         await scoreWin(uid);
         res.json({message:"Congratulations,you win"});
