@@ -61,9 +61,8 @@ user().then(async function(result){
             "Content-Type": "application/json"
         }
     };
-    let res=await fetch("/api/1.0/profileWinRat",config);
+    let res=await fetch("/api/1.0/getProfileWinRat",config);
     let winRat=await res.json();
-    console.log(winRat);
 
     let topNode=document.getElementById("session");
     topNode.innerHTML="";

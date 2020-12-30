@@ -13,11 +13,11 @@ const {
 
 const { 
     verificationToken,
-    userReady,
-    userUnReady,
-    userInStandbyRoom,
-    buzzWin,
-    scoreWin,
+    updateUserReady,
+    updateUserUnready,
+    addUserToStandbyRoom,
+    updateBuzzWin,
+    updateScoreWin,
 } = require("../models/userModels");
 
 
@@ -28,9 +28,9 @@ const {
 const {
     deleteBuzzGame, 
     insertToBuzzGameTopic,
-    randomThirtyWord,
+    getTwoHundredWord,
     insertBuzzGame,
-    buzzTopic,
+    getThisSessionBuzzTopic,
     updateTopicNnumber,
     insertTopic,
     insertCorrect,
@@ -54,28 +54,29 @@ const { now } = require("moment");
 
 
 const socketCon=function(io){
-    io.use(function (socket ,next){
+    io.use(async function (socket ,next){
         let token=socket.handshake.query.Authorization;
         if (token == "null"){
             return {message:"please signin first"};
         }
         else{
-            verificationToken(token,JWT_SECRET)
-                .then(function(user){
-                    let { id , room ,name ,player} = user;
-                    addSocketId(id,socket.id);
-    
-                    //put on handshake
-                    socket.handshake.query.user_id=id;
-                    socket.handshake.query.room=room;
-                    socket.handshake.query.socketId=socket.id;
-                    socket.handshake.query.name=name;
-                    socket.handshake.query.player=player;
-                    
-                    socket.join(room);
-                    
-                    next();
-                });
+            try{
+                let user=await verificationToken(token,JWT_SECRET);
+                let { id , room ,name } = user;
+                await addSocketId(id,socket.id);
+                //put on handshake
+                socket.handshake.query.user_id=id;
+                socket.handshake.query.room=room;
+                socket.handshake.query.socketId=socket.id;
+                socket.handshake.query.name=name;
+                socket.join(room);
+                
+                next();
+            }
+            catch(error){
+                console.log(error);
+                return {message:"please signin first"};
+            }
         }
     });
     io.on("connection",async function(socket){
@@ -97,7 +98,7 @@ const socketCon=function(io){
             let data={name,time};
             io.sockets.in(room).emit("userReadyMessage",data);
             
-            await userReady(user_id);
+            await updateUserReady(user_id);
 
             let score = await checkScoreModeAndReady(room);
             let buzz = await checkBuzzModeAndReady(room);
@@ -124,7 +125,7 @@ const socketCon=function(io){
                     await insertSessionToHistory(uid,sessionNumber,mode,moments,room);
                     await insertBuzzGame(uid,room);
                 }
-                let word=await randomThirtyWord();
+                let word=await getTwoHundredWord();
                 let final={};
                 for (let i=0 ;50>=i;i++){
                     let english=[];
@@ -166,7 +167,7 @@ const socketCon=function(io){
             let time=moment().format("HH:mm:ss");
             let data={name,time};
             io.sockets.in(room).emit("userUnreadyMessage",data);
-            userUnReady(user_id);
+            updateUserUnready(user_id);
         });
 
         socket.on("tellEveryoneAboutTheRoom",async function(){
@@ -198,7 +199,6 @@ const socketCon=function(io){
             let answer = check[0].chinese;
             //correct
             if (answer == option){
-                // countTopicNumber++;
                 await insertCorrect(id,sessionNumber,english);
                 let result=await raceCondition(sessionNumber,countTopicNumber);
 
@@ -220,7 +220,7 @@ const socketCon=function(io){
 
                 if (result.message == "Change question"){
                     countTopicNumber++;
-                    result=await buzzTopic(sessionNumber,countTopicNumber);
+                    result=await getThisSessionBuzzTopic(sessionNumber,countTopicNumber);
                     let topicEnglish = result[0].topic_english;
                     let Chinese=result[0].topic_chinese;
                     let topicChinese=JSON.parse(Chinese);
@@ -243,10 +243,9 @@ const socketCon=function(io){
         socket.on("newTopic",async function(message){
             let { id,name,room,countTopicNumber}=message;
             let session=message.sessionNumber;
-            let result=await buzzTopic(session,countTopicNumber);
+            let result=await getThisSessionBuzzTopic(session,countTopicNumber);
             let topicEnglish=result[0].topic_english;
             let topicNumber=result[0].topic_number;
-            // let { topicEnglish ,topicNumber} = result[0];
             let string = result[0].topic_chinese;
             let topicChinese =JSON.parse(string);
             let data={topicEnglish,topicChinese,topicNumber,id,name,room,session};
@@ -264,7 +263,7 @@ const socketCon=function(io){
         socket.on("otherSessionCorrect",async function(message){
             let { countTopicNumber,localStorageSession,click }=message;
             let session=localStorageSession.replace("\"","").replace("\"","");
-            let result=await buzzTopic(session,countTopicNumber);
+            let result=await getThisSessionBuzzTopic(session,countTopicNumber);
             let topicEnglish=result[0].topic_english;
             let Chinese=result[0].topic_chinese;
             let topicChinese=JSON.parse(Chinese);
@@ -287,7 +286,7 @@ const socketCon=function(io){
             
             //Here is the message of winning, 10 points win
             if (score ==10){ 
-                await buzzWin(id);
+                await updateBuzzWin(id);
                 io.sockets.in(socketId).emit("WinMessage","Win");
                 socket.broadcast.to(room).emit("LostMessage","Lost");
             }
@@ -297,7 +296,7 @@ const socketCon=function(io){
         socket.on("addStandbyRoomToSQL",async function(token){
             let res=await verificationToken(token,JWT_SECRET);
             let { id,room,mode }=res;
-            await userInStandbyRoom(id,room,mode,token);
+            await addUserToStandbyRoom(id,room,mode,token);
         });
 
 
@@ -306,11 +305,11 @@ const socketCon=function(io){
         });
 
         socket.on("buzzOpponentLeaveGameSoYouWin",async function(){
-            await buzzWin(user_id);
+            await updateBuzzWin(user_id);
         });
 
         socket.on("scoreOpponentLeaveGameSoYouWin",async function(){
-            await scoreWin(user_id);
+            await updateScoreWin(user_id);
         });
 
 

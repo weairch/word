@@ -74,7 +74,7 @@ fetch("/api/1.0/function/serchRoom")
                         "Content-Type": "application/json"
                     }
                 };
-                let res=await fetch("/api/1.0/sqlAddStandbyRoom",config);
+                let res=await fetch("/api/1.0/addStandbyRoomAndModeIntoToken",config);
                 let result=await res.json();
                 if (result.message=="success"){
                     localStorage.setItem("Authorization",result.token);
@@ -146,7 +146,7 @@ async function room(){
                 "Content-Type": "application/json"
             }
         };
-        let res=await fetch("/api/1.0/sqlAddStandbyRoom",config);
+        let res=await fetch("/api/1.0/addStandbyRoomAndModeIntoToken",config);
         let result=await res.json();
         if (result.message=="success"){
             localStorage.setItem("Authorization",result.token);
@@ -212,7 +212,7 @@ socket.on("howManyStandbyRoomsNow",function(result){
                     "Content-Type": "application/json"
                 }
             };
-            let res=await fetch("/api/1.0/sqlAddStandbyRoom",config);
+            let res=await fetch("/api/1.0/addStandbyRoomAndModeIntoToken",config);
             let result=await res.json();
             if (result.message == "success"){
                 localStorage.setItem("Authorization",result.token);

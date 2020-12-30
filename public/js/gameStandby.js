@@ -26,7 +26,7 @@ const userInformation=async function (){
         }
     };
     // fetch api => 得到現在房間跟使用者名稱跟ID
-    let res=await fetch("/api/1.0/userIdAndNowRoom",config);
+    let res=await fetch("/api/1.0/checkUserIdAndNowRoom",config);
     let user=await res.json();
     let {id , name , room}=user;
     socket.emit("joinRoom",{id,name,room});
@@ -85,7 +85,6 @@ userInformation().then(async function (user){
 
     document.getElementById("input").addEventListener("keyup",function(event){
         let message=document.getElementById("input").value;
-        console.log(message);
         if (message =="\n"){
             return;
         }
@@ -202,7 +201,7 @@ socket.on("ortherMessage",function(res){
 
 socket.on("joinRoomWelcomeMessage",function(res){
     let { name,time }=res;
-    console.log(name,time);
+
     let message ="Welcome Player: "+name+" joins room";
     let father=document.getElementById("father");
 
@@ -224,7 +223,7 @@ socket.on("joinRoomWelcomeMessage",function(res){
 
 socket.on("leaveRoomMessage",function(res){
     let { name,time }=res;
-    console.log(name,time);
+
     let message ="Player: "+name+" leave room";
     let father=document.getElementById("father");
 
@@ -245,7 +244,6 @@ socket.on("leaveRoomMessage",function(res){
 
 socket.on("userReadyMessage",function(res){
     let { name,time }=res;
-    console.log(name,time);
     let message ="Player: "+name+" is ready";
     let father=document.getElementById("father");
 
@@ -266,7 +264,7 @@ socket.on("userReadyMessage",function(res){
 
 socket.on("userUnreadyMessage",function(res){
     let { name,time }=res;
-    console.log(name,time);
+
     let message ="Player: "+name+" is waitting";
     let father=document.getElementById("father");
 

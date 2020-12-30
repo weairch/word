@@ -11,7 +11,7 @@ const {
 } = require("../../util/random");
 
 
-const sqlMaxLength=async function(){
+const getSqlMaxLength=async function(){
     try{
         let result=await query("select max(id) from word.topic");
         return result[0]["max(id)"];
@@ -21,9 +21,9 @@ const sqlMaxLength=async function(){
     }
 };
 
-const selectFourRandomWord =async function(){
+const getFourRandomWord =async function(){
     try{
-        let number=await sqlMaxLength();
+        let number=await getSqlMaxLength();
         let randomNumber=random(1,number);
         let result= await query("SELECT * FROM word.topic ORDER BY RAND() LIMIT 4",randomNumber);
         return result;
@@ -102,7 +102,7 @@ const selectSessionPlayer = async function(session){
     }
 };
 
-const correctAnsrs = async function(id,session){
+const checkCorrectAnsrs = async function(id,session){
     try{
         return await query("select count(*) from word.game_detail where uid=? and session_number=? and correct='correct'",[id,session]);
     }
@@ -207,7 +207,7 @@ const deleteBuzzGameTopic=async function(room){
 };
 
 
-const randomThirtyWord= async function (){
+const getTwoHundredWord= async function (){
     try{
         return await query("SELECT * FROM word.topic ORDER BY RAND() LIMIT 200;");
     }
@@ -216,7 +216,7 @@ const randomThirtyWord= async function (){
     }
 };
 
-const buzzTopic = async function(session,topic_number){
+const getThisSessionBuzzTopic = async function(session,topic_number){
     try{
         return await query(`select * from word.buzz_game_topic where session_number='${session}' and topic_number="${topic_number}";`);
     }
@@ -315,8 +315,8 @@ module.exports ={
     confirmBuzzGameRoomStatusIsNull,
     confirmBuzzGameRoomStatus,
     updateTopicNnumber,
-    buzzTopic,
-    randomThirtyWord,
+    getThisSessionBuzzTopic,
+    getTwoHundredWord,
     insertToBuzzGameTopic,
     deleteBuzzGameTopic,
     deleteBuzzGame,
@@ -325,13 +325,13 @@ module.exports ={
     checkCorrectAnswer,
     confirmedWinRate,
     addSingleModeAndSessions,
-    correctAnsrs,
+    checkCorrectAnsrs,
     selectSessionPlayer,
     insertCorrect,
     insertError,
     insertTopic,
     checkAnswer,
     findSessionNumber,
-    sqlMaxLength,
-    selectFourRandomWord
+    getSqlMaxLength,
+    getFourRandomWord
 };

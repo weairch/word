@@ -3,7 +3,7 @@ const {
 } =require("../models/mysqlConnect");
 
 
-const Score=async function(){
+const getRankingScore=async function(){
     try{
         return await query("SELECT * FROM word.user ORDER BY score desc limit 10 ;");
     }
@@ -12,7 +12,7 @@ const Score=async function(){
     }
 };
 
-const Buzz=async function(){
+const getRankingBuzz=async function(){
     try{
         return await query("SELECT * FROM word.user ORDER BY buzz desc limit 10 ;");
     }
@@ -26,6 +26,6 @@ const Buzz=async function(){
 
 
 module.exports ={
-    Score,
-    Buzz
+    getRankingScore,
+    getRankingBuzz
 };

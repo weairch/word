@@ -1,11 +1,14 @@
 const { 
-    query, transaction, commit, rollback
+    query, 
+    transaction, 
+    commit, 
+    rollback
 } = require("./mysqlConnect");
 
 
 const jwt = require("jsonwebtoken");
 
-const checkUser= async function (email){
+const checkUserEmail= async function (email){
     try{
         return await query("select * from word.user where email = ?",email);
     }
@@ -41,7 +44,7 @@ const verificationToken=async function(token,secret){
 };
 
 
-const userInStandbyRoom=async function (userId,room,mode,JWT){
+const addUserToStandbyRoom=async function (userId,room,mode,JWT){
     try{
         await transaction();
         let res=await query(`INSERT INTO word.standby_room (uid, room,mode,JWT) VALUES ("${userId}", "${room}","${mode}","${JWT}")`);
@@ -54,7 +57,7 @@ const userInStandbyRoom=async function (userId,room,mode,JWT){
     }
 };
 
-const userReady=async function (id){
+const updateUserReady=async function (id){
     try{
         await transaction();
         let res=await query(`UPDATE word.standby_room SET ready = 'ready' WHERE (uid = "${id}")`);
@@ -67,7 +70,7 @@ const userReady=async function (id){
     }
 };
 
-const userUnReady =async function (id){
+const updateUserUnready =async function (id){
     try{
         await transaction();
         let res=await query(`UPDATE word.standby_room SET ready = 'null' WHERE (uid = "${id}")`);
@@ -80,16 +83,16 @@ const userUnReady =async function (id){
     }
 };
 
-async function CheckForDuplicate(room){
+const checkForDuplicate=async function (room){
     try{
         return await query("SELECT * FROM word.standby_room where room=?",room);
     }
     catch(error){
         console.log(error);
     }
-}
+};
 
-const buzzWin=async function(id){
+const updateBuzzWin=async function(id){
     try{
         await transaction();
         let res=await query ("update word.user set buzz=buzz+1 where id = ?;",id);
@@ -102,7 +105,7 @@ const buzzWin=async function(id){
     }
 };
 
-const scoreWin=async function(id){
+const updateScoreWin=async function(id){
     try{
         await transaction();
         let res=await query("update word.user set score=score+1 where id = ?;",id);
@@ -115,7 +118,7 @@ const scoreWin=async function(id){
     }
 };
 
-const scoreWinRat=async function(id){
+const getScoreWinRat=async function(id){
     try{
         let score=await query("select score from word.user where id=?",id);
         let scoreTotalWin=parseInt(score[0]["score"]);
@@ -129,7 +132,7 @@ const scoreWinRat=async function(id){
     }
 };
 
-const buzzWinRat=async function(id){
+const getBuzzWinRat=async function(id){
     try{
         let buzz=await query("select buzz from word.user where id=?",id);
         let buzzTotalWin=parseInt(buzz[0]["buzz"]);
@@ -146,15 +149,15 @@ const buzzWinRat=async function(id){
 
 
 module.exports ={
-    buzzWinRat,
-    scoreWinRat,
-    scoreWin,
-    buzzWin,
-    CheckForDuplicate,
-    userUnReady,
-    userReady,
+    getBuzzWinRat,
+    getScoreWinRat,
+    updateScoreWin,
+    updateBuzzWin,
+    checkForDuplicate,
+    updateUserUnready,
+    updateUserReady,
     verificationToken,
-    checkUser,
+    checkUserEmail,
     insertUserData,
-    userInStandbyRoom
+    addUserToStandbyRoom
 };

@@ -57,7 +57,7 @@ socket.emit("addSocketIdToData", localStorageToken);
 
 //Get the required information
 const Information= async function () {
-    let res1 = await fetch("/api/1.0/needInformationStartGame",config);
+    let res1 = await fetch("/api/1.0/getInformationStartGame",config);
     let user = await res1.json();
 
     let res2 = await fetch("/api/1.0/function/randomWord",config);
@@ -71,7 +71,7 @@ const Information= async function () {
             uid:user.id
         }
     };
-    let res3 = await fetch("/api/1.0/function/sessionNumber",session);
+    let res3 = await fetch("/api/1.0/function/getSessionNumber",session);
     let sessionNumber = await res3.json();
 
     return {user, topic, sessionNumber};
@@ -209,7 +209,7 @@ async function answer(i,sessionNumber,english,id,name,room){
         let res = await fetch("/api/1.0/function/randomWord");
         let topic = await res.json();
         let { english,chinese } = topic;
-        console.log(english,chinese);
+
         document.querySelector(".topic").innerHTML=english;
         let  div =document.getElementById("option");
         setTimeout(function(){
@@ -257,7 +257,7 @@ function initializeClock(id, endtime,Session,uid) {
                 },
                 body:JSON.stringify(data)
             };
-            let res=await fetch("/api/1.0/function/lostOrWin",config);
+            let res=await fetch("/api/1.0/function/getLostOrWin",config);
             let result = await res.json();
             if (result.message =="Congratulations,you win"){
                 Swal.fire({

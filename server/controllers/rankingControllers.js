@@ -1,11 +1,11 @@
-const {
-    Score,
-    Buzz
-}=require("../models/rankingModel");
+const Ranking=require("../models/rankingModel");
 
-const scoreRanking=async function (req,res){
+
+
+
+const getScoreRanking=async function (req,res){
     try{
-        let result=await Score();
+        let result=await Ranking.getRankingScore();
         let score=[];
         for (let i=0;result.length>i;i++){
             score.push(result[i]["name"]+","+result[i]["score"]);
@@ -14,13 +14,13 @@ const scoreRanking=async function (req,res){
         res.status(200).json(data);
     }
     catch(error){
-        res.status(500).json("Internal server error.");
+        res.status(500).json({message:"Internal server error"});
     }
 };
 
-const buzzRanking=async function(req,res){
+const getBuzzRanking=async function(req,res){
     try{
-        let result=await Buzz();
+        let result=await Ranking.getRankingBuzz();
         let score=[];
         for (let i=0;result.length>i;i++){
             score.push(result[i]["name"]+","+result[i]["buzz"]);
@@ -29,13 +29,13 @@ const buzzRanking=async function(req,res){
         res.status(200).json(data);
     }
     catch(error){
-        res.status(500).json("Internal server error.");
+        res.status(500).json({message:"Internal server error"});
     }
 };
 
 
 
 module.exports={
-    scoreRanking,
-    buzzRanking
+    getScoreRanking,
+    getBuzzRanking
 };

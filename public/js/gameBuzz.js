@@ -55,7 +55,7 @@ socket.emit("addSocketIdToData", localStorageToken);
 
 //Get the required information
 const Information= async function () {
-    let res1 = await fetch("/api/1.0/needInformationStartGame",config);
+    let res1 = await fetch("/api/1.0/getInformationStartGame",config);
     let user = await res1.json();
 
     let session1=localStorageSession.replace("\"","").replace("\"","");
@@ -69,7 +69,7 @@ const Information= async function () {
             uid:user.id
         }
     };
-    let res3 = await fetch("/api/1.0/function/sessionNumber",session);
+    let res3 = await fetch("/api/1.0/function/getSessionNumber",session);
     let sessionNumber = await res3.json();
 
 
@@ -167,7 +167,6 @@ Information().then(async function(res){
 
     //If othres wrong , here will receive it.
     socket.on("event2",async function(message){
-        console.log(message);
         let i=message;
         document.getElementById("btn"+i).style.opacity=0.3;
         document.getElementById("btn"+i).setAttribute("disabled","disabled");
@@ -258,7 +257,7 @@ async function fetchnewTopic(localStorageSession,countTopicNumber){
             "Content-Type": "application/json"
         }
     };
-    let res = await fetch("/api/1.0/function/gameBuzzTopic",config);
+    let res = await fetch("/api/1.0/function/getThisSessionBuzzTopic",config);
     let topic =await res.json();
     return topic;
 } 

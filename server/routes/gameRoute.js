@@ -1,39 +1,39 @@
 const router = require("express").Router();
 
 const {
-    gameBuzzTopic,
-    randomNumber,
-    sessionNumber,
+    getThisSessionBuzzTopic,
+    getRandomNumber,
+    getSessionNumber,
     confirmAnswer,
-    lostOrWin,
+    getLostOrWin,
     addSingleModeAndSession,
-    randomSession,
-    checkAll,
+    getRandomSession,
+    getSinglePlayerResult,
     serchRoom,
     insertBuzzGameInfomation,
 } = require("../controllers/gameControllers");
 
 // /api/1.0
 router.route("/function/randomWord")
-    .get(randomNumber);
+    .get(getRandomNumber);
 
-router.route("/function/sessionNumber")
-    .get(sessionNumber);
+router.route("/function/getSessionNumber")
+    .get(getSessionNumber);
 
 router.route("/function/confirmAnswer")
     .post(confirmAnswer);
 
-router.route("/function/lostOrWin")
-    .post(lostOrWin);
+router.route("/function/getLostOrWin")
+    .post(getLostOrWin);
 
 router.route("/function/addSingleModeAndSession")
     .post(addSingleModeAndSession);
 
-router.route("/function/randomSession")
-    .get(randomSession);
+router.route("/function/getRandomSession")
+    .get(getRandomSession);
 
-router.route("/function/checkAll")
-    .post(checkAll);
+router.route("/function/getSinglePlayerResult")
+    .post(getSinglePlayerResult);
 
 router.route("/function/serchRoom")
     .get(serchRoom);
@@ -41,7 +41,7 @@ router.route("/function/serchRoom")
 router.route("/function/insertBuzzGameInfomation")
     .post(insertBuzzGameInfomation);
 
-router.route("/function/gameBuzzTopic")
-    .post(gameBuzzTopic);
+router.route("/function/getThisSessionBuzzTopic")
+    .post(getThisSessionBuzzTopic);
 
 module.exports = router;
