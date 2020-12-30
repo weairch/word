@@ -44,7 +44,7 @@ const verificationToken=async function(token,secret){
 const userInStandbyRoom=async function (userId,room,mode,JWT){
     try{
         await transaction();
-        let res=await query(`INSERT INTO word.standbyRoom (uid, room,mode,JWT) VALUES ("${userId}", "${room}","${mode}","${JWT}")`);
+        let res=await query(`INSERT INTO word.standby_room (uid, room,mode,JWT) VALUES ("${userId}", "${room}","${mode}","${JWT}")`);
         await commit();
         return res;
     }
@@ -57,7 +57,7 @@ const userInStandbyRoom=async function (userId,room,mode,JWT){
 const userReady=async function (id){
     try{
         await transaction();
-        let res=await query(`UPDATE word.standbyRoom SET ready = 'ready' WHERE (uid = "${id}")`);
+        let res=await query(`UPDATE word.standby_room SET ready = 'ready' WHERE (uid = "${id}")`);
         await commit();
         return res;
     }
@@ -70,7 +70,7 @@ const userReady=async function (id){
 const userUnReady =async function (id){
     try{
         await transaction();
-        let res=await query(`UPDATE word.standbyRoom SET ready = 'null' WHERE (uid = "${id}")`);
+        let res=await query(`UPDATE word.standby_room SET ready = 'null' WHERE (uid = "${id}")`);
         await commit();
         return res;
     }
@@ -82,7 +82,7 @@ const userUnReady =async function (id){
 
 async function CheckForDuplicate(room){
     try{
-        return await query("SELECT * FROM word.standbyRoom where Room=?",room);
+        return await query("SELECT * FROM word.standby_room where room=?",room);
     }
     catch(error){
         console.log(error);

@@ -108,8 +108,8 @@ const socketCon=function(io){
                 let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
                 let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
                 for (let i=0;score.length>i;i++){
-                    let { uid ,Room,mode}=score[i];
-                    await insertSessionToHistory(uid,sessionNumber,mode,moments,Room);
+                    let { uid ,room,mode}=score[i];
+                    await insertSessionToHistory(uid,sessionNumber,mode,moments,room);
                 }
                 io.sockets.in(room).emit("scorePlayerReady","ready");
             }
@@ -120,8 +120,8 @@ const socketCon=function(io){
                 let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
                 let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
                 for (let i=0;buzz.length>i;i++){
-                    let { uid ,Room,mode}=buzz[i];
-                    await insertSessionToHistory(uid,sessionNumber,mode,moments,Room);
+                    let { uid ,room,mode}=buzz[i];
+                    await insertSessionToHistory(uid,sessionNumber,mode,moments,room);
                     await insertBuzzGame(uid,room);
                 }
                 let word=await randomThirtyWord();
@@ -174,7 +174,7 @@ const socketCon=function(io){
             let nowRoom={};
             for(let i=0;room.length>i;i++){
                 if (room[i]["count(1)"]<2){
-                    nowRoom[room[i]["Room"]]=room[i]["mode"];
+                    nowRoom[room[i]["room"]]=room[i]["mode"];
                 }
             }
             io.sockets.emit("howManyStandbyRoomsNow",nowRoom);
@@ -328,7 +328,7 @@ const socketCon=function(io){
             let nowRoom={};
             for(let i=0;totalRoom.length>i;i++){
                 if (totalRoom[i]["count(1)"]<2){
-                    nowRoom[totalRoom[i]["Room"]]=totalRoom[i]["mode"];
+                    nowRoom[totalRoom[i]["room"]]=totalRoom[i]["mode"];
                 }
             }
             io.sockets.emit("howManyStandbyRoomsNow",nowRoom);

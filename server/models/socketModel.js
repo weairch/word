@@ -9,7 +9,7 @@ const {
 const deleteStandbyRoom =async function (uid){
     try {
         await transaction();
-        let res= await query("delete from word.standbyRoom where uid=?",uid);
+        let res= await query("delete from word.standby_room where uid=?",uid);
         await commit();
         return res;
     }
@@ -38,7 +38,7 @@ const addSocketId=async function(uid,socketId){
  
 const sessionNumber= async function (room){
     try{
-        return await query("select count(*) from word.standbyRoom where room =?;",room);
+        return await query("select count(*) from word.standby_room where room =?;",room);
     }
     catch(error){
         console.log(error);
@@ -48,7 +48,7 @@ const sessionNumber= async function (room){
 const insertSessionToHistory=async function (id,gameNumber,mode,startTime,room){
     try{
         await transaction();
-        let res=await query(`INSERT INTO word.game_history (uid,SessionNumber, mode, startTime,Room) VALUES ('${id}','${gameNumber}', '${mode}', '${startTime}',"${room}")`);
+        let res=await query(`INSERT INTO word.game_history (uid,SessionNumber, mode, startTime,room) VALUES ('${id}','${gameNumber}', '${mode}', '${startTime}',"${room}")`);
         await commit();
         return res;
     }
@@ -61,7 +61,7 @@ const insertSessionToHistory=async function (id,gameNumber,mode,startTime,room){
 
 const confirmStart=async function (room){
     try{
-        return await query("select count(*) from word.standbyRoom where room =?",room);
+        return await query("select count(*) from word.standby_room where room =?",room);
     }
     catch(error){
         console.log(error);
@@ -70,7 +70,7 @@ const confirmStart=async function (room){
 
 const checkScoreModeAndReady =async function (room){
     try {
-        return await query("select * from word.standbyRoom where ready='ready' and mode='Score' and room=?",room);
+        return await query("select * from word.standby_room where ready='ready' and mode='Score' and room=?",room);
     }
     catch(error){
         console.log(error);
@@ -79,7 +79,7 @@ const checkScoreModeAndReady =async function (room){
 
 const checkBuzzModeAndReady =async function (room){
     try{
-        return await query("select * from word.standbyRoom where ready='ready' and mode='Buzz' and room=?",room);
+        return await query("select * from word.standby_room where ready='ready' and mode='Buzz' and room=?",room);
     }
     catch(error){
         console.log(error);
@@ -89,7 +89,7 @@ const checkBuzzModeAndReady =async function (room){
 const updataCurrectNumber= async function (id){
     try{
         await transaction();
-        let res=await query("update word.buzzGameRoom set currect=currect+1 where uid = ?",id);
+        let res=await query("update word.buzz_game_room set currect=currect+1 where uid = ?",id);
         await commit();
         return res;
     }
@@ -100,7 +100,7 @@ const updataCurrectNumber= async function (id){
 
 const checkScore =async function (id){
     try{
-        return await query("select currect from word.buzzGameRoom where uid=?;",id);
+        return await query("select currect from word.buzz_game_room where uid=?;",id);
     }
     catch(error){
         console.log(error);
@@ -109,7 +109,7 @@ const checkScore =async function (id){
 
 const NowStandbyRoomAndMode= async function (){
     try{
-        return await query("select Room,mode,count(1) from word.standbyRoom group by Room,mode ;;");
+        return await query("select room,mode,count(1) from word.standby_room group by room,mode ;;");
     }
     catch(error){
         console.log(error);
@@ -123,7 +123,7 @@ const standbyRoomUser= async function (room){
         }
         else{
             let userName=[];
-            let res=await query("select * from word.standbyRoom where Room=?",room);
+            let res=await query("select * from word.standby_room where room=?",room);
             for (let i=0;res.length>i;i++){
                 let user=await query("select name from word.user where id=?",res[i].uid);
                 userName.push(user[0]["name"]);
@@ -139,7 +139,7 @@ const standbyRoomUser= async function (room){
 
 const confirmStandbyRoomNumber = async function(room){
     try{
-        return await query("select count(*) from word.standbyRoom where Room=?",room);
+        return await query("select count(*) from word.standby_room where room=?",room);
     }
     catch(error){
         console.log(error);

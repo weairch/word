@@ -1,7 +1,6 @@
 const router = require("express").Router();
 
 const {
-    nowGameTopicNnumber,
     gameBuzzTopic,
     randomNumber,
     sessionNumber,
@@ -12,12 +11,6 @@ const {
     checkAll,
     serchRoom,
     insertBuzzGameInfomation,
-    confirmStatus,
-    countBuzzGameRoomStatusIsNull,
-    updataTimeOutTopicNumber,
-    checkBuzzGameTopicStatus,
-    updateBuzzGameTopicStatus,
-    confirmWhoWillArriveFirst,
 } = require("../controllers/gameControllers");
 
 // /api/1.0
@@ -51,33 +44,4 @@ router.route("/function/insertBuzzGameInfomation")
 router.route("/function/gameBuzzTopic")
     .post(gameBuzzTopic);
 
-router.route("/function/nowGameTopicNnumber")
-    .post(nowGameTopicNnumber);
-
-// router.route("/function/updataTopicError")
-//     .post(gameStatus);
-
-router.route("/function/confirmStatus")
-    .post(confirmStatus);
-
-// router.route("/function/updataStatusAndNumber")
-//     .post(updataStatusAndNumber);
-
-router.route("/function/countBuzzGameRoomStatusIsNull")
-    .post(countBuzzGameRoomStatusIsNull);
-
-router.route("/function/updataTimeOutTopicNumber")
-    .post(updataTimeOutTopicNumber);
-
-router.route("/function/checkBuzzGameTopicStatus")
-    .post(checkBuzzGameTopicStatus);
-
-router.route("/function/updateBuzzGameTopicStatus")
-    .post(updateBuzzGameTopicStatus);
-
-router.route("/function/confirmWhoWillArriveFirst")
-    .post(confirmWhoWillArriveFirst);
-
-// router.route("/function/ThirtyWord")
-//     .get(ThirtyWord);
 module.exports = router;
