@@ -267,20 +267,33 @@ form button:hover {
   margin-left: 5px;
 }
 
+.topScoreTotalWin{
+  display: block;
+  width: 140px;
+  text-align: center;
+}
+.topScorePlayTimes{
+  display: block;
+  width: 60px;
+  text-align: center;
+  margin-right: auto;
+}
+.topScoreWinRat{
+  display: block;
+  margin-right: 10px;
+}
+
 .scoreTotalWin {
   font-family: 'Ubuntu', sans-serif;
   font-size: 17px;
-  margin-left: 65px;
 }
 .scorePlayTimes{
   font-family: 'Ubuntu', sans-serif;
   font-size: 17px;
-  margin-left: 95px;
 }
 .scoreWinRat{
   font-family: 'Ubuntu', sans-serif;
   font-size: 17px;
-  margin-left: 80px;
 }
 
 .buzz{
@@ -291,17 +304,29 @@ form button:hover {
 .buzzTotalWin{
   font-family: 'Ubuntu', sans-serif;
   font-size: 17px;
-  margin-left: 70px;
+}
+.topBuzzTotalWin{
+  display: block;
+  width: 150px;
+  text-align: center;
+}
+.topBuzzPlayTimes{
+  display: block;
+  width: 60px;
+  text-align: center;
+  margin-right: auto;
+}
+.topBuzzWinRat{
+  display: block;
+  margin-right: 10px;
 }
 .buzzPlayTimes{
   font-family: 'Ubuntu', sans-serif;
   font-size: 17px;
-  margin-left: 95px;
 }
 .buzzWinRat{
   font-family: 'Ubuntu', sans-serif;
   font-size: 17px;
-  margin-left: 70px;
 }
 
 .Mode{

@@ -98,14 +98,24 @@ user().then(async function(result){
     scoreDiv.classList.add("score");
     scoreDiv.innerHTML="Score";
 
+    
     let scoreTotalWinDiv=document.createElement("div");
     scoreTotalWinDiv.classList.add("scoreTotalWin");
     scoreTotalWinDiv.innerHTML=winRat.score.scoreTotalWin;
+    
+    let topScoreTotalWinDiv=document.createElement("div");
+    topScoreTotalWinDiv.classList.add("topScoreTotalWin");
+    topScoreTotalWinDiv.appendChild(scoreTotalWinDiv);
 
+    
     let scorePlayTimesDiv=document.createElement("div");
     scorePlayTimesDiv.classList.add("scorePlayTimes");
     scorePlayTimesDiv.innerHTML=winRat.score.scorePlayTimesTotla;
 
+
+    let topScorePlayTimesDiv=document.createElement("div");
+    topScorePlayTimesDiv.classList.add("topScorePlayTimes");
+    topScorePlayTimesDiv.appendChild(scorePlayTimesDiv);
 
     let scoreWinRatNumber;
     let winrat=(winRat.score.scoreTotalWin/winRat.score.scorePlayTimesTotla)*100;
@@ -121,6 +131,10 @@ user().then(async function(result){
     scoreWinRatDiv.classList.add("scoreWinRat");
     scoreWinRatDiv.innerHTML=scoreWinRatNumber+"%";
 
+    let topScoreWinRatDiv=document.createElement("div");
+    topScoreWinRatDiv.classList.add("topScoreWinRat");
+    topScoreWinRatDiv.appendChild(scoreWinRatDiv);
+
     //buzz mode
 
     let fourNode=document.createElement("div");
@@ -134,9 +148,17 @@ user().then(async function(result){
     buzzTotalWinDiv.classList.add("buzzTotalWin");
     buzzTotalWinDiv.innerHTML=winRat.buzz.buzzTotalWin;
 
+    let topBuzzTotalWinDiv=document.createElement("div");
+    topBuzzTotalWinDiv.classList.add("topBuzzTotalWin");
+    topBuzzTotalWinDiv.appendChild(buzzTotalWinDiv);
+
     let buzzPlayTimesDiv=document.createElement("div");
     buzzPlayTimesDiv.classList.add("buzzPlayTimes");
     buzzPlayTimesDiv.innerHTML=winRat.buzz.buzzPlayTimesTotla;
+    
+    let topBuzzPlayTimesDiv=document.createElement("div");
+    topBuzzPlayTimesDiv.classList.add("topBuzzPlayTimes");
+    topBuzzPlayTimesDiv.appendChild(buzzPlayTimesDiv);
 
     let buzzWinRatNumber;
     let buzzWinrat=(winRat.buzz.buzzTotalWin/winRat.buzz.buzzPlayTimesTotla)*100;
@@ -151,8 +173,9 @@ user().then(async function(result){
     buzzWinRatDiv.classList.add("buzzWinRat");
     buzzWinRatDiv.innerHTML=buzzWinRatNumber+"%";
 
-
-
+    let topBuzzWinRatDiv=document.createElement("div");
+    topBuzzWinRatDiv.classList.add("topBuzzWinRat");
+    topBuzzWinRatDiv.appendChild(buzzWinRatDiv);
 
 
     secondnode.appendChild(modeDiv);
@@ -162,14 +185,14 @@ user().then(async function(result){
     topNode.appendChild(secondnode);
 
     thirdNode.appendChild(scoreDiv);
-    thirdNode.appendChild(scoreTotalWinDiv);
-    thirdNode.appendChild(scorePlayTimesDiv);
-    thirdNode.appendChild(scoreWinRatDiv);
+    thirdNode.appendChild(topScoreTotalWinDiv);
+    thirdNode.appendChild(topScorePlayTimesDiv);
+    thirdNode.appendChild(topScoreWinRatDiv);
 
     fourNode.appendChild(buzzDiv);
-    fourNode.appendChild(buzzTotalWinDiv);
-    fourNode.appendChild(buzzPlayTimesDiv);
-    fourNode.appendChild(buzzWinRatDiv);
+    fourNode.appendChild(topBuzzTotalWinDiv);
+    fourNode.appendChild(topBuzzPlayTimesDiv);
+    fourNode.appendChild(topBuzzWinRatDiv);
 
     topNode.appendChild(thirdNode);
     topNode.appendChild(fourNode);
