@@ -4,11 +4,11 @@ const {
     signIn,
     signUp,
     checkUserToken,
-    sqlAddStandbyRoom,
-    userIdAndNowRoom,
-    needInformationStartGame,
+    addStandbyRoomAndModeIntoToken,
+    checkUserIdAndNowRoom,
+    getInformationStartGame,
     checkStandbyRoomModeAndRoom,
-    profileWinRat
+    getProfileWinRat
 }=require("../controllers/userController");
 
 //url = /api/1.0/xxxx
@@ -21,19 +21,19 @@ router.route("/signup")
 router.route("/checkUserToken")
     .post(checkUserToken);
 
-router.route("/sqlAddStandbyRoom")
-    .post(sqlAddStandbyRoom);
+router.route("/addStandbyRoomAndModeIntoToken")
+    .post(addStandbyRoomAndModeIntoToken);
 
-router.route("/userIdAndNowRoom")
-    .post(userIdAndNowRoom);
+router.route("/checkUserIdAndNowRoom")
+    .post(checkUserIdAndNowRoom);
 
-router.route("/needInformationStartGame")
-    .get(needInformationStartGame);
+router.route("/getInformationStartGame")
+    .get(getInformationStartGame);
 
 router.route("/checkStandbyRoomModeAndRoom")
     .post(checkStandbyRoomModeAndRoom);
     
-router.route("/profileWinRat")
-    .get(profileWinRat);
+router.route("/getProfileWinRat")
+    .get(getProfileWinRat);
 
 module.exports = router;

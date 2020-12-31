@@ -2,15 +2,15 @@
 const router = require("express").Router();
 
 const {
-    scoreRanking,
-    buzzRanking,
+    getBuzzRanking,
+    getScoreRanking
 } = require("../controllers/rankingControllers");
 
 router.route("/ranking/score")
-    .get(scoreRanking);
+    .get(getScoreRanking);
 
 router.route("/ranking/buzz")
-    .get(buzzRanking);
+    .get(getBuzzRanking);
 
 
 

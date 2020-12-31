@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     </script><meta charset='UTF-8'>
     <meta name="robots" content="noindex">
-    <link rel="shortcut icon" type="image/x-icon" href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/image/icon.ico">
     <link rel="mask-icon" type="" href="//production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111" />
     <link rel="canonical" href="https://codepen.io/Lewitje/pen/BNNJjo?depth=everything&order=popularity&page=14&q=box&show_forks=false" />
     <link rel="stylesheet" type="text/css" href="/css/signin.css" >
@@ -18,16 +18,14 @@
 		<div class="title" id="title">Sign in</div>
 		
 		<form name="form" id="form" method="POST">
-			<!-- <input type="text" name="name" id="signinName" placeholder="Please enter name"> -->
       <input type="email" name="email" id="signinEmail" placeholder="Please enter email">
       <input type="password" name="password" id="signinPw" placeholder="Please enter password">
-			<button type="submit" id="login-button">Login</button>
+			<button type="submit" id="login-button" class="login-button">Login</button>
     </form>
     <div>
-      <button type="button" class="home" id="home" >Homepage</button>
-      <button type="button" class="signup" id="sign-up">Sign up</button>
+      <button type="button" class="home" id="home" >Back</button>
+      <button type="button" class="sign-up" id="sign-up">Sign up</button>
     </div>
-    <!-- <p>if you don't have an account yet</p>  -->
 	</div>
 
 	<ul class="bg-bubbles">
@@ -44,57 +42,8 @@
 	</ul>
 </div>
 <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-
-
-<script > $("#login-button").click(function(event){
-		 event.preventDefault();
-    //  let name = document.getElementById('signinName').value
-    let password =document.getElementById('signinPw').value
-    let email = document.getElementById('signinEmail').value
-    let data={password,email}
-    config = {
-      method:'POST',
-      body:JSON.stringify(data),
-      headers:{
-        'Content-Type': 'application/json'
-      }
-    }
-    fetch('/api/1.0/signin',config)
-    .then(function (res){
-      return res.json()
-    })
-    .then(function(result){
-      if (result.message == undefined){
-        localStorage.setItem("Authorization",result);
-        Swal.fire("Signin success",{
-                        buttons:{
-                            OK:true,
-                        },
-                    })
-                    .then(()=>{
-                        location.href="/";
-                    });
-      }
-      else{
-        document.getElementById('signinPw').value=""
-        document.getElementById('signinEmail').value=""
-        Swal.fire(result.message)
-      }
-    })
-});
-
-$("#sign-up").click(function(event){
-    window.location.href="/user/signup"
-  })
-
-$("#home").click(function(event){
-  window.location.href="/"
-})
-
-</script>
+<script src="../js/signin.js"> </script>
 
 </body>
 

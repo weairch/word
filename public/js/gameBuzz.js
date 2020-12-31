@@ -53,9 +53,9 @@ document.querySelector(".title").addEventListener("click",function(){
 socket.emit("addSocketIdToData", localStorageToken);
 
 
-//拿取所需要的資訊
+//Get the required information
 const Information= async function () {
-    let res1 = await fetch("/api/1.0/needInformationStartGame",config);
+    let res1 = await fetch("/api/1.0/getInformationStartGame",config);
     let user = await res1.json();
 
     let session1=localStorageSession.replace("\"","").replace("\"","");
@@ -69,7 +69,7 @@ const Information= async function () {
             uid:user.id
         }
     };
-    let res3 = await fetch("/api/1.0/function/sessionNumber",session);
+    let res3 = await fetch("/api/1.0/function/getSessionNumber",session);
     let sessionNumber = await res3.json();
 
 
@@ -88,7 +88,7 @@ const Information= async function () {
 };
 
 
-//動態生成js
+//Dynamic page
 Information().then(async function(res){
 
     let { sessionNumber } = res;
@@ -131,12 +131,12 @@ Information().then(async function(res){
 
 
 
+    //if others correct after here will receive
     socket.on("event",async function(message){
     
         let {element,topicEnglish,topicChinese }=message;
         
-        document.getElementById(element).style.opacity=0.7;
-        document.getElementById(element).style.backgroundColor="#FFC0C0";
+        document.getElementById(element).style.opacity=0.3;
         document.getElementById("btn0").setAttribute("disabled","disabled");
         document.getElementById("btn1").setAttribute("disabled","disabled");
         document.getElementById("btn2").setAttribute("disabled","disabled");
@@ -165,16 +165,16 @@ Information().then(async function(res){
         },1300);
     });
 
+    //If othres wrong , here will receive it.
     socket.on("event2",async function(message){
-        console.log(message);
         let i=message;
-        document.getElementById("btn"+i).style.opacity=0.7;
-        document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
+        document.getElementById("btn"+i).style.opacity=0.3;
         document.getElementById("btn"+i).setAttribute("disabled","disabled");
         document.getElementById("btn"+i).style.cursor="default";
         document.getElementById("btn"+i).style.color="#000"; 
     });
 
+    //If both player wrong , here will receive it.
     socket.on("event3",async function(topic){
         clearInterval(timer);
         document.getElementById("btn0").setAttribute("disabled","disabled");
@@ -196,14 +196,16 @@ Information().then(async function(res){
         },1300);
     });
 
+    //When others player click button , here will receive the change screen first.
     socket.on("stopClick",function(i){
-        document.getElementById("btn"+i).style.opacity=0.7;
-        document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
+        document.getElementById("btn"+i).style.opacity=0.3;
         document.getElementById("btn"+i).setAttribute("disabled","disabled");
         document.getElementById("btn"+i).style.cursor="default";
         document.getElementById("btn"+i).style.color="#000"; 
     });
 
+
+    //If this player win , will show Swal alert to user.
     socket.on("WinMessage",function(){
         Swal.fire({
             title:"Congratulations ,you win",
@@ -219,6 +221,8 @@ Information().then(async function(res){
         });
     });
 
+
+    //If this player lose , will show Swal alert to user.
     socket.on("LostMessage",function(){
         Swal.fire({
             title:"Sorry , you lose",
@@ -240,8 +244,6 @@ Information().then(async function(res){
 
 
 
-//================================以下是function================================================
-
 
 
 //get new topic
@@ -255,7 +257,7 @@ async function fetchnewTopic(localStorageSession,countTopicNumber){
             "Content-Type": "application/json"
         }
     };
-    let res = await fetch("/api/1.0/function/gameBuzzTopic",config);
+    let res = await fetch("/api/1.0/function/getThisSessionBuzzTopic",config);
     let topic =await res.json();
     return topic;
 } 
@@ -294,11 +296,10 @@ function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,roo
     }
 }
 
-//======答對的socket====
+//======correct socket====
 socket.on("correct",function(message){
     let { sessionNumber,id,name,room,i}=message;
     countTopicNumber++; 
-    console.log(countTopicNumber);
     document.querySelector(".scoreNumber").innerHTML++;
     let click=document.querySelector(".btn"+i).className;  
     clearInterval(timer);
@@ -307,9 +308,8 @@ socket.on("correct",function(message){
     socket.emit("updataTopicNumber",data);
 
     let data2={click,countTopicNumber,localStorageSession};
-    socket.emit("otherSessionCorrect",data2);//通知房間其他人
+    socket.emit("otherSessionCorrect",data2);
     socket.emit("updataCurrectNumberToSQL",{id});
-    console.log(sessionNumber);
     let information={sessionNumber,countTopicNumber,id,name,room };
     socket.emit("newTopic",information);
 });
@@ -330,12 +330,11 @@ socket.on("createNewTopic",function(message){
 
 
 
-//====答錯的socket====
+//====error socket====
 socket.on("error",function(message){
     let {id,sessionNumber,name,room,topicChinese,topicEnglish}=message;
     clearInterval(timer);
     countTopicNumber++;
-    console.log("我這裡是countTopicNumber",countTopicNumber);
     clickReaction();
     setTimeout(async function(){
         killChild();
@@ -355,8 +354,8 @@ socket.on("selfError",function(message){
     wrongDisabled(message);
 });
 
-//刪掉原本頁面上有的資訊
 
+//delete the option 
 function killChild(){
     let deleteNode=document.querySelector(".topic");
     if (deleteNode){
@@ -394,13 +393,14 @@ function clickReaction(){
     document.getElementById("btn2").style.cursor="default";
     document.getElementById("btn3").style.cursor="default";
 }
-//答對後反應
+
+//Response after correct answer
 function createDisabled(element){
     document.getElementById(element).style.backgroundColor="#00FA9A";
     document.getElementById(element).style.color="#000";
 }
 
-//答錯後反應
+//Response after error answer
 function wrongDisabled(i){
     document.getElementById("btn0").setAttribute("disabled","disabled");
     document.getElementById("btn1").setAttribute("disabled","disabled");
@@ -449,6 +449,8 @@ function initializeClock(id, endtime,uid,sessionNumber,name,room) {
     },1000);
 }
 
+
+//exit btn
 document.getElementById("exit").addEventListener("click",function(){
     Swal.fire({
         title: "Are you sure?",
@@ -466,6 +468,7 @@ document.getElementById("exit").addEventListener("click",function(){
       });
 });
 
+//Notify the other player.
 socket.on("catchOpponentLeaveGame",function(){
     socket.emit("buzzOpponentLeaveGameSoYouWin","win");
     

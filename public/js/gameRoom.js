@@ -26,7 +26,6 @@ fetch("/api/1.0/checkUserToken",config)
             .then(()=>{
                 location.href="/user/signin";
             });
-            // location.href="/user/signin";
         }
     })
     .catch(function(err){
@@ -34,6 +33,8 @@ fetch("/api/1.0/checkUserToken",config)
     });
 
 
+
+//Confirm accessible rooms 
 fetch("/api/1.0/function/serchRoom")
     .then(function(res){
         return res.json();
@@ -73,15 +74,12 @@ fetch("/api/1.0/function/serchRoom")
                         "Content-Type": "application/json"
                     }
                 };
-                await fetch("/api/1.0/sqlAddStandbyRoom",config)
-                    .then(function(res){
-                        return res.json();
-                    })
-                    .then(function(token){
-                        localStorage.setItem("Authorization",token);
-                        location.href="/contest/standby";
-                    });
-
+                let res=await fetch("/api/1.0/addStandbyRoomAndModeIntoToken",config);
+                let result=await res.json();
+                if (result.message=="success"){
+                    localStorage.setItem("Authorization",result.token);
+                    location.href="/contest/standby";    
+                }
             });
 
 
@@ -136,7 +134,6 @@ async function room(){
             .then(()=>{
                 return location.href="/contest/multi";
             });
-            // return location.href="/contest/multi";
         }
     }
     if (roomNum){
@@ -149,14 +146,12 @@ async function room(){
                 "Content-Type": "application/json"
             }
         };
-        await fetch("/api/1.0/sqlAddStandbyRoom",config)
-            .then(function(res){
-                return res.json();
-            })
-            .then(function(token){
-                localStorage.setItem("Authorization",token);
-                location.href="/contest/standby";
-            });
+        let res=await fetch("/api/1.0/addStandbyRoomAndModeIntoToken",config);
+        let result=await res.json();
+        if (result.message=="success"){
+            localStorage.setItem("Authorization",result.token);
+            location.href="/contest/standby";    
+        }
     }
     else{
         Swal.fire("Pleast enter correct room format!");
@@ -183,8 +178,7 @@ socket.on("howManyStandbyRoomsNow",function(result){
 
     let topNode = document.querySelector(".topRoom");
     topNode.innerHTML="";
-    
-    console.log(result);
+
     for (let i=0;Object.keys(result).length>i;i++){
 
         let room=Object.keys(result)[i];
@@ -218,15 +212,12 @@ socket.on("howManyStandbyRoomsNow",function(result){
                     "Content-Type": "application/json"
                 }
             };
-            await fetch("/api/1.0/sqlAddStandbyRoom",config)
-                .then(function(res){
-                    return res.json();
-                })
-                .then(function(token){
-                    localStorage.setItem("Authorization",token);
-                    location.href="/contest/standby";
-                });
-
+            let res=await fetch("/api/1.0/addStandbyRoomAndModeIntoToken",config);
+            let result=await res.json();
+            if (result.message == "success"){
+                localStorage.setItem("Authorization",result.token);
+                location.href="/contest/standby";
+            }
         });
 
 

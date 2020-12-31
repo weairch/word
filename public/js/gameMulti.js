@@ -7,21 +7,23 @@ const socket = io({
     }
 });
 
+
 document.querySelector(".title").addEventListener("click",function(){
     window.location.href="/";
 });
 
+
 let localStorageToken = localStorage.getItem("Authorization");
 
 
-let config2 = {
+let checkUserTokenConfig = {
     method:"POST",
     headers:{
         Authorization:"Bearer "+localStorageToken,
         "Content-Type": "application/json"
     }
 };
-fetch("/api/1.0/checkUserToken",config2)
+fetch("/api/1.0/checkUserToken",checkUserTokenConfig)
     .then(function (res){
         return res.json();
     })
@@ -35,7 +37,6 @@ fetch("/api/1.0/checkUserToken",config2)
             .then(()=>{
                 location.href="/user/signin";
             });
-            // location.href="/user/signin";
         }
     })
     .catch(function(err){
@@ -54,14 +55,14 @@ let config = {
 
 socket.emit("addSocketIdToData", localStorageToken);
 
-//拿取所需要的資訊
+//Get the required information
 const Information= async function () {
-    let res1 = await fetch("/api/1.0/needInformationStartGame",config);
+    let res1 = await fetch("/api/1.0/getInformationStartGame",config);
     let user = await res1.json();
-    console.log(user);
+
     let res2 = await fetch("/api/1.0/function/randomWord",config);
     let topic = await res2.json();
-    console.log(topic);
+
     let session ={
         method:"GET",
         headers:{
@@ -70,14 +71,14 @@ const Information= async function () {
             uid:user.id
         }
     };
-    let res3 = await fetch("/api/1.0/function/sessionNumber",session);
+    let res3 = await fetch("/api/1.0/function/getSessionNumber",session);
     let sessionNumber = await res3.json();
-    console.log(sessionNumber);
+
     return {user, topic, sessionNumber};
 };
 
 
-//動態生成js
+//Dynamic page
 Information().then(function(res){
 
     let { sessionNumber } = res;
@@ -91,7 +92,7 @@ Information().then(function(res){
 
     });
 
-    //countdown timer 下面設定秒數
+    //countdown timer 
     const currentTime = Date.parse(new Date());
     const deadline=new Date(currentTime +   30  *1000);
     initializeClock("clockdiv", deadline,sessionNumber,id);
@@ -169,7 +170,7 @@ async function answer(i,sessionNumber,english,id,name,room){
 
     if (check.message == "correct"){
 
-        //通知房間其他人
+        //Notify other players
         socket.emit("otherOneChangeTopic","currect");
         document.getElementById("btn"+i).style.backgroundColor="#00FA9A";
         document.getElementById("btn"+i).style.color="#000";
@@ -208,7 +209,7 @@ async function answer(i,sessionNumber,english,id,name,room){
         let res = await fetch("/api/1.0/function/randomWord");
         let topic = await res.json();
         let { english,chinese } = topic;
-        console.log(english,chinese);
+
         document.querySelector(".topic").innerHTML=english;
         let  div =document.getElementById("option");
         setTimeout(function(){
@@ -242,7 +243,7 @@ function getTimeRemaining(endtime){
 
 function initializeClock(id, endtime,Session,uid) {
     const clock = document.getElementById(id);
-    const timeinterval = setInterval(() => {
+    const timeinterval = setInterval(async() => {
         const t = getTimeRemaining(endtime);
         clock.innerHTML =t.seconds;
         if (t.total <= 0) {
@@ -256,51 +257,46 @@ function initializeClock(id, endtime,Session,uid) {
                 },
                 body:JSON.stringify(data)
             };
-            fetch("/api/1.0/function/lostOrWin",config)
-                .then(function(res){
-                    return res.json();
+            let res=await fetch("/api/1.0/function/getLostOrWin",config);
+            let result = await res.json();
+            if (result.message =="Congratulations,you win"){
+                Swal.fire({
+                    title:"Congratulations ,you win",
+                    imageUrl: "/image/win.jpg",
+                    imageWidth: 300,
+                    imageHeight: 300,
+                    buttons:{
+                        OK:true,
+                    },
                 })
-                .then(function(result){
-                    if (result.message =="Congratulations,you win"){
-                        Swal.fire({
-                            title:"Congratulations ,you win",
-                            imageUrl: "/image/win.jpg",
-                            imageWidth: 300,
-                            imageHeight: 300,
-                            buttons:{
-                                OK:true,
-                            },
-                        })
-                        .then(()=>{
-                            location.href="/contest/multi";
-                        });
-                    }
-                    else if (result.message == "deuce"){
-                        Swal.fire(result.message,{
-                            buttons:{
-                                OK:true,
-                            },
-                        })
-                        .then(()=>{
-                            location.href="/contest/multi";
-                        });
-                    }
-                    else {
-                        Swal.fire({
-                            title:"Sorry , you lose",
-                            imageUrl:"/image/lose.jpg",
-                            imageWidth: 330,
-                            imageHeight: 300,
-                            buttons:{
-                                OK:true,
-                            },
-                        })
-                        .then(()=>{
-                            location.href="/contest/multi";
-                        });
-                    }
-
+                .then(()=>{
+                    location.href="/contest/multi";
                 });
+            }
+            else if (result.message == "deuce"){
+                Swal.fire(result.message,{
+                    buttons:{
+                        OK:true,
+                    },
+                })
+                .then(()=>{
+                    location.href="/contest/multi";
+                });
+            }
+            else if (result.message == "Sorry,you lose"){
+                Swal.fire({
+                    title:"Sorry , you lose",
+                    imageUrl:"/image/lose.jpg",
+                    imageWidth: 330,
+                    imageHeight: 300,
+                    buttons:{
+                        OK:true,
+                    },
+                })
+                .then(()=>{
+                    location.href="/contest/multi";
+                });
+            }
         }
     },1000);
 }

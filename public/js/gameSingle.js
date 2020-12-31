@@ -52,11 +52,11 @@ let config2 = {
 };
 
 const Information= async function () {
-    let res1 = await fetch("/api/1.0/needInformationStartGame",config2);
+    let res1 = await fetch("/api/1.0/getInformationStartGame",config2);
     let user = await res1.json();
     let res2 = await fetch("/api/1.0/function/randomWord",config2);
     let topic = await res2.json();
-    let res3 = await fetch("/api/1.0/function/randomSession",config2);
+    let res3 = await fetch("/api/1.0/function/getRandomSession",config2);
     let sessionNumber=await res3.json();
     return {user, topic ,sessionNumber};
 };
@@ -83,10 +83,10 @@ async function Ready(){
             }
         };
         
-        //紀錄這場遊戲資料
+        //Record game data
         await fetch("/api/1.0/function/addSingleModeAndSession",config);
   
-        //countdown timer 下面設定秒數
+        //countdown timer ,Set the number of seconds here
         const currentTime = Date.parse(new Date());
         const deadline=new Date(currentTime +   30  *1000);
         initializeClock("clockdiv", deadline,sessionNumber,id);
@@ -163,7 +163,7 @@ async function answer(i,sessionNumber,english,id,name){
         let res = await fetch("/api/1.0/function/randomWord");
         let topic = await res.json();
         let { english,chinese } = topic;
-        console.log(english,chinese);
+
         setTimeout(function(){
             document.querySelector(".topic").innerHTML=english;
             let  div =document.getElementById("option");
@@ -246,9 +246,6 @@ function initializeClock(id, endtime,Session,uid) {
         clock.innerHTML =t.seconds;
         if (t.total <= 0) {
             clearInterval(timeinterval);
-
-            //===============================
-            console.log(uid,Session);
             let data = {uid,Session};
             let config={
                 method:"POST",
@@ -259,7 +256,7 @@ function initializeClock(id, endtime,Session,uid) {
                 body:JSON.stringify(data)
             };
 
-            fetch("/api/1.0/function/checkAll",config)
+            fetch("/api/1.0/function/getSinglePlayerResult",config)
                 .then(function(res){
                     return res.json();
                 })

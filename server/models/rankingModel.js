@@ -1,17 +1,24 @@
 const { 
     query, 
-    // transaction, 
-    // commit, 
-    // rollback
 } =require("../models/mysqlConnect");
 
 
-const Score=async function(){
-    return await query("SELECT * FROM word.user ORDER BY score desc limit 10 ;");
+const getRankingScore=async function(){
+    try{
+        return await query("SELECT * FROM word.user ORDER BY score desc limit 10 ;");
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
-const Buzz=async function(){
-    return await query("SELECT * FROM word.user ORDER BY buzz desc limit 10 ;");
+const getRankingBuzz=async function(){
+    try{
+        return await query("SELECT * FROM word.user ORDER BY buzz desc limit 10 ;");
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 
@@ -19,6 +26,6 @@ const Buzz=async function(){
 
 
 module.exports ={
-    Score,
-    Buzz
+    getRankingScore,
+    getRankingBuzz
 };
