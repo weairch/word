@@ -26,7 +26,7 @@ const signIn=async function (req,res){
         let { id,name,socketId } = user[0];
         let payload ={id,name,email,socketId};
         let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
-        res.status(200).json(token);
+        res.status(200).json({message:"Signin success",token});
     }
     catch(error){
         console.log(error);
@@ -71,12 +71,26 @@ const signUp=async function (req,res){
 const checkUserToken =async function (req,res){
     try{
         let bearerHeader = req.get("Authorization");
-        let bearerToken = bearerHeader.split(" ")[1];
-        if (bearerToken !== "null"){
-            let verify=await User.verificationToken(bearerToken,JWT_SECRET);
-            let {id,name}=verify;
-            res.status(200).send({Token:"user is OK , aleard signin",id,name});
+        let bearerToken;
+        if (bearerHeader == undefined){
+            return res.status(400).json({message:"Pleast signin first"});
         }
+        if (bearerHeader){
+            bearerToken = bearerHeader.split(" ")[1];
+            let verify=await User.verificationToken(bearerToken,JWT_SECRET);
+            if (verify == undefined){
+                return res.status(400).json({message:"Verify token error,please signin again"});
+            }
+            else{
+                let {id,name}=verify;
+                return res.status(200).send({Token:"user is OK , aleard signin",id,name});
+            }
+        }
+        else{
+            return res.status(400).json({message:"Pleast signin first"});
+        }
+
+
     }
     catch(error){
         console.log(error);
