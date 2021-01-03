@@ -26,7 +26,7 @@ const signIn=async function (req,res){
         let { id,name,socketId } = user[0];
         let payload ={id,name,email,socketId};
         let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
-        res.status(200).json({message:"Signin success",token});
+        res.status(200).json(token);
     }
     catch(error){
         console.log(error);

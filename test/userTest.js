@@ -166,9 +166,9 @@ describe("Test signin",function(){
             password:"testUserPassword"
         };
         const res=await requester.post("/api/1.0/signin").send(user);
-        const result=res.body.message;
+        const result=res.body;
+
         assert.isString(result);
-        assert.equal("Signin success", result);
 
     });
 
