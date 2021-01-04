@@ -23,7 +23,7 @@ let checkUserTokenConfig = {
         "Content-Type": "application/json"
     }
 };
-fetch("/api/1.0/checkUserToken",checkUserTokenConfig)
+fetch("",checkUserTokenConfig)
     .then(function (res){
         return res.json();
     })
