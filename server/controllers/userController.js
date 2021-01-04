@@ -26,7 +26,8 @@ const signIn=async function (req,res){
         let { id,name,socketId } = user[0];
         let payload ={id,name,email,socketId};
         let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
-        res.status(200).json(token);
+
+        res.status(200).json({message:"Signin success",token});
     }
     catch(error){
         console.log(error);
@@ -79,7 +80,7 @@ const checkUserToken =async function (req,res){
             bearerToken = bearerHeader.split(" ")[1];
             let verify=await User.verificationToken(bearerToken,JWT_SECRET);
             if (verify == undefined){
-                return res.status(400).json({message:"Verify token error,please signin again"});
+                return res.status(400).json({message:"Pleast signin first"});
             }
             else{
                 let {id,name}=verify;

@@ -13,8 +13,8 @@ document.querySelector(".login-button").addEventListener("click",async function(
         }};
     let res=await fetch("/api/1.0/signin",config);
     let result =await res.json();
-    if (result.message ==undefined){
-        localStorage.setItem("Authorization",result);
+    if (result.message =="Signin success"){
+        localStorage.setItem("Authorization",result.token);
         Swal.fire("Signin success",{
             buttons:{
                 OK:true,
