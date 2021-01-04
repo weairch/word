@@ -1,4 +1,4 @@
-const router = require("express").Router();
+const router=require("express").Router();
 
 const {
     getThisSessionBuzzTopic,
@@ -11,7 +11,7 @@ const {
     getSinglePlayerResult,
     serchRoom,
     insertBuzzGameInfomation,
-} = require("../controllers/gameControllers");
+}=require("../controllers/gameControllers");
 
 // /api/1.0
 router.route("/function/randomWord")
@@ -44,4 +44,4 @@ router.route("/function/insertBuzzGameInfomation")
 router.route("/function/getThisSessionBuzzTopic")
     .post(getThisSessionBuzzTopic);
 
-module.exports = router;
+module.exports=router;

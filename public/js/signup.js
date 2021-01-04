@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 document.querySelector(".signup-button").addEventListener("click",async function(event){
     event.preventDefault();
-    let name = document.getElementById("signupName").value;
-    let password =document.getElementById("signupPw").value;
-    let email = document.getElementById("signupEmail").value;
+    let name=document.getElementById("signupName").value;
+    let password=document.getElementById("signupPw").value;
+    let email=document.getElementById("signupEmail").value;
     let data={name,password,email};
-    let config = {
+    let config={
         method:"POST",
         body:JSON.stringify(data),
         headers:{
@@ -13,7 +13,7 @@ document.querySelector(".signup-button").addEventListener("click",async function
         }
     };
     let res=await fetch("/api/1.0/signup",config);
-    let result = await res.json();
+    let result=await res.json();
     document.getElementById("signupName").value="";
     document.getElementById("signupPw").value="";
     document.getElementById("signupEmail").value="";

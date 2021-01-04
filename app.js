@@ -1,12 +1,12 @@
 /* eslint-disable linebreak-style */
 require("dotenv").config();
-const { PORT , API_VERSION} = process.env;
-const express = require("express");
-const app = express();
+const { PORT , API_VERSION}=process.env;
+const express=require("express");
+const app=express();
 
 
-const bodyparser = require("body-parser");
-const cors = require("cors");
+const bodyparser=require("body-parser");
+const cors=require("cors");
 
 
 app.use(express.static("public"));
@@ -28,9 +28,9 @@ app.use("/api/"+API_VERSION,
 
 
 //socket.io
-const server = require("http").createServer(app);
-const io = require("socket.io")(server);
-const { socketCon } = require("./server/socket/socketConnect");
+const server=require("http").createServer(app);
+const io=require("socket.io")(server);
+const { socketCon }=require("./server/socket/socketConnect");
 socketCon(io);
 
 
@@ -80,4 +80,4 @@ server.listen(PORT,function(){
     console.log("listening on port "+PORT);
 });
 
-module.exports =app;
+module.exports=app;

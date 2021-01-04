@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 
 
-let localStorageToken = localStorage.getItem("Authorization");
+let localStorageToken=localStorage.getItem("Authorization");
 
 
 document.querySelector(".title").addEventListener("click",function(){
@@ -11,7 +11,7 @@ document.querySelector(".title").addEventListener("click",function(){
 
 
 
-let config1 = {
+let config1={
     method:"POST",
     headers:{
         Authorization:"Bearer "+localStorageToken,
@@ -43,7 +43,7 @@ fetch("/api/1.0/checkUserToken",config1)
 
 
 
-let config2 = {
+let config2={
     method: "GET",
     headers: {
         Authorization: "Bearer " + localStorageToken,
@@ -51,12 +51,12 @@ let config2 = {
     }
 };
 
-const Information= async function () {
-    let res1 = await fetch("/api/1.0/getInformationStartGame",config2);
-    let user = await res1.json();
-    let res2 = await fetch("/api/1.0/function/randomWord",config2);
-    let topic = await res2.json();
-    let res3 = await fetch("/api/1.0/function/getRandomSession",config2);
+const Information=async function () {
+    let res1=await fetch("/api/1.0/getInformationStartGame",config2);
+    let user=await res1.json();
+    let res2=await fetch("/api/1.0/function/randomWord",config2);
+    let topic=await res2.json();
+    let res3=await fetch("/api/1.0/function/getRandomSession",config2);
     let sessionNumber=await res3.json();
     return {user, topic ,sessionNumber};
 };
@@ -68,13 +68,13 @@ async function Ready(){
     
 
     Information().then(async function(res){
-        let { english,chinese } =res.topic;
-        let { id,name} =res.user;
-        let sessionNumber =res.sessionNumber.randomSession;
+        let { english,chinese }=res.topic;
+        let { id,name}=res.user;
+        let sessionNumber=res.sessionNumber.randomSession;
 
 
-        let data = {id,sessionNumber};
-        let config = {
+        let data={id,sessionNumber};
+        let config={
             method: "POST",
             body:JSON.stringify(data),
             headers: {
@@ -87,15 +87,15 @@ async function Ready(){
         await fetch("/api/1.0/function/addSingleModeAndSession",config);
   
         //countdown timer ,Set the number of seconds here
-        const currentTime = Date.parse(new Date());
+        const currentTime=Date.parse(new Date());
         const deadline=new Date(currentTime +   30  *1000);
         initializeClock("clockdiv", deadline,sessionNumber,id);
 
 
 
         //Create english topic
-        let englishTopicOutput = document.getElementById("topicEnglisg");
-        let englishDiv = document.createElement("div");
+        let englishTopicOutput=document.getElementById("topicEnglisg");
+        let englishDiv=document.createElement("div");
         englishDiv.classList.add("topic");
         englishDiv.innerHTML=english;
         englishTopicOutput.appendChild(englishDiv);
@@ -103,7 +103,7 @@ async function Ready(){
 
             
         //Create self score 
-        let score = document.getElementById("score");
+        let score=document.getElementById("score");
         let scoreDiv=document.createElement("div");
         scoreDiv.classList.add("scoreNumber");
         scoreDiv.innerHTML=0;
@@ -115,11 +115,11 @@ async function Ready(){
 
         //Create option  
         for (let i=0;chinese.length>i;i++){
-            let  div =document.getElementById("option");
-            let  btn =document.createElement("button");
+            let  div=document.getElementById("option");
+            let  btn=document.createElement("button");
             btn.classList.add("btn"+i);    
             btn.setAttribute("id","btn"+i);      
-            btn.innerHTML =chinese[i];
+            btn.innerHTML=chinese[i];
             div.appendChild(btn);
             document.querySelector(".btn"+i).addEventListener("click",function(){ 
                 answer(i,sessionNumber,english,id,name); 
@@ -150,8 +150,8 @@ async function answer(i,sessionNumber,english,id,name){
         },
         body:JSON.stringify(data)
     };
-    let res = await fetch("/api/1.0/function/confirmAnswer",config);
-    let check = await res.json();
+    let res=await fetch("/api/1.0/function/confirmAnswer",config);
+    let check=await res.json();
 
 
     if (check.message == "correct"){
@@ -160,20 +160,20 @@ async function answer(i,sessionNumber,english,id,name){
 
         document.querySelector(".scoreNumber").innerHTML++;
 
-        let res = await fetch("/api/1.0/function/randomWord");
-        let topic = await res.json();
-        let { english,chinese } = topic;
+        let res=await fetch("/api/1.0/function/randomWord");
+        let topic=await res.json();
+        let { english,chinese }=topic;
 
         setTimeout(function(){
             document.querySelector(".topic").innerHTML=english;
-            let  div =document.getElementById("option");
+            let  div=document.getElementById("option");
             div.innerHTML="";
             for (let i=0;chinese.length>i;i++){
-                let  div =document.getElementById("option");
-                let  btn =document.createElement("button");
+                let  div=document.getElementById("option");
+                let  btn=document.createElement("button");
                 btn.classList.add("btn"+i); 
                 btn.setAttribute("id","btn"+i);         
-                btn.innerHTML =chinese[i];
+                btn.innerHTML=chinese[i];
                 div.appendChild(btn);
                 document.querySelector(".btn"+i).addEventListener("click",function(){
                     answer(i,sessionNumber,english,id,name);    
@@ -185,21 +185,21 @@ async function answer(i,sessionNumber,english,id,name){
     else if (check.message == "error"){
         document.getElementById("btn"+i).style.backgroundColor="#FFC0C0";
         document.getElementById("btn"+i).style.color="#000";
-        let res = await fetch("/api/1.0/function/randomWord");
-        let topic = await res.json();
-        let { english,chinese } = topic;
+        let res=await fetch("/api/1.0/function/randomWord");
+        let topic=await res.json();
+        let { english,chinese }=topic;
 
 
         setTimeout(function(){
             document.querySelector(".topic").innerHTML=english;
-            let  div =document.getElementById("option");
+            let  div=document.getElementById("option");
             div.innerHTML="";
             for (let i=0;chinese.length>i;i++){
-                let  div =document.getElementById("option");
-                let  btn =document.createElement("button");
+                let  div=document.getElementById("option");
+                let  btn=document.createElement("button");
                 btn.classList.add("btn"+i);  
                 btn.setAttribute("id","btn"+i);        
-                btn.innerHTML =chinese[i];
+                btn.innerHTML=chinese[i];
                 div.appendChild(btn);
                 document.querySelector(".btn"+i).addEventListener("click",function(){
                     answer(i,sessionNumber,english,id,name);    
@@ -231,8 +231,8 @@ document.getElementById("exit").addEventListener("click",function(){
 
 //=============   clock function   ==============
 function getTimeRemaining(endtime){
-    const total = Date.parse(endtime) - Date.parse(new Date());
-    const seconds = Math.floor( (total/1000) % 60 );
+    const total=Date.parse(endtime) - Date.parse(new Date());
+    const seconds=Math.floor( (total/1000) % 60 );
     return {
         total,
         seconds
@@ -240,13 +240,13 @@ function getTimeRemaining(endtime){
 }
 
 function initializeClock(id, endtime,Session,uid) {
-    const clock = document.getElementById(id);
-    const timeinterval = setInterval(() => {
-        const t = getTimeRemaining(endtime);
-        clock.innerHTML =t.seconds;
+    const clock=document.getElementById(id);
+    const timeinterval=setInterval(() => {
+        const t=getTimeRemaining(endtime);
+        clock.innerHTML=t.seconds;
         if (t.total <= 0) {
             clearInterval(timeinterval);
-            let data = {uid,Session};
+            let data={uid,Session};
             let config={
                 method:"POST",
                 headers:{

@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 // eslint-disable-next-line no-undef
-const socket = io({
+const socket=io({
     query: {
         Authorization: localStorage.getItem("Authorization")
     }
 });
 
 
-let localStorageToken = localStorage.getItem("Authorization"); 
+let localStorageToken=localStorage.getItem("Authorization"); 
 
 
 socket.emit("addStandbyRoomToSQL",localStorageToken);
@@ -18,7 +18,7 @@ setTimeout(function(){
 },500);
 
 const userInformation=async function (){
-    let config = {
+    let config={
         method:"POST",
         headers:{
             Authorization:"Bearer "+localStorageToken,
@@ -202,7 +202,7 @@ socket.on("ortherMessage",function(res){
 socket.on("joinRoomWelcomeMessage",function(res){
     let { name,time }=res;
 
-    let message ="Welcome Player: "+name+" joins room";
+    let message="Welcome Player: "+name+" joins room";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");
@@ -224,7 +224,7 @@ socket.on("joinRoomWelcomeMessage",function(res){
 socket.on("leaveRoomMessage",function(res){
     let { name,time }=res;
 
-    let message ="Player: "+name+" leave room";
+    let message="Player: "+name+" leave room";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");
@@ -244,7 +244,7 @@ socket.on("leaveRoomMessage",function(res){
 
 socket.on("userReadyMessage",function(res){
     let { name,time }=res;
-    let message ="Player: "+name+" is ready";
+    let message="Player: "+name+" is ready";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");
@@ -265,7 +265,7 @@ socket.on("userReadyMessage",function(res){
 socket.on("userUnreadyMessage",function(res){
     let { name,time }=res;
 
-    let message ="Player: "+name+" is waitting";
+    let message="Player: "+name+" is waitting";
     let father=document.getElementById("father");
 
     let nodeDiv=document.createElement("div");

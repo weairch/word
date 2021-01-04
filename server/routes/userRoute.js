@@ -1,4 +1,4 @@
-const router = require("express").Router();
+const router=require("express").Router();
 
 const { 
     signIn,
@@ -11,7 +11,7 @@ const {
     getProfileWinRat
 }=require("../controllers/userController");
 
-//url = /api/1.0/xxxx
+//url=/api/1.0/xxxx
 router.route("/signin")
     .post(signIn);
 
@@ -36,4 +36,4 @@ router.route("/checkStandbyRoomModeAndRoom")
 router.route("/getProfileWinRat")
     .get(getProfileWinRat);
 
-module.exports = router;
+module.exports=router;
