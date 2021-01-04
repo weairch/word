@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 require("dotenv").config();
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET }=process.env;
 const { random }=require("../util/random");
-const jwt = require("jsonwebtoken");
+const jwt=require("jsonwebtoken");
 const { assert,requester }=require("./setUp");
 
 
@@ -31,7 +31,7 @@ describe("Test signUp",function(){
 
 
     it("signUp email exists",async function(){
-        const user = {
+        const user={
             name:"testUser",
             email:"testUser@hotmail.com",
             password:"testUserPassword"
@@ -46,7 +46,7 @@ describe("Test signUp",function(){
 
 
     it("Confirm whether the email is duplicated",async function(){
-        const user ={
+        const user={
             name:"testUser",
             email:"testUser@hotmail.com",
             password:"testUserPassword"
@@ -76,7 +76,7 @@ describe("Test signUp",function(){
     });
 
     it("Enter wront email format",async function(){
-        const user ={
+        const user={
             name:"testUser",
             email:"testUser",
             password:"testUserPassword"
@@ -90,7 +90,7 @@ describe("Test signUp",function(){
     });
 
     it("Enter wront password format",async function(){
-        const user ={
+        const user={
             name:"testUser",
             email:"testUser@hotmail.com",
             password:""
@@ -154,7 +154,7 @@ describe("Test signin",function(){
     });
 
     it("Sign success",async function(){
-        const user ={
+        const user={
             email:"testUser@hotmail.com",
             password:"testUserPassword"
         };
@@ -172,15 +172,15 @@ describe("Test signin",function(){
 
 describe("Test check token",async function(){
     it ("Check tokne is ok",async function(){
-        const user ={
+        const user={
             name:"testUser",
             email:"testUser@hotmail.com",
             password:"testUserPassword"
         };
-        const encrypt = jwt.sign(user,JWT_SECRET,{expiresIn:"1 day"});
+        const encrypt=jwt.sign(user,JWT_SECRET,{expiresIn:"1 day"});
         const token="bearer "+encrypt;
         const res=await requester.post("/api/1.0/checkUserToken").set("Authorization",token).send(token);
-        const result = res.body.Token;
+        const result=res.body.Token;
         
         assert.equal("user is OK , aleard signin",result);
         assert.isString(result);
@@ -188,7 +188,7 @@ describe("Test check token",async function(){
 
     it ("Check token faile",async function(){
         const res=await requester.post("/api/1.0/checkUserToken").send();
-        const result = await res.body.message;
+        const result=await res.body.message;
         
         assert.isString(result);
         assert.equal("Pleast signin first", result);
@@ -196,10 +196,10 @@ describe("Test check token",async function(){
     
     it ("Fake token",async function(){
         const user={};
-        const encrypt = jwt.sign(user,"123",{expiresIn:"1 day"});
+        const encrypt=jwt.sign(user,"123",{expiresIn:"1 day"});
         const token="bearer "+encrypt;
         const res=await requester.post("/api/1.0/checkUserToken").set("Authorization",token).send(token);
-        const result = res.body.message;
+        const result=res.body.message;
         assert.isString(result);
         assert.equal("Pleast signin first", result);
     });

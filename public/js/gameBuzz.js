@@ -1,18 +1,18 @@
 // eslint-disable-next-line no-undef
 /* eslint-disable no-undef */
 /* eslint-disable indent */
-const socket = io({
+const socket=io({
     query: {
         Authorization: localStorage.getItem("Authorization")
     }
 });
 
-let localStorageToken = localStorage.getItem("Authorization");
+let localStorageToken=localStorage.getItem("Authorization");
 let localStorageSession=localStorage.getItem("session");
 let countTopicNumber=0;
 let timer;
 
-let config2 = {
+let config2={
     method:"POST",
     headers:{
         Authorization:"Bearer "+localStorageToken,
@@ -38,7 +38,7 @@ fetch("/api/1.0/checkUserToken",config2)
     .catch(function(err){
         console.log(err);
     });
-let config = {
+let config={
     method: "GET",
     headers: {
         Authorization: "Bearer " + localStorageToken,
@@ -54,14 +54,14 @@ socket.emit("addSocketIdToData", localStorageToken);
 
 
 //Get the required information
-const Information= async function () {
-    let res1 = await fetch("/api/1.0/getInformationStartGame",config);
-    let user = await res1.json();
+const Information=async function () {
+    let res1=await fetch("/api/1.0/getInformationStartGame",config);
+    let user=await res1.json();
 
     let session1=localStorageSession.replace("\"","").replace("\"","");
     let topic=await fetchnewTopic(session1,countTopicNumber);
 
-    let session ={
+    let session={
         method:"GET",
         headers:{
             Authorization:"Bearer "+localStorageToken,
@@ -69,12 +69,12 @@ const Information= async function () {
             uid:user.id
         }
     };
-    let res3 = await fetch("/api/1.0/function/getSessionNumber",session);
-    let sessionNumber = await res3.json();
+    let res3=await fetch("/api/1.0/function/getSessionNumber",session);
+    let sessionNumber=await res3.json();
 
 
-    let data = {user};
-    let config2 ={
+    let data={user};
+    let config2={
         method:"POST",
         headers:{
             Authorization:"Bearer "+localStorageToken,
@@ -91,17 +91,17 @@ const Information= async function () {
 //Dynamic page
 Information().then(async function(res){
 
-    let { sessionNumber } = res;
-    let {topicEnglish,topicChinese} = res.topic;
-    let { id,name,room  } = res.user;
+    let { sessionNumber }=res;
+    let {topicEnglish,topicChinese}=res.topic;
+    let { id,name,room  }=res.user;
 
-    const currentTime = Date.parse(new Date());
+    const currentTime=Date.parse(new Date());
     const deadline=new Date(currentTime +   10  *1000);
     initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
 
 
     //Create self score 
-    let score = document.getElementById("score");
+    let score=document.getElementById("score");
     let scoreDiv=document.createElement("div");
     scoreDiv.classList.add("scoreNumber");
     scoreDiv.innerHTML=0;
@@ -109,7 +109,7 @@ Information().then(async function(res){
 
 
     //Create other score
-    let ortherScore = document.getElementById("otherScore");
+    let ortherScore=document.getElementById("otherScore");
     let ortherScoreDiv=document.createElement("div");
     ortherScoreDiv.classList.add("otherScoreNumber");
     ortherScoreDiv.innerHTML=0;
@@ -117,8 +117,8 @@ Information().then(async function(res){
 
 
     // Create english topic
-    let englishTopicOutput = document.getElementById("topicEnglisg");
-    let englishDiv = document.createElement("div");
+    let englishTopicOutput=document.getElementById("topicEnglisg");
+    let englishDiv=document.createElement("div");
     englishDiv.classList.add("topic");
     englishDiv.innerHTML=topicEnglish;
     englishTopicOutput.appendChild(englishDiv);
@@ -151,14 +151,14 @@ Information().then(async function(res){
             let data={id,countTopicNumber};
             socket.emit("updataTopicNumber",data);
             clearInterval(timer);
-            let number = document.querySelector(".otherScoreNumber");
+            let number=document.querySelector(".otherScoreNumber");
             number.innerHTML++;
 
             killChild();
             createEnglishTopic(topicEnglish);
             createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
 
-            const currentTime = Date.parse(new Date());
+            const currentTime=Date.parse(new Date());
             const deadline=new Date(currentTime +   11  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
 
@@ -186,11 +186,11 @@ Information().then(async function(res){
         setTimeout(async function(){
             killChild();
            
-            let {topicEnglish,topicChinese} = topic;   
+            let {topicEnglish,topicChinese}=topic;   
             createEnglishTopic(topicEnglish);
             createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
             
-            const currentTime = Date.parse(new Date());
+            const currentTime=Date.parse(new Date());
             const deadline=new Date(currentTime +   10  *1000);
             initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
         },1300);
@@ -248,8 +248,8 @@ Information().then(async function(res){
 
 //get new topic
 async function fetchnewTopic(localStorageSession,countTopicNumber){
-    let data = {session:localStorageSession,topicNumber:countTopicNumber};
-    let config = {
+    let data={session:localStorageSession,topicNumber:countTopicNumber};
+    let config={
         method:"POST",
         body:JSON.stringify(data),
         headers:{
@@ -257,15 +257,15 @@ async function fetchnewTopic(localStorageSession,countTopicNumber){
             "Content-Type": "application/json"
         }
     };
-    let res = await fetch("/api/1.0/function/getThisSessionBuzzTopic",config);
-    let topic =await res.json();
+    let res=await fetch("/api/1.0/function/getThisSessionBuzzTopic",config);
+    let topic=await res.json();
     return topic;
 } 
 
 //create english topic
 function createEnglishTopic(topicEnglish){
-    let englishTopicOutput = document.getElementById("topicEnglisg");
-    let englishDiv = document.createElement("div");
+    let englishTopicOutput=document.getElementById("topicEnglisg");
+    let englishDiv=document.createElement("div");
     englishDiv.classList.add("topic");
     englishDiv.innerHTML=topicEnglish;
     englishTopicOutput.appendChild(englishDiv);
@@ -276,18 +276,18 @@ function createEnglishTopic(topicEnglish){
 function createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room){
     for (let i=0;topicChinese.length>i;i++){
 
-        let  div =document.getElementById("option");
-        let  btn =document.createElement("button");
+        let  div=document.getElementById("option");
+        let  btn=document.createElement("button");
         btn.setAttribute("id","btn"+i);
         btn.classList.add("btn"+i);    
-        btn.innerHTML =topicChinese[i];
+        btn.innerHTML=topicChinese[i];
         div.appendChild(btn);
         
         document.querySelector(".btn"+i).addEventListener("click",async function(){
 
             clickReaction();
             
-            let english = topicEnglish;
+            let english=topicEnglish;
             let option=document.querySelector(".btn"+i).textContent;
             let data={sessionNumber,english,id,name,option,room,countTopicNumber,i};
             socket.emit("confirmAnswer",data);
@@ -322,7 +322,7 @@ socket.on("createNewTopic",function(message){
         createEnglishTopic(topicEnglish);
         createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
     
-        const currentTime = Date.parse(new Date());
+        const currentTime=Date.parse(new Date());
         const deadline=new Date(currentTime +   10  *1000);
         initializeClock("clockdiv", deadline,id,session,name,room);
     },1300);
@@ -341,7 +341,7 @@ socket.on("error",function(message){
         createEnglishTopic(topicEnglish);
         createChineseOption(topicChinese,sessionNumber,topicEnglish,id,name,room);
     
-        const currentTime = Date.parse(new Date());
+        const currentTime=Date.parse(new Date());
         const deadline=new Date(currentTime +   10  *1000);
         initializeClock("clockdiv", deadline,id,sessionNumber,name,room);
     },1300);
@@ -416,8 +416,8 @@ function wrongDisabled(i){
 
 // =============   clock function   ==============
 function getTimeRemaining(endtime){
-    const total = Date.parse(endtime) - Date.parse(new Date());
-    const seconds = Math.floor( (total/1000) % 60 );
+    const total=Date.parse(endtime) - Date.parse(new Date());
+    const seconds=Math.floor( (total/1000) % 60 );
     return {
         total,
         seconds
@@ -425,10 +425,10 @@ function getTimeRemaining(endtime){
 }
 
 function initializeClock(id, endtime,uid,sessionNumber,name,room) {
-    const clock = document.getElementById(id);
-    timer = setInterval(async () => {
-        const t = getTimeRemaining(endtime);
-        clock.innerHTML = t.seconds;
+    const clock=document.getElementById(id);
+    timer=setInterval(async () => {
+        const t=getTimeRemaining(endtime);
+        clock.innerHTML=t.seconds;
         if (t.total <= 0) {
             countTopicNumber++;
             clearInterval(timer);
@@ -438,11 +438,11 @@ function initializeClock(id, endtime,uid,sessionNumber,name,room) {
 
             killChild();
             let topic=await fetchnewTopic(sessionNumber,countTopicNumber);
-            let {topicEnglish,topicChinese} = topic;
+            let {topicEnglish,topicChinese}=topic;
             createEnglishTopic(topicEnglish);
             createChineseOption(topicChinese,sessionNumber,topicEnglish,uid,name,room);
 
-            const currentTime = Date.parse(new Date());
+            const currentTime=Date.parse(new Date());
             const deadline=new Date(currentTime +   10  *1000);
             initializeClock("clockdiv", deadline,uid,sessionNumber,name,room);
         }

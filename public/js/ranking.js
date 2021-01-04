@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 
 //checek signin
-let localStorageToken = localStorage.getItem("Authorization");
+let localStorageToken=localStorage.getItem("Authorization");
 
-let config1 = {
+let config1={
     method:"POST",
     headers:{
         Authorization:"Bearer "+localStorageToken,
@@ -35,8 +35,8 @@ fetch("/api/1.0/checkUserToken",config1)
 
 
 document.getElementById("Score").addEventListener("click",async function(){
-    let res =await fetch("/api/1.0/ranking/score");
-    let resulet =await res.json();
+    let res=await fetch("/api/1.0/ranking/score");
+    let resulet=await res.json();
     let total=resulet.score;
     let topNode=document.getElementById("session");
     topNode.innerHTML="";
@@ -58,7 +58,7 @@ document.getElementById("Score").addEventListener("click",async function(){
     topNode.appendChild(secondnode);
 
     for (let i=0;total.length>i;i++){
-        let imageSrc = "/image/"+(i+1)+".png";
+        let imageSrc="/image/"+(i+1)+".png";
         createRanking(topNode,total,i,imageSrc);
     }
 });
@@ -68,8 +68,8 @@ document.getElementById("Score").addEventListener("click",async function(){
 
 document.getElementById("Buzz").addEventListener("click",async function(){
     
-    let res =await fetch("/api/1.0/ranking/buzz");
-    let resulet =await res.json();
+    let res=await fetch("/api/1.0/ranking/buzz");
+    let resulet=await res.json();
     let total=resulet.score;
     let topNode=document.getElementById("session");
     topNode.innerHTML="";
@@ -93,7 +93,7 @@ document.getElementById("Buzz").addEventListener("click",async function(){
 
 
     for (let i=0;total.length>i;i++){
-        let imageSrc = "/image/"+(i+1)+".png";
+        let imageSrc="/image/"+(i+1)+".png";
         createRanking(topNode,total,i,imageSrc);
     }
 

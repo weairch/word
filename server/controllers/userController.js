@@ -1,14 +1,14 @@
 require("dotenv").config();
-const validator = require("validator");
-const User = require("../models/userModels");
-const { JWT_SECRET } = process.env;
+const validator=require("validator");
+const User=require("../models/userModels");
+const { JWT_SECRET }=process.env;
 const bcrypt=require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const jwt=require("jsonwebtoken");
 
 
 const signIn=async function (req,res){
     try{
-        let {password , email } = req.body;
+        let {password , email }=req.body;
         if (!password.length || !email.length ){
             return res.status(400).send ({message:"Please enter the correct format"});
         }
@@ -19,13 +19,13 @@ const signIn=async function (req,res){
         }
     
         let hashPwd=user[0].password;
-        let bcryptPwd = await bcrypt.compare(password,hashPwd);
+        let bcryptPwd=await bcrypt.compare(password,hashPwd);
         if (bcryptPwd == false){
             return res.status(500).send({message:"Please enter correct Email or password"});
         }
-        let { id,name,socketId } = user[0];
-        let payload ={id,name,email,socketId};
-        let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
+        let { id,name,socketId }=user[0];
+        let payload={id,name,email,socketId};
+        let token=jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
 
         res.status(200).json({message:"Signin success",token});
     }
@@ -38,7 +38,7 @@ const signIn=async function (req,res){
 
 const signUp=async function (req,res){
     try{
-        let {name,password,email} = req.body;
+        let {name,password,email}=req.body;
         if (!name.length || !password.length || !email.length ){
             return res.status(400).send ({message:"Please enter the correct format"});
         }
@@ -60,7 +60,7 @@ const signUp=async function (req,res){
             let userName=user[0].name;
             let userEmail=user[0].email;
             let payload={id:userId,name:userName,email:userEmail};
-            let token = jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
+            let token=jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
             return res.status(200).send({message:"signup success",token:token});
         }
     }
@@ -71,13 +71,13 @@ const signUp=async function (req,res){
 
 const checkUserToken =async function (req,res){
     try{
-        let bearerHeader = req.get("Authorization");
+        let bearerHeader=req.get("Authorization");
         let bearerToken;
         if (bearerHeader == undefined){
             return res.status(400).json({message:"Pleast signin first"});
         }
         if (bearerHeader){
-            bearerToken = bearerHeader.split(" ")[1];
+            bearerToken=bearerHeader.split(" ")[1];
             let verify=await User.verificationToken(bearerToken,JWT_SECRET);
             if (verify == undefined){
                 return res.status(400).json({message:"Pleast signin first"});
@@ -101,9 +101,9 @@ const checkUserToken =async function (req,res){
 
 const addStandbyRoomAndModeIntoToken=async function(req,res){
     try{
-        let {mode} = req.body;
+        let {mode}=req.body;
         let roomNum=req.body.room;
-        let token = req.get("Authorization").split(" ")[1];
+        let token=req.get("Authorization").split(" ")[1];
         let payload=await User.verificationToken(token,JWT_SECRET);
         payload.room=roomNum;
         payload.mode=mode;
@@ -119,9 +119,9 @@ const addStandbyRoomAndModeIntoToken=async function(req,res){
 
 const checkUserIdAndNowRoom=async function (req,res){
     try{
-        let token = req.get("Authorization").split(" ")[1];
+        let token=req.get("Authorization").split(" ")[1];
         let payload=await User.verificationToken(token,JWT_SECRET);
-        let {id,name,room} = payload;
+        let {id,name,room}=payload;
         res.status(200).json({id,name,room});
     }
     catch(error){
@@ -133,9 +133,9 @@ const checkUserIdAndNowRoom=async function (req,res){
 
 const getInformationStartGame=async function (req,res){
     try{
-        let token = req.get("Authorization").split(" ")[1];
+        let token=req.get("Authorization").split(" ")[1];
         let payload=await User.verificationToken(token,JWT_SECRET); 
-        let { id ,name,room,player} = payload;
+        let { id ,name,room,player}=payload;
         res.status(200).json({id,name,room,player});
     }
     catch(error){

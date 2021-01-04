@@ -4,8 +4,8 @@
 
 
 //check user signin or not
-let localStorageToken = localStorage.getItem("Authorization"); 
-let config = {
+let localStorageToken=localStorage.getItem("Authorization"); 
+let config={
     method:"POST",
     headers:{
         Authorization:"Bearer "+localStorageToken,
@@ -40,7 +40,7 @@ fetch("/api/1.0/function/serchRoom")
         return res.json();
     })
     .then(function(result){
-        let topNode = document.querySelector(".topRoom");
+        let topNode=document.querySelector(".topRoom");
         for (let i=0;Object.keys(result).length>i;i++){
 
             let room=Object.keys(result)[i];
@@ -65,8 +65,8 @@ fetch("/api/1.0/function/serchRoom")
                 let modeText=document.getElementById("insideMode"+i).textContent;
                 let mode=modeText.replace("Mode: ","");
                 
-                let data = {mode:mode,room:roomNum};
-                let config = {
+                let data={mode:mode,room:roomNum};
+                let config={
                     method:"POST",
                     body:JSON.stringify(data),
                     headers:{
@@ -113,8 +113,8 @@ async function room(){
         return Swal.fire("Please select mode!");
     }
     if (mode){
-        let data = {mode,roomNum};
-        let config = {
+        let data={mode,roomNum};
+        let config={
             method:"POST",
             body:JSON.stringify(data),
             headers:{
@@ -137,8 +137,8 @@ async function room(){
         }
     }
     if (roomNum){
-        let data = {mode:mode,room:roomNum};
-        let config = {
+        let data={mode:mode,room:roomNum};
+        let config={
             method:"POST",
             body:JSON.stringify(data),
             headers:{
@@ -167,7 +167,7 @@ async function back(){
 
 
 // eslint-disable-next-line no-undef
-const socket = io({
+const socket=io({
     query: {
         Authorization: localStorage.getItem("Authorization")
     }
@@ -176,7 +176,7 @@ const socket = io({
 
 socket.on("howManyStandbyRoomsNow",function(result){
 
-    let topNode = document.querySelector(".topRoom");
+    let topNode=document.querySelector(".topRoom");
     topNode.innerHTML="";
 
     for (let i=0;Object.keys(result).length>i;i++){
@@ -203,8 +203,8 @@ socket.on("howManyStandbyRoomsNow",function(result){
             let modeText=document.getElementById("insideMode"+i).textContent;
             let mode=modeText.replace("Mode: ","");
             
-            let data = {mode:mode,room:roomNum};
-            let config = {
+            let data={mode:mode,room:roomNum};
+            let config={
                 method:"POST",
                 body:JSON.stringify(data),
                 headers:{

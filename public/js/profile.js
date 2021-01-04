@@ -21,9 +21,9 @@ function signOut(){
 }
 
 
-const user =async function(){
-    let token = localStorage.getItem("Authorization");
-    let config = {
+const user=async function(){
+    let token=localStorage.getItem("Authorization");
+    let config={
         method:"POST",
         headers:{
             Authorization:"Bearer "+token,
@@ -32,7 +32,7 @@ const user =async function(){
     };
     
     let res=await fetch("/api/1.0/checkUserToken",config);
-    let result =await res.json();
+    let result=await res.json();
     return result;
 };
 

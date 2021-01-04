@@ -12,9 +12,9 @@ document.querySelector(".Query-ranking").addEventListener("click",function(){
     window.location.href="/function/ranking";
 });
 
-let token = localStorage.getItem("Authorization");
+let token=localStorage.getItem("Authorization");
 if (token){
-    let config = {
+    let config={
         method:"POST",
         headers:{
             Authorization:"Bearer "+token,
@@ -26,7 +26,7 @@ if (token){
             return res.json();
         })
         .then(function(result){
-            let message = result.Token;
+            let message=result.Token;
             if (message == "user is OK , aleard signin"){
                 let btn=document.getElementById("signin");
                 btn.innerHTML="Profile";

@@ -18,12 +18,12 @@ const {
     addUserToStandbyRoom,
     updateBuzzWin,
     updateScoreWin,
-} = require("../models/userModels");
+}=require("../models/userModels");
 
 
 const {
     random
-} = require("../../util/random");
+}=require("../../util/random");
 
 const {
     deleteBuzzGame, 
@@ -39,16 +39,16 @@ const {
     raceCondition,
     confirmBuzzGameRoomStatus,
     updateCorrectTopicNumber
-} = require("../models/gameModel");
+}=require("../models/gameModel");
 
 const { 
     JWT_SECRET
-} = process.env;
+}=process.env;
 
 
-const moment = require("moment");
+const moment=require("moment");
 const crypto=require("crypto");
-const { now } = require("moment");
+const { now }=require("moment");
 
 
 
@@ -62,7 +62,7 @@ const socketCon=function(io){
         else{
             try{
                 let user=await verificationToken(token,JWT_SECRET);
-                let { id , room ,name } = user;
+                let { id , room ,name }=user;
                 await addSocketId(id,socket.id);
                 //put on handshake
                 socket.handshake.query.user_id=id;
@@ -84,7 +84,7 @@ const socketCon=function(io){
         let { user_id ,room , socketId ,name }=socket.handshake.query;
         
         socket.on("checkStandbyRoom",async function(room){
-            let res = await confirmStandbyRoomNumber(room);
+            let res=await confirmStandbyRoomNumber(room);
             if (res[0]["count(*)"] >= 3 ){
                 io.sockets.in(socketId).emit("toMany","The room is full, please change rooms");
             }
@@ -100,14 +100,14 @@ const socketCon=function(io){
             
             await updateUserReady(user_id);
 
-            let score = await checkScoreModeAndReady(room);
-            let buzz = await checkBuzzModeAndReady(room);
+            let score=await checkScoreModeAndReady(room);
+            let buzz=await checkBuzzModeAndReady(room);
 
             //If two people prepare in score mode
             if (score.length == 2 ){
                 let Number=random(1,2147483647);
                 let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
-                let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
+                let moments=moment().format("YYYY-MM-DD-HH:mm:ss");
                 for (let i=0;score.length>i;i++){
                     let { uid ,room,mode}=score[i];
                     await insertSessionToHistory(uid,sessionNumber,mode,moments,room);
@@ -119,7 +119,7 @@ const socketCon=function(io){
             else if (buzz.length ==2){
                 let Number=random(1,2147483647);
                 let sessionNumber=crypto.createHash("sha1").update(Number+toString(now())).digest("hex");
-                let moments = moment().format("YYYY-MM-DD-HH:mm:ss");
+                let moments=moment().format("YYYY-MM-DD-HH:mm:ss");
                 for (let i=0;buzz.length>i;i++){
                     let { uid ,room,mode}=buzz[i];
                     await insertSessionToHistory(uid,sessionNumber,mode,moments,room);
@@ -131,7 +131,7 @@ const socketCon=function(io){
                     let english=[];
                     let chinese=[];
                     for (let i=1;4>=i;i++){
-                        let randomNumber= random(0,100);
+                        let randomNumber=random(0,100);
                         chinese.push(word[randomNumber].chinese);
                         english.push(word[randomNumber].english);
                     }
@@ -150,7 +150,7 @@ const socketCon=function(io){
         socket.on("sendMessage",function(res){
             let time=moment().format("HH:mm:ss");
             let {name,room,message}=res;
-            let data = {name,room,time,message};
+            let data={name,room,time,message};
             io.sockets.in(socketId).emit("selfInput",data);
             socket.broadcast.to(room).emit("ortherMessage",data);
         });
@@ -195,8 +195,8 @@ const socketCon=function(io){
         socket.on("confirmAnswer",async function(message){
             let { sessionNumber,english,id,name,option,room,countTopicNumber,i }=message;
             await insertTopic(id,sessionNumber,english);
-            let check =await checkAnswer(english);
-            let answer = check[0].chinese;
+            let check=await checkAnswer(english);
+            let answer=check[0].chinese;
             //correct
             if (answer == option){
                 await insertCorrect(id,sessionNumber,english);
@@ -216,12 +216,12 @@ const socketCon=function(io){
                 await insertError(id,sessionNumber,english);
                 socket.broadcast.to(room).emit("event2",i);
                 io.sockets.in(socketId).emit("selfError",i);
-                let result = await confirmBuzzGameRoomStatus(room,countTopicNumber,id);
+                let result=await confirmBuzzGameRoomStatus(room,countTopicNumber,id);
 
                 if (result.message == "Change question"){
                     countTopicNumber++;
                     result=await getThisSessionBuzzTopic(sessionNumber,countTopicNumber);
-                    let topicEnglish = result[0].topic_english;
+                    let topicEnglish=result[0].topic_english;
                     let Chinese=result[0].topic_chinese;
                     let topicChinese=JSON.parse(Chinese);
                     let data={topicEnglish,topicChinese};
@@ -246,8 +246,8 @@ const socketCon=function(io){
             let result=await getThisSessionBuzzTopic(session,countTopicNumber);
             let topicEnglish=result[0].topic_english;
             let topicNumber=result[0].topic_number;
-            let string = result[0].topic_chinese;
-            let topicChinese =JSON.parse(string);
+            let string=result[0].topic_chinese;
+            let topicChinese=JSON.parse(string);
             let data={topicEnglish,topicChinese,topicNumber,id,name,room,session};
             io.sockets.in(socketId).emit("createNewTopic",data);
         });
@@ -273,7 +273,7 @@ const socketCon=function(io){
 
 
         socket.on("updataTopicNumber",async function(message){
-            let {uid,countTopicNumber} = message;
+            let {uid,countTopicNumber}=message;
             await updateTopicNnumber(uid,countTopicNumber);
         });
 
@@ -315,7 +315,7 @@ const socketCon=function(io){
 
         socket.on("disconnect",async function(){
             let time=moment().format("HH:mm:ss");
-            let data = {name,time};
+            let data={name,time};
             io.sockets.in(room).emit("leaveRoomMessage",data);
             deleteBuzzGame(user_id);
             console.log(`user: ${name} is left room:${room} `);
@@ -339,6 +339,6 @@ const socketCon=function(io){
 };
 
 
-module.exports= {
+module.exports={
     socketCon
 };

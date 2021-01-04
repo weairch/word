@@ -1,10 +1,10 @@
 
-const router = require("express").Router();
+const router=require("express").Router();
 
 const {
     getBuzzRanking,
     getScoreRanking
-} = require("../controllers/rankingControllers");
+}=require("../controllers/rankingControllers");
 
 router.route("/ranking/score")
     .get(getScoreRanking);
@@ -16,4 +16,4 @@ router.route("/ranking/buzz")
 
 
 
-module.exports = router;
+module.exports=router;
