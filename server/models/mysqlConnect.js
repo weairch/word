@@ -1,24 +1,28 @@
 require("dotenv").config();
 const mysql = require("mysql");
 const {promisify} = require("util");
+const { DB_HOST,DB_USERNAME,DB_PASSWORD,DB_DATABASE,NODE_ENV,DB_TEST_DATABASE} = process.env;
 
-
-const { DB_HOST,
-    DB_USERNAME,
-    DB_PASSWORD,
-    DB_DATABASE 
-} = process.env;
-
-const mysqlConfig = {
-    connectionLimit : 10,
-    host : DB_HOST,
-    user : DB_USERNAME,
-    password : DB_PASSWORD,
-    database : DB_DATABASE, 
+const mysqlConfig={
+    
+    develop:{
+        connectionLimit : 10,
+        host : DB_HOST,
+        user : DB_USERNAME,
+        password : DB_PASSWORD,
+        database : DB_DATABASE, 
+    },
+    test:{
+        connectionLimit : 10,
+        host : DB_HOST,
+        user : DB_USERNAME,
+        password : DB_PASSWORD,
+        database : DB_TEST_DATABASE, 
+    }
 };
 
 
-const mysqlCon = mysql.createConnection(mysqlConfig);
+const mysqlCon = mysql.createConnection(mysqlConfig[NODE_ENV]);
 
 
 

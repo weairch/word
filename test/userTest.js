@@ -2,15 +2,9 @@
 require("dotenv").config();
 const { JWT_SECRET } = process.env;
 const { random }=require("../util/random");
-const app = require("../app");
-const chai=require("chai");
-const chaiHttp = require("chai-http");
 const jwt = require("jsonwebtoken");
+const { assert,requester }=require("./setUp");
 
-
-chai.use(chaiHttp);
-const assert = chai.assert;
-const requester = chai.request(app).keepOpen();
 
 
 describe("Test signUp",function(){
@@ -28,7 +22,6 @@ describe("Test signUp",function(){
         const res=await requester.post("/api/1.0/signup").send(user);
         const result=res.body.message;
         const token=res.body.token;
-        requester.close;
         assert.isString(result);
         assert.equal("signup success",result);
 
@@ -166,45 +159,48 @@ describe("Test signin",function(){
             password:"testUserPassword"
         };
         const res=await requester.post("/api/1.0/signin").send(user);
-        const result=res.body;
+        const result=res.body.message;
+        const token=res.body.token;
+
+        assert.isString(token);
 
         assert.isString(result);
-
+        assert.equal("Signin success",result);
     });
 
+});
 
-    describe("Test check token",async function(){
-        it ("Check tokne is ok",async function(){
-            const user ={
-                name:"testUser",
-                email:"testUser@hotmail.com",
-                password:"testUserPassword"
-            };
-            const encrypt = jwt.sign(user,JWT_SECRET,{expiresIn:"1 day"});
-            const token="bearer "+encrypt;
-            const res=await requester.post("/api/1.0/checkUserToken").set("Authorization",token).send(token);
-            const result = res.body.Token;
-            
-            assert.equal("user is OK , aleard signin",result);
-            assert.isString(result);
-        });
-
-        it ("Check token faile",async function(){
-            const res=await requester.post("/api/1.0/checkUserToken").send();
-            const result = await res.body.message;
-            
-            assert.isString(result);
-            assert.equal("Pleast signin first", result);
-        });
+describe("Test check token",async function(){
+    it ("Check tokne is ok",async function(){
+        const user ={
+            name:"testUser",
+            email:"testUser@hotmail.com",
+            password:"testUserPassword"
+        };
+        const encrypt = jwt.sign(user,JWT_SECRET,{expiresIn:"1 day"});
+        const token="bearer "+encrypt;
+        const res=await requester.post("/api/1.0/checkUserToken").set("Authorization",token).send(token);
+        const result = res.body.Token;
         
-        it ("Fake token",async function(){
-            const user={};
-            const encrypt = jwt.sign(user,"123",{expiresIn:"1 day"});
-            const token="bearer "+encrypt;
-            const res=await requester.post("/api/1.0/checkUserToken").set("Authorization",token).send(token);
-            const result = res.body.message;
-            assert.isString(result);
-            assert.equal("Verify token error,please signin again", result);
-        });
+        assert.equal("user is OK , aleard signin",result);
+        assert.isString(result);
+    });
+
+    it ("Check token faile",async function(){
+        const res=await requester.post("/api/1.0/checkUserToken").send();
+        const result = await res.body.message;
+        
+        assert.isString(result);
+        assert.equal("Pleast signin first", result);
+    });
+    
+    it ("Fake token",async function(){
+        const user={};
+        const encrypt = jwt.sign(user,"123",{expiresIn:"1 day"});
+        const token="bearer "+encrypt;
+        const res=await requester.post("/api/1.0/checkUserToken").set("Authorization",token).send(token);
+        const result = res.body.message;
+        assert.isString(result);
+        assert.equal("Pleast signin first", result);
     });
 });
