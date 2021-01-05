@@ -37,3 +37,11 @@ document.querySelector(".home").addEventListener("click",function(){
     window.location.href="/";
 });
 
+
+FB.login(function(response) {
+    if (response.status === "connected") {
+        console.log(response);
+    } else {
+        // The person is not logged into your webpage or we are unable to tell. 
+    }
+});
