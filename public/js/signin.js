@@ -36,3 +36,4 @@ document.querySelector(".sign-up").addEventListener("click",function(){
 document.querySelector(".home").addEventListener("click",function(){
     window.location.href="/";
 });
+
