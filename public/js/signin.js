@@ -67,9 +67,7 @@ function checkLoginState() {
     });
 }
 
-async function statusChangeCallback(response) {  
-    console.log("statusChangeCallback");
-    console.log(response);                   
+async function statusChangeCallback(response) {                    
     if (response.status === "connected") {   
         let accessToken = response.authResponse.accessToken;
         let data={accessToken,loginMethod:"facebook"};
