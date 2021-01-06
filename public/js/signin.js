@@ -40,8 +40,35 @@ document.querySelector(".home").addEventListener("click",function(){
 
 
 
-FB.login(async function(response) {
-    if (response.status ==="connected"){
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : "1047523419047255",
+        cookie     : true,
+        xfbml      : true,
+        version    : "v9.0"
+    });
+      
+    FB.AppEvents.logPageView();    
+};
+
+
+
+(function(d, s, id){
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, "script", "facebook-jssdk"));
+
+FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+});
+
+async function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+    console.log("statusChangeCallback");
+    console.log(response);                   // The current login status of the person.
+    if (response.status === "connected") {   // Logged into your webpage and Facebook.
         let accessToken = response.authResponse.accessToken;
         let data={accessToken,loginMethod:"facebook"};
         let config={
@@ -53,16 +80,7 @@ FB.login(async function(response) {
         let res=await fetch("/api/1.0/signin",config);
         let result=await res.json();
         console.log(result);
-        // if (result.message =="Signin success"){
-        //     localStorage.setItem("Authorization",result.token);
-        //     Swal.fire("Signin success",{
-        //         buttons:{
-        //             OK:true,
-        //         },
-        //     }).then(()=>{
-        //         location.href="/";
-        //     });
-        // }
-    }
-}, {scope: "public_profile,email,name,id"});
+    } else {                                 // Not logged into your webpage or we are unable to tell.
 
+    }
+}
