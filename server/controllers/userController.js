@@ -33,7 +33,6 @@ const signIn=async function (req,res){
         }
 
         else if (loginMethod == "facebook"){
-            console.log(req.body);
             let token=req.body.accessToken;
             let url="https://graph.facebook.com/me?fields=id,name,email&access_token="+token;
             let res=await fetch(url);
