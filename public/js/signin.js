@@ -61,14 +61,16 @@ window.fbAsyncInit = function() {
     fjs.parentNode.insertBefore(js, fjs);
 }(document, "script", "facebook-jssdk"));
 
-FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-});
+function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+    });
+}
 
-async function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+async function statusChangeCallback(response) {  
     console.log("statusChangeCallback");
-    console.log(response);                   // The current login status of the person.
-    if (response.status === "connected") {   // Logged into your webpage and Facebook.
+    console.log(response);                   
+    if (response.status === "connected") {   
         let accessToken = response.authResponse.accessToken;
         let data={accessToken,loginMethod:"facebook"};
         let config={
@@ -80,7 +82,7 @@ async function statusChangeCallback(response) {  // Called with the results from
         let res=await fetch("/api/1.0/signin",config);
         let result=await res.json();
         console.log(result);
-    } else {                                 // Not logged into your webpage or we are unable to tell.
-
+    } else {                                 
+        //
     }
 }
