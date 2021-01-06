@@ -36,8 +36,9 @@ const signIn=async function (req,res){
             console.log(req.body);
             let token=req.body.accessToken;
             let url="https://graph.facebook.com/me?fields=id,name,email&access_token="+token;
-            let res =await fetch(url);
-            console.log(res);
+            let res=await fetch(url);
+            let result=await res.json();
+            console.log(result);
         }
     }
     catch(error){
