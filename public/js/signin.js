@@ -44,7 +44,10 @@ FB.login(function(response) {
     // handle the response
     console.log(response);
     console.log("跑來Fb login");
-}, {scope: "public_profile,email"});
+    if (response ==="connected"){
+        console.log("跑來Fb login connected");
+    }
+}, {scope: "public_profile,email,name"});
 
 function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
     console.log(response);                   // The current login status of the person.
