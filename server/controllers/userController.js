@@ -4,30 +4,41 @@ const User=require("../models/userModels");
 const { JWT_SECRET }=process.env;
 const bcrypt=require("bcryptjs");
 const jwt=require("jsonwebtoken");
-
+const fetch=require("node-fetch");
 
 const signIn=async function (req,res){
     try{
-        let {password , email }=req.body;
-        if (!password.length || !email.length ){
-            return res.status(400).send ({message:"Please enter the correct format"});
-        }
-        let user=await User.checkUserEmail(email);
+        let loginMethod = req.body.loginMethod;
+        if (loginMethod == "native"){
+            let {password , email }=req.body;
+            if (!password.length || !email.length ){
+                return res.status(400).send ({message:"Please enter the correct format"});
+            }
+            let user=await User.checkUserEmail(email);
+            
+            if (user.length == 0){
+                return res.status(400).send({message:"Please enter correct Email or password"});
+            }
         
-        if (user.length == 0){
-            return res.status(400).send({message:"Please enter correct Email or password"});
-        }
+            let hashPwd=user[0].password;
+            let bcryptPwd=await bcrypt.compare(password,hashPwd);
+            if (bcryptPwd == false){
+                return res.status(500).send({message:"Please enter correct Email or password"});
+            }
+            let { id,name,socketId }=user[0];
+            let payload={id,name,email,socketId};
+            let token=jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
     
-        let hashPwd=user[0].password;
-        let bcryptPwd=await bcrypt.compare(password,hashPwd);
-        if (bcryptPwd == false){
-            return res.status(500).send({message:"Please enter correct Email or password"});
+            res.status(200).json({message:"Signin success",token});
         }
-        let { id,name,socketId }=user[0];
-        let payload={id,name,email,socketId};
-        let token=jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
 
-        res.status(200).json({message:"Signin success",token});
+        else if (loginMethod == "facebook"){
+            console.log(req.body);
+            let token=req.body.accessToken;
+            let url="https://graph.facebook.com/me?fields=id,name,email&access_token="+token;
+            let res =await fetch(url);
+            console.log(res);
+        }
     }
     catch(error){
         console.log(error);
