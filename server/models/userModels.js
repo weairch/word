@@ -34,7 +34,7 @@ const insertNativeUserData=async function (name,email,bcryptPwd,login){
 const insertFacebookUserData=async function (name,email,login){
     try{
         await transaction();
-        let res=await query(`INSERT INTO user (name, email, password,login,buzz,score) VALUES ("${name}", "${email}","${login}",0,0)`);
+        let res=await query(`INSERT INTO user (name, email,login,buzz,score) VALUES ("${name}", "${email}","${login}",0,0)`);
         await commit();
         return res;
     }
