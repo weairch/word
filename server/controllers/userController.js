@@ -35,8 +35,8 @@ const signIn=async function (req,res){
         else if (loginMethod == "facebook"){
             let token=req.body.accessToken;
             let url="https://graph.facebook.com/me?fields=id,name,email&access_token="+token;
-            let res=await fetch(url);
-            let result=await res.json();
+            let information=await fetch(url);
+            let result=await information.json();
             let { name,email }=result;
             console.log("確認Token回來解析有name跟email"+name+email);
             let user=await User.checkUserEmail(email);
