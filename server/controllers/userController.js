@@ -38,8 +38,11 @@ const signIn=async function (req,res){
             let res=await fetch(url);
             let result=await res.json();
             let { name,email }=result;
+            console.log("確認Token回來解析有name跟email"+name+email);
             let user=await User.checkUserEmail(email);
+            console.log("確認user有東西"+user);
             if (user.length == 0){
+                console.log("進來了user.length==0 的if");
                 await User.insertFacebookUserData(name,email,"Facebook");
                 let user=await User.checkUserEmail(email);
                 let userId=user[0].id;
@@ -50,6 +53,7 @@ const signIn=async function (req,res){
                 res.status(200).send({message:"signin success",token:token});
             }
             else{
+                console.log("進來了user.length==0 的esle");
                 let user=await User.checkUserEmail(email);
                 let userId=user[0].id;
                 let userName=user[0].name;
