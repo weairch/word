@@ -38,8 +38,26 @@ const signIn=async function (req,res){
             let res=await fetch(url);
             let result=await res.json();
             let { name,email }=result;
-            console.log(name);
-            console.log(email);
+            let user=await User.checkUserEmail(email);
+            if (user.length == 0){
+                await User.insertFacebookUserData(name,email,"Facebook");
+                let user=await User.checkUserEmail(email);
+                let userId=user[0].id;
+                let userName=user[0].name;
+                let userEmail=user[0].email;
+                let payload={id:userId,name:userName,email:userEmail};
+                let token=jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
+                return res.status(200).send({message:"signup success",token:token});
+            }
+            else{
+                let user=await User.checkUserEmail(email);
+                let userId=user[0].id;
+                let userName=user[0].name;
+                let userEmail=user[0].email;
+                let payload={id:userId,name:userName,email:userEmail};
+                let token=jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
+                return res.status(200).send({message:"signup success",token:token});
+            }
         }
     }
     catch(error){
@@ -67,7 +85,7 @@ const signUp=async function (req,res){
         }
         else{
             let hashPwd=await bcrypt.hash(password,8);
-            await User.insertUserData(name,email,hashPwd,"native");
+            await User.insertNativeUserData(name,email,hashPwd,"native");
             let user=await User.checkUserEmail(email);
             let userId=user[0].id;
             let userName=user[0].name;

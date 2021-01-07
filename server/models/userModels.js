@@ -18,10 +18,23 @@ const checkUserEmail=async function (email){
 };
 
 
-const insertUserData=async function (name,email,bcryptPwd,login){
+const insertNativeUserData=async function (name,email,bcryptPwd,login){
     try{
         await transaction();
         let res=await query(`INSERT INTO user (name, email, password,login,buzz,score) VALUES ("${name}", "${email}", "${bcryptPwd}" , "${login}",0,0)`);
+        await commit();
+        return res;
+    }
+    catch(error){
+        console.log(error);
+        await rollback();
+    }
+};
+
+const insertFacebookUserData=async function (name,email,login){
+    try{
+        await transaction();
+        let res=await query(`INSERT INTO user (name, email, password,login,buzz,score) VALUES ("${name}", "${email}","${login}",0,0)`);
         await commit();
         return res;
     }
@@ -148,6 +161,7 @@ const getBuzzWinRat=async function(id){
 
 
 
+
 module.exports ={
     getBuzzWinRat,
     getScoreWinRat,
@@ -158,6 +172,7 @@ module.exports ={
     updateUserReady,
     verificationToken,
     checkUserEmail,
-    insertUserData,
+    insertFacebookUserData,
+    insertNativeUserData,
     addUserToStandbyRoom
 };
