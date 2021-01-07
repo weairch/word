@@ -47,7 +47,7 @@ const signIn=async function (req,res){
                 let userEmail=user[0].email;
                 let payload={id:userId,name:userName,email:userEmail};
                 let token=jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
-                return res.status(200).send({message:"signin success",token:token});
+                res.status(200).send({message:"signin success",token:token});
             }
             else{
                 let user=await User.checkUserEmail(email);
@@ -56,7 +56,7 @@ const signIn=async function (req,res){
                 let userEmail=user[0].email;
                 let payload={id:userId,name:userName,email:userEmail};
                 let token=jwt.sign(payload,JWT_SECRET,{expiresIn:"1 day"});
-                return res.status(200).send({message:"signin success",token:token});
+                res.status(200).send({message:"signin success",token:token});
             }
         }
     }
