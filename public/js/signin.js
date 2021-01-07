@@ -79,7 +79,22 @@ async function statusChangeCallback(response) {
             }};
         let res=await fetch("/api/1.0/signin",config);
         let result=await res.json();
-        console.log(result);
+
+        localStorage.setItem("Authorization",result.token);
+
+        if (result.message =="signin success"){
+            Swal.fire(result.message,{
+                buttons:{
+                    OK:true,
+                },
+            })
+                .then(()=>{
+                    location.href="/";
+                });
+        }
+        else{
+            Swal.fire(result.message);
+        }
     } else {                                 
         //
     }
