@@ -84,7 +84,6 @@
 - 電子信箱 : test1@hotmail.com
 - 密碼 : test1
 <br>
-
 - 電子信箱 : test2@hotmail.com
 - 密碼 : test2
 
@@ -100,8 +99,8 @@
 #### 多人模式 創建房間 選擇 Buzz 模式 
 
 ![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/Buzz.gif)
-
-
+![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/4EQLE06wlu.gif)
+![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/Buzz.gif)
 ### Author
 
 Po Yu Chang [@github.com/weairch](https://github.com/weairch "github.com/weairch")
