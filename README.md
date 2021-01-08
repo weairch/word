@@ -18,11 +18,11 @@
 ## 目錄 :
 
 
-- Technologies
-- Architecture
-- Database Schema
-- Features
-- Author
+- [Technologies](https://github.com/weairch/word#technologies "Technologies")
+- [Architecture](https://github.com/weairch/word#architecture "Architecture")
+- [Database Schema](https://github.com/weairch/word#database-schema "Database Schema")
+- [Features](https://github.com/weairch/word#features "Features")
+- [Author](https://github.com/weairch/word#author "Author")
 
 ## Technologies
 ### Backend
@@ -77,6 +77,8 @@
 - 電子信箱 : test1@hotmail.com
 - 密碼 : test1
 <br>
+
+
 - 電子信箱 : test2@hotmail.com
 - 密碼 : test2
 
