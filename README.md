@@ -89,16 +89,16 @@
 
 #### 單人模式
 
-![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/%E5%96%AE%E4%BA%BA%E6%A8%A1%E5%BC%8F.gif)
+![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/single.gif)
 
 #### 多人模式 創建房間 選擇 Score 模式 
 
-![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/score%E6%A8%A1%E5%BC%8F.gif)
+![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/score.gif)
 
 
 #### 多人模式 創建房間 選擇 Buzz 模式 
 
-![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/Buzz%E6%A8%A1%E5%BC%8F.gif)
+![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/Buzz.gif)
 
 
 ### Author
