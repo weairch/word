@@ -13,11 +13,8 @@
 ![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/4EQLE06wlu.gif)
 
 <br>
-<br>
 
 ## 目錄 :
-
-<br>
 
 - Technologies
 - Architecture
@@ -33,7 +30,6 @@
  - RESTful API
  - NGINX
  - PM2
-<br>
 
 ### Frontend
  - HTML
@@ -41,11 +37,9 @@
  - JavaScript
  - AJAX
  - Bootstrap
-<br>
 
 ### Database
  - MySQL
-<br>
 
 ### Cloud Service
  - Elastic Compute Cloud (EC2)
@@ -53,19 +47,16 @@
 
 ### Web Socket
  - Socket.IO
-<br>
 
 ### Networking
  - HTTP & HTTPS
  - SSL Certificate 
  - Domain Name System (DNS)
-<br>
 
 ### Test
 - Mocha
 - chai
 - Artillery
-<br>
 
 ### Others
  - Design Pattern: MVC
@@ -84,23 +75,17 @@
 - 電子信箱 : test1@hotmail.com
 - 密碼 : test1
 <br>
+
 - 電子信箱 : test2@hotmail.com
 - 密碼 : test2
+
+<br>
 
 #### 單人模式
 
 ![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/single.gif)
 
-#### 多人模式 創建房間 選擇 Score 模式 
 
-![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/score.gif)
-
-
-#### 多人模式 創建房間 選擇 Buzz 模式 
-
-![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/Buzz.gif)
-![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/4EQLE06wlu.gif)
-![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/Buzz.gif)
 ### Author
 
 Po Yu Chang [@github.com/weairch](https://github.com/weairch "github.com/weairch")
