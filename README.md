@@ -12,6 +12,17 @@
 
 ![](https://github.com/weairch/Gif/blob/master/index.gif)
 
+測試帳號:
+- 電子信箱 : test1@hotmail.com
+- 密碼 : test1
+<br>
+
+
+- 電子信箱 : test2@hotmail.com
+- 密碼 : test2
+
+<br>
+
 <br>
 
 
@@ -22,7 +33,7 @@
 - [Architecture](https://github.com/weairch/word#architecture "Architecture")
 - [Database Schema](https://github.com/weairch/word#database-schema "Database Schema")
 - [Feature](https://github.com/weairch/word#features "Features")
-- [Future](https://github.com/weairch/word#future "Future")
+- [To-do Future](https://github.com/weairch/word#To-do-Future "To-do Future")
 - [Author](https://github.com/weairch/word#author "Author")
 
 ## Technologies
@@ -74,16 +85,7 @@
 
 ### Features
 
-測試帳號:
-- 電子信箱 : test1@hotmail.com
-- 密碼 : test1
-<br>
 
-
-- 電子信箱 : test2@hotmail.com
-- 密碼 : test2
-
-<br>
 
 #### 單人模式
 模式說明 : 單純的練習，時間結束後會計算出答題次數與答對幾題。
@@ -91,17 +93,20 @@
 ![](https://github.com/weairch/Gif/blob/master/single.gif)
 
 #### 多人模式 創建房間 選擇 Score 模式
-模式說明 : 兩邊在三十秒內答題，上方有時間，自己分數，對方分數，兩邊題目不同，每次答對加一分，當時間歸零，分數最高者獲勝。
+模式說明 : 兩邊在三十秒內答題，上方有時間，自己分數，對方分數，兩邊題目不同，下方有四個選項可供點選，答對顯示綠色，答錯顯示半透明粉紅色，每次答對加一分，當時間歸零，分數最高者獲勝。
 ![](https://github.com/weairch/Gif/blob/master/score.gif)
 
 
 #### 多人模式 創建房間 選擇 Buzz 模式
-模式說明 : 兩邊題目一樣，在上面會有秒數、自己分數、對方分數，答對則分數加一，獲勝條件為自己或者對方先達到十分，當自己答對，對方畫面則會顯示半透明，並且兩秒後會同時進入下一題，當自己答錯，則要等到對方答題或者完成或者時間歸零，才會進入到下一題。
+模式說明 : 兩邊題目一樣，在上面會有秒數、自己分數、對方分數，下方四個選項可供點選，答對顯示綠色，答錯顯示半透明粉紅色，答對則分數加一，獲勝條件為自己或者對方先達到十分，當自己答對，對方畫面則會顯示半透明，並且兩秒後會同時進入下一題，當自己答錯，則要等到對方答題或者完成或者時間歸零，才會進入到下一題。
 ![](https://github.com/weairch/Gif/blob/master/Buzz.gif)
 
 
-### Future
-歷史功能 : 可以把答錯的題數跟題目放在個人資訊裡面，當使用者想回頭看看答錯什麼題目則可直接到個人頁面尋找，可以直接複習答錯的題目。
+### To-do Future
+
+- 歷史功能
+- 與陌生人線上配對
+- 多人模式線上人數
 
 ### Author
 
