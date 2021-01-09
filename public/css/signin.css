@@ -124,9 +124,6 @@ form button {
   -webkit-transition-duration: 0.25s;
           transition-duration: 0.25s;
 }
-form button:hover {
-  background-color: #f5f7f9;
-}
 
 .title{
   font-size: 75px;
