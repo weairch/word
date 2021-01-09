@@ -50,10 +50,6 @@ body :-ms-input-placeholder {
   /* margin-top: -200px; */
   overflow: hidden;
 }
-.wrapper.form-success .container h1 {
-  -webkit-transform: translateY(85px);
-          transform: translateY(85px);
-}
 .container {
   max-width: 600px;
   margin: -100px auto;
@@ -118,33 +114,6 @@ form input {
   -webkit-transition-duration: 0.25s;
           transition-duration: 0.25s;
   font-weight: 300;
-}
-form input:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
-form input:focus {
-  background-color: white;
-  width: 300px;
-  color: #53e3a6;
-}
-form button {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  outline: 0;
-  background-color: white;
-  border: 0;
-  padding: 10px 15px;
-  color: #53e3a6;
-  border-radius: 3px;
-  width: 250px;
-  cursor: pointer;
-  font-size: 18px;
-  -webkit-transition-duration: 0.25s;
-          transition-duration: 0.25s;
-}
-form button:hover {
-  background-color: #f5f7f9;
 }
 
 .title{
