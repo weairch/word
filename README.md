@@ -1,5 +1,5 @@
 # Word War
-#### 可以讓多位使用者開啟分別不同房間聊天交流，也有三種模式可以讓使用者選擇，分別是Single,Score與Buzz模式，希望使用者可以在有趣味性的體驗下，同時增加英文的單字能力。
+#### 可以讓多位使用者開啟分別不同房間聊天交流，也有三種模式可以讓使用者選擇，分別是Single,Score與Buzz模式，希望使用者可以在有趣味性的體驗下，同時增加英文單字能力
 <br>
 
 網址 : [wordwar.online](https://wordwar.online "網址:")
@@ -21,7 +21,8 @@
 - [Technologies](https://github.com/weairch/word#technologies "Technologies")
 - [Architecture](https://github.com/weairch/word#architecture "Architecture")
 - [Database Schema](https://github.com/weairch/word#database-schema "Database Schema")
-- [Features](https://github.com/weairch/word#features "Features")
+- [Feature](https://github.com/weairch/word#features "Features")
+- [Future](https://github.com/weairch/word#future "Future")
 - [Author](https://github.com/weairch/word#author "Author")
 
 ## Technologies
@@ -98,6 +99,9 @@
 模式說明 : 兩邊題目一樣，在上面會有秒數、自己分數、對方分數，答對則分數加一，獲勝條件為自己或者對方先達到十分，當自己答對，對方畫面則會顯示半透明，並且兩秒後會同時進入下一題，當自己答錯，則要等到對方答題或者完成或者時間歸零，才會進入到下一題。
 ![](https://github.com/weairch/Gif/blob/master/Buzz.gif)
 
+
+### Future
+歷史功能 : 可以把答錯的題數跟題目放在個人資訊裡面，當使用者想回頭看看答錯什麼題目則可直接到個人頁面尋找，可以直接複習答錯的題目。
 
 ### Author
 
