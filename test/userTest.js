@@ -107,6 +107,7 @@ describe("Test signUp",function(){
 describe("Test signin",function(){
     it("Enter wront password format",async function(){
         const user={
+            loginMethod:"native",
             password:"",
             email:"testUser@hotmail.com"
         };
@@ -119,6 +120,7 @@ describe("Test signin",function(){
 
     it ("Enter wront email format",async function(){
         const user={
+            loginMethod:"native",
             password:"testUserPassword",
             email:""
         };
@@ -131,6 +133,7 @@ describe("Test signin",function(){
     
     it("Enter wront email",async function(){
         const user={
+            loginMethod:"native",
             password:"testUserPassword",
             email:"1234"
         };
@@ -142,6 +145,7 @@ describe("Test signin",function(){
 
     it ("Enter wront password",async function(){
         const user={
+            loginMethod:"native",
             password:"1234",
             email:"testUser@hotmail.com"
         };
@@ -155,6 +159,7 @@ describe("Test signin",function(){
 
     it("Sign success",async function(){
         const user={
+            loginMethod:"native",
             email:"testUser@hotmail.com",
             password:"testUserPassword"
         };
