@@ -72,7 +72,7 @@
  - Version Control: Git, GitHub
 
 ### Architecture
-![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/%E7%B5%90%E6%A7%8B%E5%9C%96.png)
+![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/%E7%B5%90%E6%A7%8B%E5%9C%962.0.png)
 
 ### Database Schema
 ![](https://poyu0730.s3-ap-northeast-1.amazonaws.com/%E8%B3%87%E6%96%99%E5%BA%AB%E6%9E%B6%E6%A7%8B.jpg)
