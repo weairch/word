@@ -154,55 +154,43 @@ const serchStandbyRoom=async function(){
 
 const insertBuzzGame=async function (uid,room){
     try{
-        await transaction();
-        let res=await query("INSERT INTO buzz_game_room (`uid`, `room`,`topic_number`,`status`,`currect`) VALUES (?,?,0,'NULL','0');",[uid,room]);
-        await commit();
-        return res;
+        return await query("INSERT INTO buzz_game_room (`uid`, `room`,`topic_number`,`status`,`currect`) VALUES (?,?,0,'NULL','0');",[uid,room]);
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
 const deleteBuzzGame=async function(uid){
     try{
-        await transaction();
+
         let res=await query("DELETE FROM `buzz_game_room` WHERE (`uid`=?);",uid);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
 
 const insertToBuzzGameTopic=async function(session,topic_english,topic_number, topic_chinese){
     try{
-        await transaction();
         let res=await query("INSERT INTO `buzz_game_topic` (`session_number`, `topic_english`, `topic_number`, `topic_chinese`) VALUES (?, ?, ?, ?);",[session,topic_english,topic_number,topic_chinese]);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
 
 const deleteBuzzGameTopic=async function(room){
     try{
-        await transaction();
         let res=await query("DELETE FROM `buzz_game_topic` WHERE (`room`=?);",room);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
@@ -229,13 +217,10 @@ const getThisSessionBuzzTopic=async function(session,topic_number){
 
 const updateTopicNnumber=async function(uid,topic_number){
     try{
-        await transaction();
         let res=await query("UPDATE `buzz_game_room` SET `topic_number` =? , `status`='NULL' WHERE (`uid` =?);",[topic_number,uid]); 
-        await commit();
         return res;
     }
     catch(error){
-        await rollback();
         console.log(error);
     }
 };
@@ -298,14 +283,11 @@ const raceCondition=async function(session,topic_number){
 
 const updateCorrectTopicNumber=async function(topicNumber,room){
     try{
-        await transaction();
         let res=await query("update buzz_game_room set topic_number=? , status=NULL where room=?",[topicNumber,room]); 
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 

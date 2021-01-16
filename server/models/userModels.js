@@ -1,8 +1,5 @@
 const { 
     query, 
-    transaction, 
-    commit, 
-    rollback
 }=require("./mysqlConnect");
 
 
@@ -20,27 +17,21 @@ const checkUserEmail=async function (email){
 
 const insertNativeUserData=async function (name,email,bcryptPwd,login){
     try{
-        await transaction();
         let res=await query(`INSERT INTO user (name, email, password,login,buzz,score) VALUES ("${name}", "${email}", "${bcryptPwd}" , "${login}",0,0)`);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
 const insertFacebookUserData=async function (name,email,login){
     try{
-        await transaction();
         let res=await query(`INSERT INTO user (name, email,login,buzz,score) VALUES ("${name}", "${email}","${login}",0,0)`);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
@@ -59,40 +50,31 @@ const verificationToken=async function(token,secret){
 
 const addUserToStandbyRoom=async function (userId,room,mode,JWT){
     try{
-        await transaction();
         let res=await query(`INSERT INTO standby_room (uid, room,mode,JWT) VALUES ("${userId}", "${room}","${mode}","${JWT}")`);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
 const updateUserReady=async function (id){
     try{
-        await transaction();
         let res=await query(`UPDATE standby_room SET ready='ready' WHERE (uid="${id}")`);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
 const updateUserUnready =async function (id){
     try{
-        await transaction();
         let res=await query(`UPDATE standby_room SET ready='null' WHERE (uid="${id}")`);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
@@ -107,27 +89,21 @@ const checkForDuplicate=async function (room){
 
 const updateBuzzWin=async function(id){
     try{
-        await transaction();
         let res=await query ("update user set buzz=buzz+1 where id=?;",id);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 
 const updateScoreWin=async function(id){
     try{
-        await transaction();
         let res=await query("update user set score=score+1 where id=?;",id);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 };
 

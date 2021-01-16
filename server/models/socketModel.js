@@ -1,21 +1,15 @@
 const {
     query, 
-    transaction, 
-    commit, 
-    rollback
 }=require("./mysqlConnect");
 
 
 const deleteStandbyRoom=async function (uid){
     try {
-        await transaction();
         let res=await query("delete from standby_room where uid=?",uid);
-        await commit();
         return res;
     }
     catch(error){
         console.log(error);
-        await rollback();
     }
 
 };
@@ -23,13 +17,10 @@ const deleteStandbyRoom=async function (uid){
 
 const addSocketId=async function(uid,socketId){
     try{
-        await transaction();
         let res=await query("update user set socketId =? where id =?",[socketId,uid]);
-        await commit();
         return res;
     }
     catch(error){
-        await rollback();
         console.log(error);
     }
 };
@@ -47,13 +38,10 @@ const sessionNumber=async function (room){
 
 const insertSessionToHistory=async function (id,gameNumber,mode,startTime,room){
     try{
-        await transaction();
         let res=await query(`INSERT INTO game_history (uid,session_number, mode, start_time,room) VALUES ('${id}','${gameNumber}', '${mode}', '${startTime}',"${room}")`);
-        await commit();
         return res;
     }
     catch(error){
-        await rollback();
         console.log(error);
     }
 };
@@ -88,9 +76,7 @@ const checkBuzzModeAndReady=async function (room){
 
 const updataCurrectNumber=async function (id){
     try{
-        await transaction();
         let res=await query("update buzz_game_room set currect=currect+1 where uid=?",id);
-        await commit();
         return res;
     }
     catch(error){
