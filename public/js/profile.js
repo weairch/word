@@ -119,7 +119,10 @@ user().then(async function(result){
 
     let scoreWinRatNumber;
     let winrat=(winRat.score.scoreTotalWin/winRat.score.scorePlayTimesTotla)*100;
-    if (isNaN(winrat)){
+    if (winrat == 0){
+        scoreWinRatNumber=0;
+    }
+    else if (isNaN(winrat)){
         scoreWinRatNumber=0;
     }
     else{
@@ -162,10 +165,14 @@ user().then(async function(result){
 
     let buzzWinRatNumber;
     let buzzWinrat=(winRat.buzz.buzzTotalWin/winRat.buzz.buzzPlayTimesTotla)*100;
-    if (isNaN(buzzWinrat)){
+    if (buzzWinrat == 0){
+        buzzWinRatNumber=0;
+    }
+    else if (isNaN(buzzWinrat)){
         buzzWinRatNumber=0;
     }
     else{
+        console.log("here is else");
         buzzWinRatNumber=buzzWinrat.toFixed(2);
     }
 
