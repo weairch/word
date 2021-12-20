@@ -3,12 +3,10 @@
 
 ## 目錄 :
 
-
 - [Technologies](https://github.com/weairch/word#technologies "Technologies")
 - [Architecture](https://github.com/weairch/word#architecture "Architecture")
 - [Database Schema](https://github.com/weairch/word#database-schema "Database Schema")
 - [Feature](https://github.com/weairch/word#features "Features")
-- [To-do Future](https://github.com/weairch/word#To-do-Future "To-do Future")
 - [Author](https://github.com/weairch/word#author "Author")
 
 ## Technologies
@@ -78,13 +76,6 @@
 模式說明 : 題目一樣，上方顯示雙方分數與時間。畫面中間為題目，每題有四個選項可供點選；答對顯示綠色，同時對方畫面該選項會變為半透明，且不可點選，並直接進入下一題，而答錯則顯示淡粉紅色，必須等待對方答題或時間歸零，再進入下一道題目，每次答對加一分，當分數達到十分者獲勝。
 
 ![](https://github.com/weairch/Gif/blob/master/Buzz.gif)
-
-
-### To-do Future
-
-- 歷史功能
-- 與陌生人線上配對
-- 多人模式線上人數
 
 ### Author
 
