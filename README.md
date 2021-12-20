@@ -1,24 +1,5 @@
 # Word War
 #### 可以讓多位使用者開啟不同房間聊天交流，也有三種模式可供使用者選擇，分別是 Single,Score 與 Buzz 模式，希望使用者可以在有趣味性的體驗下，同時增加英文單字能力
-<br>
-
-網址 : [wordwar.online](https://wordwar.online "網址:")
-
-- 用有趣的方式練習英文單字
-- 可在對戰室與其他使用者交流
-- 在遊戲中有即時性的體驗
-
-![](https://github.com/weairch/Gif/blob/master/index.gif)
-
-測試帳號:
-- 電子信箱 : test1@hotmail.com
-- 密碼 : test1
-<br>
-
-- 電子信箱 : test2@hotmail.com
-- 密碼 : test2
-
-<br>
 
 ## 目錄 :
 
